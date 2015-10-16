@@ -18,27 +18,28 @@ Once the project moves into development, the press release can be used as a touc
  
 ## Heading ##
   > Name the product in a way the reader (i.e. your target customers) will understand.
+  > 
 
 ## Sub-Heading ##
-  > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
+  > Privacy-minded individuals who want a secure, easy-to-use client.
 
 ## Summary ##
-  > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
+  > Facebook Messenger, Google Hangouts, and other messaging apps do not respect user-privacy as much as many would like. This product will integrate with existing communication services and shield communications from prying eyes with end-to-end encryption. This product also provides a new end-to-end encrypted chat client which provides additional features unavailable in existing services.
 
 ## Problem ##
-  > Describe the problem your product solves.
+  > Popular communication services do not respect user-privacy as much as many would like.
 
 ## Solution ##
-  > Describe how your product elegantly solves the problem.
+  > In addition to additional features unavailable in existing services, this product integrates with these services to shield communications from prying eyes with end-to-end encryption.
 
 ## Quote from You ##
-  > A quote from a spokesperson in your company.
+  > With our product, I can be sure the only one reading my messages is the intended recipient!
 
 ## How to Get Started ##
-  > Describe how easy it is to get started.
+  > Install our extension and get started right away!
 
 ## Customer Quote ##
-  > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
+  > I no longer feel like someone is reading my conversations over my shoulder.
 
 ## Closing and Call to Action ##
-  > Wrap it up and give pointers where the reader should go next.
+  > Install the extension and bring back your privacy!

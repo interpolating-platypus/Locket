@@ -1,0 +1,20 @@
+{
+  "name": "interpolating-platypus",
+  "version": "0.0.0",
+  "homepage": "https://github.com/interpolating-platypus/interpolating-platypus",
+  "authors": [
+    "interpolating-platypus"
+  ],
+  "description": "Secure communications for the privacy minded individual",
+  "main": "app.js",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
