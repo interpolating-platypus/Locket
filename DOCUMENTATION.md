@@ -14,21 +14,19 @@
   |       |       |
   |       |
   |       +-- app/
-  |       |    |-- features/
-  |       |    |        |-- auth/
-  |       |    |        |     |-- auth.html
-  |       |    |        |     +-- auth.js
-  |       |    |        |
-  |       |    |        +-- chat/
-  |       |    |        |     |-- chat.html
-  |       |    |        |     +-- chat.js
-  |       |    |        |
-  |       |    |        +-- friends/
-  |       |    |              |-- friends.html
-  |       |    |              +-- friends.js
-  |       |    |
-  |       |    +-- services/
-  |       |             |
+  |            |-- features/
+  |            |        |-- auth/
+  |            |        |     |-- auth.html
+  |            |        |     +-- auth.js
+  |            |        |
+  |            |        +-- chat/
+  |            |        |     |-- chat.html
+  |            |        |     +-- chat.js
+  |            |
+  |            +-- services/
+  |                     |-- authFactory.js
+  |                     |
+  |                     +-- encryptionFactory.js
   |       
   +-- extension/
   |       |
@@ -38,26 +36,16 @@
   |       |
   |       +-- routes.js
   |       |
-  |       +-- handler.js
+  |       +-- socketHandler.js
   |       |
   |       |-- features/
-  |       |         |-- auth/
-  |       |         |     |-- passport.js
-  |       |         |
-  |       |         +-- friends/
-  |       |         |     |-- friendController.js
-  |       |         |     +-- friendModel.js
-  |       |         |     +-- friendRoutes.js
-  |       |         |
-  |       |         +-- messages/
-  |       |         |     |-- messageController.js
-  |       |         |     +-- messageModel.js
-  |       |         |     +-- messageRoutes.js
-  |       |         |
-  |       |         +-- users/
-  |       |         |     |-- userController.js
-  |       |         |     +-- userModel.js
-  |       |         |     +-- userRoutes.js
+  |                 |-- auth/
+  |                 |     |-- passport.js
+  |                 |
+  |                 +-- users/
+  |                 |     |-- userController.js
+  |                 |     +-- userModel.js
+  |                 |     +-- userRoutes.js
 
 
 

@@ -1,0 +1,5 @@
+/*
+
+  passportJS local strategy configuration
+
+*/

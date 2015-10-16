@@ -1,0 +1,10 @@
+/*
+  
+  angular controller
+    invoke login function in services
+
+    invoke logout function in services
+
+    invoke signup function in services
+
+*/
