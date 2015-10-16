@@ -1,0 +1,24 @@
+{
+  "name": "interpolating-platypus",
+  "version": "1.0.0",
+  "description": "Secure communication for the privacy minded individual",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interpolating-platypus/interpolating-platypus.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/interpolating-platypus/interpolating-platypus/issues"
+  },
+  "homepage": "https://github.com/interpolating-platypus/interpolating-platypus#readme",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7"
+  }
+}
