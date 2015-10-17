@@ -1,5 +1,26 @@
-/*
+var app = require(__dirname + "/server.js");
 
+var io = module.exports.io = require('socket.io').listen(app.server);
+
+console.log("Socket.io server listening");
+
+var userMap = {
+
+};
+
+
+io.on('connection', function(socket) {
+  // on connection, getCurrentUser, searchDatabase for currentUser, respondwithFriendsList
+  socket.on('sendMessage', function(to, message) {
+    
+  };
+
+});
+
+
+
+
+/*
   module.exports.listen to server.js to set up io
 
   set up all handlers (socket.on()) inside listen function
