@@ -1,13 +1,16 @@
 angular.module('Locket.authFactory', [])
 
-.factory('authFactory', function($http){
+.factory('authFactory', function($http, $state){
 
   var login = function(username, password){
     return $http({
       method: 'POST',
-      url: '/login',
+      url: '/api/users/login',
       data: {username: username, password:password }
     }).then(function(resp){
+      if (resp.status === 200) {
+        $state.go('chat');
+      }
       return resp;
     });
 
@@ -16,7 +19,7 @@ angular.module('Locket.authFactory', [])
   var logout = function(){
     return $http({
       method: 'GET',
-      url: '/logout'
+      url: '/api/users/logout'
     }).then(function(resp){
       return resp;
     });
@@ -25,7 +28,7 @@ angular.module('Locket.authFactory', [])
   var signup = function(username, password){
     return $http({
       method: 'POST',
-      url: '/signup',
+      url: '/api/users/signup',
       data: {username: username, password:password }
     }).then(function(resp){
       return resp;
