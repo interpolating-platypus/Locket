@@ -5,7 +5,11 @@
     <ul>
       Friends List
       <!-- track by $index prevents errors on duplicates -->
-      <li ng-repeat='friend in friends track by $index | orderBy:"name"'>
+      <form ng-submit='addFriend(username)' name='addFriendForm'>
+        <input type='text' name='username' ng-model='username' required/>
+        <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
+      </form>
+      <li ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
         <span class='friendService'>{{friend.service}}</span>
         <span class='friendName'>{{friend.name}}</span>
       </li>
@@ -21,5 +25,11 @@
         <span>{{message.timestamp}}</span>
       </li>
     </ul>
+  </div>
+  <div>
+    <form ng-submit='sendMessage(messageText)' name='messageForm'>
+      <input type='text' name='message' ng-model='messageText' required/>
+      <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
+    </form>
   </div>
 </div>
