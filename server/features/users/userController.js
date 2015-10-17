@@ -2,9 +2,12 @@ var User = require('./userModel');
 var Q = require('q');
 var jwt = require('jwt-simple');
 
+var socketHandler = require('../../socketHandler.js');
+
 exports.signin = function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
+  var sid = req.sessionID;
 
   var findUser = Q.nbind(User.findOne, User);
   findUser({username: username})
@@ -17,6 +20,8 @@ exports.signin = function(req, res, next) {
             if (foundUser) {
               var token = jwt.encode(user, 'secret');
               res.json({token: token});
+              // associate sid to username in socketHandler
+              socketHandler.sessionMap[sid] = username;
             } else {
               return next(new Error('No User'));
             }
