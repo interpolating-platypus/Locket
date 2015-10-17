@@ -1,10 +1,20 @@
-/*
-  
-  angular controller
-    invoke login function in services
+angular.module('Locket.auth', [])
 
-    invoke logout function in services
+.controller('authController', function ($scope, authFactory) {
 
-    invoke signup function in services
+  $scope.loginFailed = false;
+  $scope.signupFailed = false;
 
-*/
+  $scope.login = function(){
+    authFactory.login($scope.user.username, $scope.user.password);
+  };
+
+  $scope.logout = function(){
+    authFactory.logout();
+  };
+
+  $scope.signup = function(){
+    authFactory.signup($scope.user.username, $scope.user.password);
+  };
+
+});

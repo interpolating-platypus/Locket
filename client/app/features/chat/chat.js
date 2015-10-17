@@ -1,3 +1,10 @@
+angular.module('Locket.chat', [])
+
+.controller('chatController', function ($scope) {
+  console.log('test!');
+
+});
+
 /*
 
   angular controller
