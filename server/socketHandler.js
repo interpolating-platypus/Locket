@@ -10,10 +10,11 @@ var userMap = {
 
 
 io.on('connection', function(socket) {
+  console.log('a user connected');
   // on connection, getCurrentUser, searchDatabase for currentUser, respondwithFriendsList
   socket.on('sendMessage', function(to, message) {
-    
-  };
+
+  });
 
 });
 
