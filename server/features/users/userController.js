@@ -2,9 +2,6 @@ var User = require('./userModel');
 var Q = require('q');
 var jwt = require('jwt-simple');
 
-
-  // https://github.com/hackreactor/2015-08-shortly-angular/blob/solution/server/users/userController.js
-
 exports.signin = function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
@@ -80,7 +77,3 @@ exports.checkAuth = function(req, res, next) {
       });
   }
 }
-
-
-
-
