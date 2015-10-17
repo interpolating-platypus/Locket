@@ -1,7 +1,22 @@
 angular.module('Locket.chat', [])
 
 .controller('chatController', function ($scope) {
-  console.log('test!');
+  
+  $scope.friends = [{
+    service: "facebook",
+    username: "nate",
+    name: "nate dawg",
+    newMessage: false,
+    messages: [{
+      to: 'nate',
+      from: 'me',
+      message: 'hi friend!',
+      timestamp: new Date()
+    }]
+  }];
+
+  //currently hardcoded for first friend
+  $scope.activeFriend = $scope.friends[0];
 
 });
 

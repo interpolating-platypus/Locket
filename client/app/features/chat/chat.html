@@ -1,4 +1,25 @@
 <!-- contains friends lists, and chat window -->
 <div>
   <h1>CHAT PAGE</h1>
+  <div>
+    <ul>
+      Friends List
+      <!-- track by $index prevents errors on duplicates -->
+      <li ng-repeat='friend in friends track by $index | orderBy:"name"'>
+        <span class='friendService'>{{friend.service}}</span>
+        <span class='friendName'>{{friend.name}}</span>
+      </li>
+      
+    </ul>
+  </div>
+  <div>
+    <ul>
+      Chat Window
+      <li ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
+        <span>{{message.from}}</span>
+        <span>{{message.message}}</span>
+        <span>{{message.timestamp}}</span>
+      </li>
+    </ul>
+  </div>
 </div>
