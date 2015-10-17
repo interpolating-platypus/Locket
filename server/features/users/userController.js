@@ -4,7 +4,7 @@ var jwt = require('jwt-simple');
 
 var socketHandler = require('../../socketHandler.js');
 
-exports.signin = function(req, res, next) {
+exports.login = function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
   var sid = req.sessionID;
@@ -18,10 +18,11 @@ exports.signin = function(req, res, next) {
         return user.comparePasswords(password)
           .then(function(foundUser) {
             if (foundUser) {
-              var token = jwt.encode(user, 'secret');
-              res.json({token: token});
+              console.log('login succesful');
               // associate sid to username in socketHandler
+              // Add in 200 response / redirect to chat page. May need to be #/ instead of /
               socketHandler.sessionMap[sid] = username;
+              res.status(200).send("Login Succesful");
             } else {
               return next(new Error('No User'));
             }
@@ -55,7 +56,7 @@ exports.signup = function(req, res, next) {
     })
     .then(function(user) {
       var token = jwt.encode(user, 'secret');
-      res.json({token: token});
+      res.json({token: token}); // change this to redirect
     })
     .fail(function(error) {
       next(error);
@@ -67,7 +68,8 @@ exports.checkAuth = function(req, res, next) {
   if (!token) {
     next(new Error('No token'));
   } else {
-    var user = jwt.decode(token, 'secret');
+    var user = jwt.decode(token, 'secret'); // we're going to change this finduser to check to see if that session exists in our session-to-user-dict
+    // NOTE2: this will be completely different if we use passport.js
     var findUser = Q.nbind(User.findOne, User);
     findUser({username: user.username})
       .then(function(foundUser) {

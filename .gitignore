@@ -28,3 +28,6 @@ dist/
 node_modules/
 bower_components/
 extensionTesting/
+
+# vim swp files
+*.swp

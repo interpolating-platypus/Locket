@@ -19,6 +19,7 @@ io.on('connection', function(socket) {
   console.log('a user connected');
   //username
   var cookies = socket.request.headers.cookie.split(" ")
+  console.log(cookies);
   var expressCookie = cookies[1].slice(12);
   // console.log(expressCookie);
   // userMap[expressCookie] = socket.id;
@@ -41,7 +42,8 @@ io.on('connection', function(socket) {
 
 
   socket.on('sendMessage', function(msg){
-    io.emit('chat message', msg);
+    // This would broadcast to everybody
+    //io.emit('chat message', msg);
   });
 
   socket.on('disconnect', function(){
