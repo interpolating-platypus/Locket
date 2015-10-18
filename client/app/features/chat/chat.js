@@ -52,10 +52,9 @@ angular.module('Locket.chat', [])
 
   //messaging
   $scope.sendMessage = function(messageText){
-    console.log($scope.activeFriend, messageText);
     //reset message text
     $scope.messageText = '';
-    socket.emit('sendMessage', { to: $scope.activeFriend, message: messageText });
+    socket.emit('sendMessage', { to: $scope.activeFriend.username, message: messageText });
     //if service is us
       //if we have recipients pgp key
         //encrypt and send message
@@ -69,11 +68,12 @@ angular.module('Locket.chat', [])
   };
 
   socket.on('newMessage', function(message){
-
     findFriend(message.from, function(index){
-      $scope.apply(function(){
-        $scope.friends[index].messages.push(message);
-      });
+      if (index !== -1) {
+        $scope.$apply(function(){
+          $scope.friends[index].messages.push(message);
+        });
+      }
     });
 
   });
@@ -113,7 +113,7 @@ angular.module('Locket.chat', [])
   //hoist helper functions
   function findFriend(friend, cb){
     for(var i =0; i < $scope.friends.length; i++){
-      if($scope.friends[i].username === friend.username){
+      if($scope.friends[i].username === friend){
         cb(i);
         return;
       }
