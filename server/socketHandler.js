@@ -6,11 +6,11 @@ var userController = require("./features/users/userController.js");
 
 console.log("Socket.io server listening");
 
-exports.sessionMap = {
+var sessionMap = exports.sessionMap = {
 
 };
 
-exports.userMap = {
+var userMap = exports.userMap = {
 
 };
 
@@ -19,31 +19,32 @@ io.on('connection', function(socket) {
   console.log('a user connected');
   //username
   var cookies = socket.request.headers.cookie.split(" ")
-  console.log(cookies);
-  var expressCookie = cookies[1].slice(12);
-  // console.log(expressCookie);
-  // userMap[expressCookie] = socket.id;
-  // console.log(expressCookie);
-  // console.log(socket.id);
-  var username = exports.sessionMap[expressCookie];
+  console.log(cookies); // we have session id, but NOT COOKIES ID
+  var expressCookie;
+  for (var i = 0; i < cookies.length; i++) {
+    if (cookies[i].substr(0,11) === 'connect.sid') {
+      expressCookie = cookies[i].slice(12); // possible weird edge case: express session id doesnt exist
+    }
+  }
+  var username = sessionMap[expressCookie];
   
-
-
-
-
-  exports.userMap[username] = socket.id;
-
-
-
-  // console.log(exports.userMap);
-
-
-
-
+  userMap[username] = socket.id;
 
   socket.on('sendMessage', function(msg){
-    // This would broadcast to everybody
-    //io.emit('chat message', msg);
+    // msg looks like {to: xx, message: }
+    // We need to look up the to
+    // And then we need to send it to that guy
+    var recipientSocket = userMap[msg.to];
+    if (recipientSocket) {
+      io.to(recipientSocket).emit('newMessage', {
+        to: msg.to,
+        from: username,
+        message: msg.message,
+        timestamp: Date.now()
+      });
+    } else {
+      // Send error message to the client
+    }
   });
 
   socket.on('disconnect', function(){
