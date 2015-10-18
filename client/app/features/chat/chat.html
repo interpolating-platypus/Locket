@@ -1,1 +1,35 @@
 <!-- contains friends lists, and chat window -->
+<div>
+  <h1>CHAT PAGE</h1>
+  <div>
+    <ul>
+      Friends List
+      <!-- track by $index prevents errors on duplicates -->
+      <form ng-submit='addFriend(username)' name='addFriendForm'>
+        <input type='text' name='username' ng-model='username' required/>
+        <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
+      </form>
+      <li ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
+        <span class='friendService'>{{friend.service}}</span>
+        <span class='friendName'>{{friend.name}}</span>
+      </li>
+      
+    </ul>
+  </div>
+  <div>
+    <ul>
+      Chat Window
+      <li ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
+        <span>{{message.from}}</span>
+        <span>{{message.message}}</span>
+        <span>{{message.timestamp}}</span>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <form ng-submit='sendMessage(messageText)' name='messageForm'>
+      <input type='text' name='message' ng-model='messageText' required/>
+      <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
+    </form>
+  </div>
+</div>

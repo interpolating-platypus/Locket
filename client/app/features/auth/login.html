@@ -1,0 +1,13 @@
+<div>
+  <h1>LOGIN PAGE</h1>
+  
+  <form ng-submit='login()' name='loginForm'>
+    <input type='text' name='username' placeholder='username' ng-model='user.username' ng-minlength="2" required/>
+    <input type='password' name='password' placeholder='password' ng-model='user.password' ng-minlength="2" required/>
+    <input ng-disabled="!loginForm.$valid" type='submit'/>
+    <span class='error' ng-show='loginForm.username.$error.minlength'>Username is too short</span>
+    <span class='error' ng-show='loginForm.password.$error.minlength'>Password is too short</span>
+    <div ng-show='loginFailed'>Login Failed</div>
+    <a href="#/signup">Signup</a>
+  </form>
+</div>
