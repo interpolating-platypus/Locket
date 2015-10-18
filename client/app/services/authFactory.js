@@ -31,6 +31,9 @@ angular.module('Locket.authFactory', [])
       url: '/api/users/signup',
       data: {username: username, password:password }
     }).then(function(resp){
+      if (resp.status === 200) {
+        $state.go('chat');
+      }
       return resp;
     });
   };
