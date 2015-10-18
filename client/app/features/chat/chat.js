@@ -1,6 +1,6 @@
 angular.module('Locket.chat', [])
 
-.controller('chatController', function ($scope) {
+.controller('chatController', function ($scope, authFactory) {
   var socket = io();
 
   $scope.friends = [{
@@ -81,6 +81,10 @@ angular.module('Locket.chat', [])
   //friends
   $scope.addFriend = function(username){
     socket.emit('addFriend', { to: username });
+  };
+
+  $scope.logout = function() {
+    authFactory.logout();
   };
 
   socket.on('friendLoggedIn', function(friend){

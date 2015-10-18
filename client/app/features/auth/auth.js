@@ -9,10 +9,6 @@ angular.module('Locket.auth', [])
     authFactory.login($scope.user.username, $scope.user.password);
   };
 
-  $scope.logout = function(){
-    authFactory.logout();
-  };
-
   $scope.signup = function(){
     authFactory.signup($scope.user.username, $scope.user.password);
   };

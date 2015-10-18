@@ -17,6 +17,9 @@ angular.module('Locket.authFactory', [])
   };
 
   var logout = function(){
+    $state.go('login');
+
+    //do we need to issue get request to API for logout? 
     return $http({
       method: 'GET',
       url: '/api/users/logout'
