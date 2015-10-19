@@ -38,10 +38,18 @@
   
   <div class="friendRequests">
     <ul>
-      <li ng-repeat='friendRequest in friendRequests track by $index'>
-        <span>New friend Request from: {{friendRequest}}</span>
-        <button>Accept</button>
-        <button>Ignore</button>
+      <li ng-repeat='friend in friendRequests track by $index'>
+        <span>New friend Request from: {{friend}}</span>
+        <button ng-click='acceptFriendRequest(friend)'>Accept</button>
+        <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+      </li>
+    </ul>
+  </div>
+  
+  <div class="acceptedFriendRequests">
+    <ul>
+      <li ng-repeat='friend in acceptedfriendRequests track by $index'>
+        <span>{{friend}} accepted your friend request</span>
       </li>
     </ul>
   </div>

@@ -10,6 +10,7 @@ angular.module('Locket', [
 
   $stateProvider
     .state('chat', {
+      params: {currentUser: null},
       url: '/',
       templateUrl: 'app/features/chat/chat.html',
       controller: 'chatController'

@@ -1,8 +1,8 @@
 angular.module('Locket.chat', [])
 
-.controller('chatController', function ($scope, authFactory) {
+.controller('chatController', function ($scope, authFactory, $stateParams) {
   var socket = io();
-  $scope.currentUser = authFactory.currentUser;
+  $scope.currentUser = $stateParams.currentUser;
   // console.log($scope.currentUser);
   // console.log(authFactory);
   $scope.friends = [{
@@ -33,7 +33,7 @@ angular.module('Locket.chat', [])
   }];
 
   $scope.friendRequests = [];
-
+  $scope.acceptedfriendRequests = [];
   //currently hardcoded for first friend
   //represents the user selected in the friends list
   $scope.activeFriend = $scope.friends[0];
@@ -90,6 +90,26 @@ angular.module('Locket.chat', [])
     authFactory.logout();
   };
 
+  $scope.acceptFriendRequest = function (friend) {
+    socket.emit('friendRequestAccepted', {from: $scope.currentUser, to: friend});
+    for (var i = 0; i < $scope.friendRequests.length; i++) {
+      if (friend === $scope.friendRequests[i]) {
+        $scope.friendRequests.splice(i, 1);
+      }
+    }
+  };
+
+  $scope.ignoreFriendRequest = function (friend) {
+    // console.log(friend);
+    // console.log(friendRequests);
+    for (var i = 0; i < $scope.friendRequests.length; i++) {
+      if (friend === $scope.friendRequests[i]) {
+        $scope.friendRequests.splice(i, 1);
+      }
+    }
+  };
+
+
   socket.on('friendLoggedIn', function(friend){
     findFriend(friend, function(index){
       //if user is in friends list
@@ -117,11 +137,17 @@ angular.module('Locket.chat', [])
 
     $scope.$apply(function(){
       $scope.friendRequests.push(friendRequest.from);
-    });
-    
-    console.log($scope.friendRequests);
+    });    
   });
 
+  socket.on('friendRequestAccepted', function(acceptFriendObj) {
+    console.log('FRIEND REQ ACCEPTED', acceptFriendObj);
+    // acceptFriendObj.from
+
+    $scope.$apply(function(){
+      $scope.acceptedfriendRequests.push(acceptFriendObj.from);
+    });   
+  })
 
   //hoist helper functions
   function findFriend(friend, cb){ 

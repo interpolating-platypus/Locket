@@ -59,9 +59,23 @@ io.on('connection', function(socket) {
         from: username,
         timestamp: new Date()
       });
+    } else {
+
     }
 
     console.log(username);
+  });
+
+  socket.on('friendRequestAccepted', function(acceptFriendObj) {
+    console.log("accepted", acceptFriendObj);
+    var recipientSocket = userMap[acceptFriendObj.to];
+
+    if (recipientSocket) {
+      io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
+    } else {
+
+    }
+
   });
 
 
