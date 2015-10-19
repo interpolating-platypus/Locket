@@ -28,12 +28,11 @@ angular.module('Locket.chat', [])
     });
   };
 
-
   $scope.friendRequests = [];
   $scope.acceptedfriendRequests = [];
-  //currently hardcoded for first friend
+
   //represents the user selected in the friends list
-  $scope.activeFriend = $scope.friends[0];
+  $scope.activeFriend = null;
 
   $scope.startChat = function(friend){
     findFriend(friend.username, function(index){
@@ -109,11 +108,13 @@ angular.module('Locket.chat', [])
 
 
   socket.on('friendLoggedIn', function(friend){
+    console.log(friend + ' logged in');
     findFriend(friend, function(index){
       //if user is in friends list
       if(index >= 0){
         $scope.friends[index].online = true;
-      }else{
+        $scope.$apply();
+      } else{
         //if user is not in friends list, add them
         $scope.friends.push(friend);
       }
@@ -121,10 +122,12 @@ angular.module('Locket.chat', [])
   });
   
   socket.on('friendLoggedOut', function(friend){
+    console.log(friend + ' logged out');
     findFriend(friend, function(index){
       //verify user is in friends list
       if(index >= 0){
         $scope.friends[index].online = false;
+        $scope.$apply();
       }
     });
   });
