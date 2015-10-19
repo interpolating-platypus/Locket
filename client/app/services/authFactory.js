@@ -1,7 +1,6 @@
 angular.module('Locket.authFactory', [])
 
 .factory('authFactory', function($http, $state){
-  var auth = {};
 
   var login = function(username, password){
     return $http({
@@ -30,12 +29,12 @@ angular.module('Locket.authFactory', [])
     $state.go('login');
 
     //do we need to issue get request to API for logout? 
-    return $http({
-      method: 'GET',
-      url: '/api/users/logout'
-    }).then(function(resp){
-      return resp;
-    });
+    // return $http({
+    //   method: 'GET',
+    //   url: '/api/users/logout'
+    // }).then(function(resp){
+    //   return resp;
+    // });
   };
 
   var signup = function(username, password){

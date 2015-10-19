@@ -84,6 +84,7 @@ angular.module('Locket.chat', [])
 
   $scope.logout = function() {
     authFactory.logout();
+    socket.emit('logout');
   };
 
   $scope.acceptFriendRequest = function (friend) {

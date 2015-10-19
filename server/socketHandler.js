@@ -98,22 +98,29 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
+    // remove user from sessionMap and userMap
+    delete userMap[username];
+    delete sessionMap[expressCookie];
+    io.emit('friendLoggedOut', username);
   });
 
-
-
-  socket.on('login', function(username, password) {
-
+  socket.on('logout', function(){
+    console.log('user logged out');
+    // remove user from sessionMap and userMap
+    delete userMap[username];
+    delete sessionMap[expressCookie];
+    io.emit('friendLoggedOut', username);
+    console.log('session map', sessionMap);
+    console.log('user mpa', userMap);
   });
 
-  socket.on('signup', function(username, password) {
+  // socket.on('login', function(username, password) {
 
-  });
-<<<<<<< HEAD
+  // });
 
+  // socket.on('signup', function(username, password) {
 
-=======
->>>>>>> Emit events to friends when friend logs in and update online friends list
+  // });
 });
 
 /*
