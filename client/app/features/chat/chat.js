@@ -123,6 +123,7 @@ angular.module('Locket.chat', [])
 
 
   socket.on('friendLoggedIn', function(friend){
+    console.log(friend + ' logged in');
     findFriend(friend, function(index){
       //if user is in friends list
       if(index >= 0){
@@ -136,15 +137,19 @@ angular.module('Locket.chat', [])
   });
   
   socket.on('friendLoggedOut', function(friend){
+    console.log(friend + ' logged out');
     findFriend(friend, function(index){
       //verify user is in friends list
       if(index >= 0){
         $scope.friends[index].online = false;
+<<<<<<< HEAD
         if ($scope.activeFriend) {
           if (friend === $scope.activeFriend.username) {
             $scope.activeFriend = null;
           }
         }
+=======
+>>>>>>> Emit events to friends when friend logs in and update online friends list
         $scope.$apply();
       }
 

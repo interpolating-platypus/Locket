@@ -46,6 +46,21 @@ io.on('connection', function(socket) {
   }
   console.log('USER MAP', userMap);
 
+  // emit friendLoggedIn event to all user's friends
+  // var currentFriends = userModel.findOne({username: username}).friends;
+  // hardcode for now until addFriends functionality working
+  var currentFriends = ['nate', 'livvie'];
+  for (var friendIndex = 0; friendIndex < currentFriends.length; friendIndex++) {
+    var friendSocket = userMap[currentFriends[friendIndex]];
+    if (friendSocket) {
+      io.to(friendSocket).emit('friendLoggedIn', username);
+      // emit event to current user to update current user's friend list with correct online property
+      io.to(userMap[username]).emit('friendLoggedIn', currentFriends[friendIndex]);
+    } else {
+      // if friend not logged in, emit event to tell current user friend is offline
+      io.to(userMap[username]).emit('friendLoggedOut', currentFriends[friendIndex]);
+    }
+  }
 
   socket.on('sendMessage', function(msg){
     // msg looks like {to: xx, message: }
@@ -101,7 +116,6 @@ io.on('connection', function(socket) {
     }
 
   });
-
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
