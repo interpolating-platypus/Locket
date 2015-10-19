@@ -1,5 +1,6 @@
 <!-- contains friends lists, and chat window -->
 <div>
+  <h2>{{currentUser}}</h2>
   <h1>CHAT PAGE</h1>
   <div>
     <ul>
@@ -16,7 +17,8 @@
       
     </ul>
   </div>
-  <div>
+  
+  <div class="chatWindow">
     <ul>
       Chat Window
       <li ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
@@ -26,13 +28,25 @@
       </li>
     </ul>
   </div>
-  <div>
+  
+  <div class="sendMessage">
     <form ng-submit='sendMessage(messageText)' name='messageForm'>
       <input type='text' name='message' ng-model='messageText' required/>
       <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
     </form>
   </div>
-  <div>
+  
+  <div class="friendRequests">
+    <ul>
+      <li ng-repeat='friendRequest in friendRequests track by $index'>
+        <span>New friend Request from: {{friendRequest}}</span>
+        <button>Accept</button>
+        <button>Ignore</button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="logout">
     <form ng-submit='logout()' name='logoutForm'>
       <input type='submit' value='Logout'>
     </form>

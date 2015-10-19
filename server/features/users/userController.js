@@ -23,7 +23,7 @@ exports.login = function(req, res, next) {
               // associate sid to username in socketHandler
               // Add in 200 response / redirect to chat page. May need to be #/ instead of /
               socketHandler.sessionMap[sid] = username;
-              res.status(200).send("Login Successful");
+              res.status(200).send(username);
             } else {
               return next(new Error('No User'));
             }

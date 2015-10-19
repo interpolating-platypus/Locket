@@ -2,7 +2,9 @@ angular.module('Locket.chat', [])
 
 .controller('chatController', function ($scope, authFactory) {
   var socket = io();
-
+  $scope.currentUser = authFactory.currentUser;
+  // console.log($scope.currentUser);
+  // console.log(authFactory);
   $scope.friends = [{
     service: "facebook",
     username: "nate",
@@ -29,6 +31,8 @@ angular.module('Locket.chat', [])
       timestamp: new Date()
     }]
   }];
+
+  $scope.friendRequests = [];
 
   //currently hardcoded for first friend
   //represents the user selected in the friends list
@@ -109,7 +113,13 @@ angular.module('Locket.chat', [])
 
   socket.on('friendRequest', function(friendRequest){
     
-    console.log('friend request received from ' + friendRequest);
+    console.log('friend request received from ' + friendRequest.from);
+
+    $scope.$apply(function(){
+      $scope.friendRequests.push(friendRequest.from);
+    });
+    
+    console.log($scope.friendRequests);
   });
 
 

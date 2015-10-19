@@ -47,6 +47,24 @@ io.on('connection', function(socket) {
     }
   });
 
+  socket.on('addFriend', function (friendRequestObj) {
+    console.log(friendRequestObj.to); //yilin
+    var recipientSocket = userMap[friendRequestObj.to];
+    
+    console.log('recipient socket', recipientSocket);
+    
+    if (recipientSocket) {
+      io.to(recipientSocket).emit('friendRequest', {
+        to: friendRequestObj.to,
+        from: username,
+        timestamp: new Date()
+      });
+    }
+
+    console.log(username);
+  });
+
+
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
@@ -56,13 +74,17 @@ io.on('connection', function(socket) {
 
   // });
 
+
+
   socket.on('login', function(username, password) {
 
-  })
+  });
 
   socket.on('signup', function(username, password) {
 
-  })
+  });
+
+
 });
 
 /*
