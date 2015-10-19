@@ -126,7 +126,7 @@ exports.getAllUsers = function(req, res, next) {
     .fail(function(error) {
       next(error);
     });
-}
+};
 
 exports.checkAuth = function(req, res, next) {
   console.log('req', req);
