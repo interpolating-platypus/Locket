@@ -115,11 +115,11 @@ angular.module('Locket.chat', [])
 
 
   //hoist helper functions
-  function findFriend(friend, cb){
-    for (var i = 0; i < $scope.friends.length; i++) {
-      // console.log($scope.friends[i].username);
+  function findFriend(friend, cb){ 
+    for (var i = 0; i < $scope.friends.length; i++) { 
+      // console.log($scope.friends);
       // console.log(friend);
-      if($scope.friends[i].username === friend.username){
+      if($scope.friends[i].username === friend){
 
         cb(i);
         return;

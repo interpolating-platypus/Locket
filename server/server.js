@@ -1,8 +1,14 @@
 var express = require('express');
 var parser = require('body-parser');
 var mongoose = require('mongoose');
-var session = require('express-session');
 
+var session = exports.session = require("express-session")({
+  secret: "mr meeseeks",
+  resave: true,
+  saveUninitialized: true
+});
+
+var socketSession = exports.socketSession = require('express-socket.io-session');
 
 var app = express();
 
@@ -16,11 +22,7 @@ var userRouter = express.Router();
 
 app.use(parser.json());
 
-app.use(session({
-  secret: 'shhh, it\'s a secret',
-  resave: false,
-  saveUninitialized: true
-}));
+app.use(session);
 
 
 app.use(express.static(__dirname + '/../client'));

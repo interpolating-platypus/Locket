@@ -6,35 +6,37 @@ var userController = require("./features/users/userController.js");
 
 console.log("Socket.io server listening");
 
-var sessionMap = exports.sessionMap = {
+var sessionMap = exports.sessionMap = {};
 
-};
+var userMap = exports.userMap = {};
 
-var userMap = exports.userMap = {
-
-};
+io.use(app.socketSession(app.session, {
+  autoSave: true
+}));
 
 
 io.on('connection', function(socket) {
   console.log('a user connected');
   //username
-  var cookies = socket.request.headers.cookie.split(" ")
-  console.log(cookies); // we have session id, but NOT COOKIES ID
-  var expressCookie;
-  for (var i = 0; i < cookies.length; i++) {
-    if (cookies[i].substr(0,11) === 'connect.sid') {
-      expressCookie = cookies[i].slice(12); // possible weird edge case: express session id doesnt exist
-    }
-  }
-  var username = sessionMap[expressCookie];
+  console.log('SESSION MAP', sessionMap);
   
+  //now through use of line 12 we have the same express cookie through socket.handshake.sessionID
+  var expressCookie = socket.handshake.sessionID
+  // console.log(expressCookie);
+
+
+  var username = sessionMap[expressCookie];
+  // console.log('username', username);
   userMap[username] = socket.id;
+  console.log('USER MAP', userMap);
 
   socket.on('sendMessage', function(msg){
     // msg looks like {to: xx, message: }
     // We need to look up the to
     // And then we need to send it to that guy
+    console.log(msg);
     var recipientSocket = userMap[msg.to];
+    console.log('recipient socket', recipientSocket);
     if (recipientSocket) {
       io.to(recipientSocket).emit('newMessage', {
         to: msg.to,

@@ -8,6 +8,7 @@ exports.login = function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
   var sid = req.sessionID;
+  console.log('SID FROM USERCONTROLLER', sid);
 
   var findUser = Q.nbind(User.findOne, User);
   findUser({username: username})
