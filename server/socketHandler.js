@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
         to: msg.to,
         from: username,
         message: msg.message,
-        timestamp: Date.now()
+        timestamp: new Date()
       });
     } else {
       // Send error message to the client

@@ -35,10 +35,9 @@ angular.module('Locket.chat', [])
   $scope.activeFriend = $scope.friends[0];
 
   $scope.startChat = function(friend){
-    findFriend(friend, function(index){
+    findFriend(friend.username, function(index){
       $scope.activeFriend = $scope.friends[index];
     });
-
     //if $scope.friends[username] has publicPGPKey
       //update chat view with current conversation
     //else
@@ -72,6 +71,7 @@ angular.module('Locket.chat', [])
       if (index !== -1) {
         $scope.$apply(function(){
           $scope.friends[index].messages.push(message);
+          console.log($scope.friends[index].messages);
         });
       }
     });
