@@ -1,4 +1,5 @@
 var userController = require('./userController.js');
+//attaching all our handlers on our userRouter
 
 module.exports = function (app) {
   app.post('/login', userController.login);

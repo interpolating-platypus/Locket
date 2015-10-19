@@ -1,6 +1,6 @@
 angular.module('Locket.chat', [])
 
-.controller('chatController', function ($scope) {
+.controller('chatController', function ($scope, authFactory) {
   var socket = io();
 
   $scope.friends = [{
@@ -12,7 +12,7 @@ angular.module('Locket.chat', [])
     messages: [{
       to: 'nate',
       from: 'me',
-      message: 'hi friend!',
+      message: 'hi nate!',
       timestamp: new Date()
     }]
   },
@@ -35,10 +35,9 @@ angular.module('Locket.chat', [])
   $scope.activeFriend = $scope.friends[0];
 
   $scope.startChat = function(friend){
-    findFriend(friend, function(index){
+    findFriend(friend.username, function(index){
       $scope.activeFriend = $scope.friends[index];
     });
-
     //if $scope.friends[username] has publicPGPKey
       //update chat view with current conversation
     //else
@@ -83,6 +82,10 @@ angular.module('Locket.chat', [])
     socket.emit('addFriend', { to: username });
   };
 
+  $scope.logout = function() {
+    authFactory.logout();
+  };
+
   socket.on('friendLoggedIn', function(friend){
     findFriend(friend, function(index){
       //if user is in friends list
@@ -106,19 +109,18 @@ angular.module('Locket.chat', [])
 
   socket.on('friendRequest', function(friendRequest){
     
-    console.log('friend request recieved from ' + friendRequest);
+    console.log('friend request received from ' + friendRequest);
   });
 
 
   //hoist helper functions
-  function findFriend(friend, cb){
-    for(var i =0; i < $scope.friends.length; i++){
+  function findFriend(friend, cb){ 
+    for (var i = 0; i < $scope.friends.length; i++) { 
       if($scope.friends[i].username === friend){
         cb(i);
         return;
       }
     }
-
     //if friend not in list
     cb(-1);
   }
