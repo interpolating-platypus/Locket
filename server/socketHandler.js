@@ -107,11 +107,7 @@ io.on('connection', function(socket) {
   socket.on('logout', function(){
     console.log('user logged out');
     // remove user from sessionMap and userMap
-    delete userMap[username];
-    delete sessionMap[expressCookie];
-    io.emit('friendLoggedOut', username);
-    console.log('session map', sessionMap);
-    console.log('user mpa', userMap);
+    socket.disconnect();
   });
 
   // socket.on('login', function(username, password) {
