@@ -67,7 +67,7 @@ exports.signup = function(req, res, next) {
     .fail(function(error) {
       next(error);
     });
-}
+};
 
 exports.addFriend = function(user1, user2) {
   var findUser = Q.nbind(User.findOne, User);
@@ -148,4 +148,4 @@ exports.checkAuth = function(req, res, next) {
         next(error);
       });
   }
-}
+};

@@ -3,7 +3,6 @@ var io = module.exports.io = require('socket.io').listen(app.server);
 
 var UserController = require("./features/users/userController.js"); 
 
-
 console.log("Socket.io server listening");
 
 var sessionMap = exports.sessionMap = {};
@@ -14,15 +13,11 @@ io.use(app.socketSession(app.session, {
   autoSave: true
 }));
 
-
 io.on('connection', function(socket) {
   console.log('a user connected');
-  //username
   console.log('SESSION MAP', sessionMap);
   
-  //now through use of line 12 we have the same express cookie through socket.handshake.sessionID
-  var expressCookie = socket.handshake.sessionID
-
+  var expressCookie = socket.handshake.sessionID;
 
   var username = sessionMap[expressCookie];
   userMap[username] = socket.id;
@@ -85,11 +80,6 @@ io.on('connection', function(socket) {
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
-  
-  // on connection, getCurrentUser, searchDatabase for currentUser, respondwithFriendsList
-  // socket.on('sendMessage', function(to, message) {
-
-  // });
 
 
 
