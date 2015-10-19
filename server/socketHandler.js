@@ -22,11 +22,9 @@ io.on('connection', function(socket) {
   
   //now through use of line 12 we have the same express cookie through socket.handshake.sessionID
   var expressCookie = socket.handshake.sessionID
-  // console.log(expressCookie);
 
 
   var username = sessionMap[expressCookie];
-  // console.log('username', username);
   userMap[username] = socket.id;
   console.log('USER MAP', userMap);
 

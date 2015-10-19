@@ -71,7 +71,6 @@ angular.module('Locket.chat', [])
       if (index !== -1) {
         $scope.$apply(function(){
           $scope.friends[index].messages.push(message);
-          console.log($scope.friends[index].messages);
         });
       }
     });
@@ -117,10 +116,7 @@ angular.module('Locket.chat', [])
   //hoist helper functions
   function findFriend(friend, cb){ 
     for (var i = 0; i < $scope.friends.length; i++) { 
-      // console.log($scope.friends);
-      // console.log(friend);
       if($scope.friends[i].username === friend){
-
         cb(i);
         return;
       }
