@@ -98,7 +98,6 @@ io.on('connection', function(socket) {
     } else {
 
     }
-
     console.log(username);
   });
 
@@ -132,6 +131,32 @@ io.on('connection', function(socket) {
     // remove user from sessionMap and userMap
     socket.disconnect();
   });
+  
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+    // remove user from sessionMap and userMap
+    delete userMap[username];
+    delete sessionMap[expressCookie];
+    io.emit('friendLoggedOut', username);
+  });
+
+  socket.on('logout', function(){
+    console.log('user logged out');
+    // remove user from sessionMap and userMap
+    delete userMap[username];
+    delete sessionMap[expressCookie];
+    io.emit('friendLoggedOut', username);
+    console.log('session map', sessionMap);
+    console.log('user mpa', userMap);
+  });
+
+  // socket.on('login', function(username, password) {
+
+  // });
+
+  // socket.on('signup', function(username, password) {
+
+  // });
 });
 
 /*
