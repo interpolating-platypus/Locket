@@ -21,5 +21,6 @@ document.getElementsByName('message_body')[0].value = "message goes here"
   -> main is loaded from our webserver
   DONE-- BUT: change the localhost to be for our actual webapp
 2) We should be able to, from the main.js, tell our sub.js to post a message
+  DONE (proof of concept)
 3) We should be able to, from the sub.js, tell our main.js we have received a new message, and pass that message along [NOTE: this requires PARSING]
 
