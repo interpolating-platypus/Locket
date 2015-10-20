@@ -78,7 +78,6 @@ exports.addFriend = function(user1, user2) {
         next(new Error('User does not exist'));
       } else {
         user.friends.push(user2);
-        console.log('THIS IS AMAZING', user);
         user.save(function (err) {
           if(err) {
             console.error('ERROR!');
@@ -99,7 +98,23 @@ exports.addFriends = function (acceptFriendObj) {
   exports.addFriend(friend2, friend1);
 };
 
+exports.getFriends = function (req, res, next) {
+  var user = req.params.username;
+  var findUser = Q.nbind(User.findOne, User);
 
+  findUser({username: user})
+    .then(function(user) {
+      if (!user) {
+        next(new Error('User does not exist'));
+      } else {
+        // console.log("USER OBJ FROM SERVER", user);
+        res.send(user);
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    });
+};
 
 
 

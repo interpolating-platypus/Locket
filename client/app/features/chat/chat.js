@@ -5,32 +5,30 @@ angular.module('Locket.chat', [])
   $scope.currentUser = $stateParams.currentUser;
   // console.log($scope.currentUser);
   // console.log(authFactory);
-  $scope.friends = [{
-    service: "facebook",
-    username: "nate",
-    name: "nate dawg",
-    newMessage: false,
-    online: true,
-    messages: [{
-      to: 'nate',
-      from: 'me',
-      message: 'hi nate!',
-      timestamp: new Date()
-    }]
-  },
-  {
-    service: "facebook",
-    username: "livvie",
-    name: "livvie dawg",
-    newMessage: false,
-    online: true,
-    messages: [{
-      to: 'livvie',
-      from: 'me',
-      message: 'hi livvie!',
-      timestamp: new Date()
-    }]
-  }];
+  $scope.friends = [];
+
+  function createFriendObj(friend) {
+    return {
+      service: "Locket",
+      username: friend,
+      name: friend + " daawwggg",
+      newMessage: false,
+      online: true,
+      messages:[]
+    }
+  }
+
+
+  $scope.getFriends = function () {
+    authFactory.getFriends($scope.currentUser).then(function(friends) {
+      console.log('userObj from client', friends);
+      for (var i = 0; i < friends.length; i++) {
+        var friend = friends[i];
+        $scope.friends.push(createFriendObj(friend));
+      }
+    });
+  };
+
 
   $scope.friendRequests = [];
   $scope.acceptedfriendRequests = [];
@@ -95,6 +93,7 @@ angular.module('Locket.chat', [])
     for (var i = 0; i < $scope.friendRequests.length; i++) {
       if (friend === $scope.friendRequests[i]) {
         $scope.friendRequests.splice(i, 1);
+        $scope.friends.push(createFriendObj(friend));
       }
     }
   };
@@ -146,6 +145,7 @@ angular.module('Locket.chat', [])
 
     $scope.$apply(function(){
       $scope.acceptedfriendRequests.push(acceptFriendObj.from);
+      $scope.friends.push(createFriendObj(acceptFriendObj.from));
     });   
   })
 

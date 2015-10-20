@@ -2,7 +2,7 @@
 <div>
   <h2>{{currentUser}}</h2>
   <h1>CHAT PAGE</h1>
-  <div>
+  <div class="friendsList" ng-init="getFriends()">
     <ul>
       Friends List
       <!-- track by $index prevents errors on duplicates -->
