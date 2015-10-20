@@ -8,7 +8,7 @@ exports.login = function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
   var sid = req.sessionID;
-  console.log('SID FROM USERCONTROLLER', sid);
+  console.log('SID FROM USERCONTROLLER', username, sid);
 
   var findUser = Q.nbind(User.findOne, User);
   findUser({username: username})
@@ -58,16 +58,16 @@ exports.signup = function(req, res, next) {
     })
     .then(function(user) {
       var token = jwt.encode(user, 'secret');
-      res.json({token: token}); // change this to redirect
+      // res.json({token: token}); // change this to redirect
       
       console.log('signup successful');
       socketHandler.sessionMap[sid] = username;
-      // res.status(200).send("Signup Successful");
+      res.status(200).send(username);
     })
     .fail(function(error) {
       next(error);
     });
-}
+};
 
 exports.addFriend = function(user1, user2) {
   var findUser = Q.nbind(User.findOne, User);
@@ -129,6 +129,7 @@ exports.getAllUsers = function(req, res, next) {
 }
 
 exports.checkAuth = function(req, res, next) {
+  console.log('req', req);
   var token = req.headers['x-access-token'];
   if (!token) {
     next(new Error('No token'));
@@ -139,8 +140,10 @@ exports.checkAuth = function(req, res, next) {
     findUser({username: user.username})
       .then(function(foundUser) {
         if (foundUser) {
+          console.log('found user in checkAuth');
           res.send(200);
         } else {
+          console.log('user not found in checkAuth');
           res.send(401);
         }
       })
@@ -148,4 +151,4 @@ exports.checkAuth = function(req, res, next) {
         next(error);
       });
   }
-}
+};

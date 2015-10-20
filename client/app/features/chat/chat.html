@@ -10,10 +10,13 @@
         <input type='text' name='username' ng-model='username' required/>
         <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
       </form>
-      <li ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
-        <span class='friendService'>{{friend.service}}</span>
-        <span class='friendName'>{{friend.name}}</span>
-      </li>
+      Online Friends
+      <span ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
+        <li ng-if='friend.online'>
+          <span class='friendService'>{{friend.service}}</span>
+          <span class='friendName'>{{friend.name}}</span>
+        </li>
+      </span>
       
     </ul>
   </div>

@@ -2,31 +2,47 @@ var app = require(__dirname + "/server.js");
 var io = module.exports.io = require('socket.io').listen(app.server);
 
 var UserController = require("./features/users/userController.js"); 
-
+var UserModel = require("./features/users/userModel.js");
 
 console.log("Socket.io server listening");
 
+// map session ids to usernames
 var sessionMap = exports.sessionMap = {};
 
+// map usernames to socket ids
 var userMap = exports.userMap = {};
 
 io.use(app.socketSession(app.session, {
   autoSave: true
 }));
 
-
 io.on('connection', function(socket) {
   console.log('a user connected');
-  //username
   console.log('SESSION MAP', sessionMap);
   
-  //now through use of line 12 we have the same express cookie through socket.handshake.sessionID
-  var expressCookie = socket.handshake.sessionID
-
+  var expressCookie = socket.handshake.sessionID;
 
   var username = sessionMap[expressCookie];
-  userMap[username] = socket.id;
+  if (username) {
+    userMap[username] = socket.id;
+  }
   console.log('USER MAP', userMap);
+
+  // emit friendLoggedIn event to all user's friends
+  // var currentFriends = UserModel.findOne({username: username}).friends;
+  // hardcode for now until addFriends functionality working
+  var currentFriends = ['nate', 'livvie'];
+  for (var friendIndex = 0; friendIndex < currentFriends.length; friendIndex++) {
+    var friendSocket = userMap[currentFriends[friendIndex]];
+    if (friendSocket) {
+      io.to(friendSocket).emit('friendLoggedIn', username);
+      // emit event to current user to update current user's friend list with correct online property
+      io.to(userMap[username]).emit('friendLoggedIn', currentFriends[friendIndex]);
+    } else {
+      // if friend not logged in, emit event to tell current user friend is offline
+      io.to(userMap[username]).emit('friendLoggedOut', currentFriends[friendIndex]);
+    }
+  }
 
   socket.on('sendMessage', function(msg){
     // msg looks like {to: xx, message: }
@@ -39,6 +55,12 @@ io.on('connection', function(socket) {
       io.to(recipientSocket).emit('newMessage', {
         to: msg.to,
         from: username,
+        message: msg.message,
+        timestamp: new Date()
+      });
+      io.to(userMap[username]).emit('newMessage', {
+        to: msg.to,
+        from: msg.to,
         message: msg.message,
         timestamp: new Date()
       });
@@ -84,24 +106,19 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
-  });
-  
-  // on connection, getCurrentUser, searchDatabase for currentUser, respondwithFriendsList
-  // socket.on('sendMessage', function(to, message) {
-
-  // });
-
-
-
-  socket.on('login', function(username, password) {
-
+    // remove user from sessionMap and userMap
+    delete userMap[username];
+    delete sessionMap[expressCookie];
+    io.emit('friendLoggedOut', username);
+    console.log('disconnect sessionmap', sessionMap);
+    console.log('disconnect usermap', userMap);
   });
 
-  socket.on('signup', function(username, password) {
-
+  socket.on('logout', function(){
+    console.log('user logged out');
+    // remove user from sessionMap and userMap
+    socket.disconnect();
   });
-
-
 });
 
 /*
