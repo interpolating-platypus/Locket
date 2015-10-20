@@ -2,10 +2,6 @@
 console.log('facebook');
 
 $(document).ready(function() {
-  chrome.runtime.sendMessage({
-    event: 'registerTabId',
-    data: 'facebook'
-  });
 
   var test = $('#webMessengerRecentMessages').text();
   console.log(test);
