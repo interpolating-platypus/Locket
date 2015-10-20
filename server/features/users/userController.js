@@ -69,6 +69,40 @@ exports.signup = function(req, res, next) {
     });
 }
 
+exports.addFriend = function(user1, user2) {
+  var findUser = Q.nbind(User.findOne, User);
+  
+  findUser({username: user1})
+    .then(function(user) {
+      if(!user) {
+        next(new Error('User does not exist'));
+      } else {
+        user.friends.push(user2);
+        console.log('THIS IS AMAZING', user);
+        user.save(function (err) {
+          if(err) {
+            console.error('ERROR!');
+          }
+        });
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    });
+}
+
+
+exports.addFriends = function (acceptFriendObj) {
+  var friend1 = acceptFriendObj.from; //yilin
+  var friend2 = acceptFriendObj.to;   //nate
+  exports.addFriend(friend1, friend2);
+  exports.addFriend(friend2, friend1);
+};
+
+
+
+
+
 exports.checkAuth = function(req, res, next) {
   var token = req.headers['x-access-token'];
   if (!token) {

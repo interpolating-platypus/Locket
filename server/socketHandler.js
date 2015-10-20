@@ -1,7 +1,7 @@
 var app = require(__dirname + "/server.js");
 var io = module.exports.io = require('socket.io').listen(app.server);
 
-var userController = require("./features/users/userController.js"); 
+var UserController = require("./features/users/userController.js"); 
 
 
 console.log("Socket.io server listening");
@@ -68,9 +68,12 @@ io.on('connection', function(socket) {
 
   socket.on('friendRequestAccepted', function(acceptFriendObj) {
     console.log("accepted", acceptFriendObj);
-    var recipientSocket = userMap[acceptFriendObj.to];
 
+    //acceptFriendObj.from = yilin
+    //acceptFriendObj.to = nate
+    var recipientSocket = userMap[acceptFriendObj.to];
     if (recipientSocket) {
+      UserController.addFriends(acceptFriendObj);
       io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
     } else {
 
