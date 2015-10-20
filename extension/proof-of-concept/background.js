@@ -18,17 +18,17 @@ chrome.webRequest.onHeadersReceived.addListener(
     ['blocking', 'responseHeaders']
 );
 
-$(document).ready(function() {
-  console.log(document.getElementById('iframe'));
-});
-
-var tabIds = {}
-var unsentMessages = [];
+var mainTabId;
+var unsentMessages = []; // Messages we're going to send out over facebook
+var unreadMessages = []; // Messages loaded by facebook.js awaiting main.js connection
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  console.log('message data',message.data);
   if (message.event === "registerTabId") {
-    tabIds[message.data] = sender.tab.id;
+    mainTabId = sender.tab.id;
+    // If there are any messages they haven't seen, send em
+    if (unreadMessages.length) {
+      chrome.tabs.sendMessage(mainTabId, {event: "receivedNewMessage", data: unreadMessages});
+    }
   }
   if (message.event === "sendNewMessage") {
     unsentMessages.push(message.data);
@@ -39,5 +39,14 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     });
     unsentMessages = [];
   }
-  console.log('tabIds', tabIds);
+  if (message.event === "receivedNewMessage") {
+    // if they're already on our app, send the new messages
+    if (mainTabId) {
+      chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewMessage', data: message.data});
+    }
+    // Otherwise, store them for the future
+    else {
+      unreadMessages = unreadMessages.concat(message.data);
+    }
+  }
 });
