@@ -17,14 +17,21 @@
     "page": "background.html"
   },
   "content_scripts": [
-          {
-          "matches": [
-              "*://*/*"
-              ],
-          "js": ["bower_components/jquery/dist/jquery.js","main.js"],
-          "run_at": "document_end",
-          "all_frames": true
-          }
+    {
+      "matches": [
+          "*://www.facebook.com/*"
+          ],
+      "js": ["bower_components/jquery/dist/jquery.js","facebook.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "*://localhost/*"
+      ],
+      "js": ["bower_components/jquery/dist/jquery.js","main.js"],
+      "run_at": "document_end"
+    }
   ],
   "permissions": [
     "webRequest",

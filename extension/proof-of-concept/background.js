@@ -22,6 +22,17 @@ $(document).ready(function() {
   console.log(document.getElementById('iframe'));
 });
 
-chrome.runtime.onMessage.addListener(function(message) {
+var tabIds = {
+}
+chrome.runtime.onMessage.addListener(function(message, sender) {
   console.log('message data',message.data);
+  if (message.event === "registerTabId") {
+    tabIds[message.data] = sender.tab.id;
+  }
+  if (message.event === "sendNewMessage") {
+    if (tabIds['facebook']) {
+      chrome.tabs.sendMessage(tabIds['facebook'], message.data);
+    }
+  }
+  console.log('tabIds', tabIds);
 });

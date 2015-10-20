@@ -1,9 +1,12 @@
 // document.body.style.background = 'yellow';
 console.log('main');
-$(document).ready(function() {
-  var test = $('#webMessengerRecentMessages').text();
-  console.log(test);
-  chrome.runtime.sendMessage({
-    data: test
-  });
+
+chrome.runtime.sendMessage({
+  event: 'registerTabId',
+  data: 'webapp'
+});
+
+chrome.runtime.sendMessage({
+  event: 'sendNewMessage',
+  data: 'hello moto'
 });
