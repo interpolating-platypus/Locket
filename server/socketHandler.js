@@ -58,6 +58,12 @@ io.on('connection', function(socket) {
         message: msg.message,
         timestamp: new Date()
       });
+      io.to(userMap[username]).emit('newMessage', {
+        to: msg.to,
+        from: msg.to,
+        message: msg.message,
+        timestamp: new Date()
+      });
     } else {
       // Send error message to the client
     }
