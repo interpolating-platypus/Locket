@@ -21,23 +21,25 @@
     </ul>
   </div>
   
-  <div class="chatWindow">
+  <div class="chatWindow" ng-show="activeFriend">
+    <div class="activeFriendBox">Chat with {{activeFriend.name}}</div>
+    
     <ul>
-      Chat Window
       <li ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
         <span>{{message.from}}</span>
         <span>{{message.message}}</span>
         <span>{{message.timestamp}}</span>
       </li>
     </ul>
+
+    <div class="sendMessage">
+      <form ng-submit='sendMessage(messageText)' name='messageForm'>
+        <input type='text' name='message' ng-model='messageText' required/>
+        <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
+      </form>
+    </div>
   </div>
   
-  <div class="sendMessage">
-    <form ng-submit='sendMessage(messageText)' name='messageForm'>
-      <input type='text' name='message' ng-model='messageText' required/>
-      <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
-    </form>
-  </div>
   
   <div class="friendRequests">
     <ul>

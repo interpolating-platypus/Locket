@@ -21,6 +21,7 @@
     "angular": "~1.4.7",
     "angular-ui-router": "~0.2.15",
     "openpgp": "~1.3.0",
-    "socket.io-client": "~1.3.7"
+    "socket.io-client": "~1.3.7",
+    "bootstrap": "~3.3.5"
   }
 }

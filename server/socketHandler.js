@@ -25,27 +25,27 @@ io.on('connection', function(socket) {
   var username = sessionMap[expressCookie];
   if (username) {
     userMap[username] = socket.id;
+    // emit friendLoggedIn event to all user's friends
+    UserModel.findOne({username: username}, function (err, user) {
+      if (err) {
+        throw err;
+      } else {
+        for (var friendIndex = 0; friendIndex < user.friends.length; friendIndex++) {
+          var friendSocket = userMap[user.friends[friendIndex]];
+          if (friendSocket) {
+            io.to(friendSocket).emit('friendLoggedIn', username);
+            // emit event to current user to update current user's friend list with correct online property
+            io.to(userMap[username]).emit('friendLoggedIn', user.friends[friendIndex]);
+          } else {
+            // if friend not logged in, emit event to tell current user friend is offline
+            io.to(userMap[username]).emit('friendLoggedOut', user.friends[friendIndex]);
+          }
+        }
+      }
+    });
   }
   console.log('USER MAP', userMap);
 
-  // emit friendLoggedIn event to all user's friends
-  UserModel.findOne({username: username}, function (err, user) {
-    if (err) {
-      throw err;
-    } else {
-      for (var friendIndex = 0; friendIndex < user.friends.length; friendIndex++) {
-        var friendSocket = userMap[user.friends[friendIndex]];
-        if (friendSocket) {
-          io.to(friendSocket).emit('friendLoggedIn', username);
-          // emit event to current user to update current user's friend list with correct online property
-          io.to(userMap[username]).emit('friendLoggedIn', user.friends[friendIndex]);
-        } else {
-          // if friend not logged in, emit event to tell current user friend is offline
-          io.to(userMap[username]).emit('friendLoggedOut', user.friends[friendIndex]);
-        }
-      }
-    }
-  });
 
   socket.on('sendMessage', function(msg){
     // msg looks like {to: xx, message: }
@@ -53,20 +53,16 @@ io.on('connection', function(socket) {
     // And then we need to send it to that guy
     console.log(msg);
     var recipientSocket = userMap[msg.to];
+    var message = {
+      to: msg.to,
+      from: username,
+      message: msg.message,
+      timestamp: new Date()
+    };
     console.log('recipient socket', recipientSocket);
     if (recipientSocket) {
-      io.to(recipientSocket).emit('newMessage', {
-        to: msg.to,
-        from: username,
-        message: msg.message,
-        timestamp: new Date()
-      });
-      io.to(userMap[username]).emit('newMessage', {
-        to: msg.to,
-        from: msg.to,
-        message: msg.message,
-        timestamp: new Date()
-      });
+      io.to(recipientSocket).emit('newMessage', message);
+      io.to(userMap[username]).emit('messageSent', message);
     } else {
       // Send error message to the client
     }

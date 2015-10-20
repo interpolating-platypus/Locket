@@ -72,8 +72,19 @@ angular.module('Locket.chat', [])
         });
       }
     });
-
   });
+
+  socket.on('messageSent', function(message){
+    findFriend(message.to, function(index){
+      if (index !== -1) {
+        $scope.$apply(function(){
+          $scope.friends[index].messages.push(message);
+        });
+      }
+    });
+  });
+
+
 
   //friends
   $scope.addFriend = function(username){
@@ -108,7 +119,6 @@ angular.module('Locket.chat', [])
 
 
   socket.on('friendLoggedIn', function(friend){
-    console.log(friend + ' logged in');
     findFriend(friend, function(index){
       //if user is in friends list
       if(index >= 0){
@@ -122,13 +132,19 @@ angular.module('Locket.chat', [])
   });
   
   socket.on('friendLoggedOut', function(friend){
-    console.log(friend + ' logged out');
     findFriend(friend, function(index){
       //verify user is in friends list
       if(index >= 0){
         $scope.friends[index].online = false;
+        if ($scope.activeFriend) {
+          if (friend === $scope.activeFriend.username) {
+            $scope.activeFriend = null;
+          }
+        }
         $scope.$apply();
       }
+
+
     });
   });
 
