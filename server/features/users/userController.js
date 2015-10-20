@@ -23,7 +23,7 @@ exports.login = function(req, res, next) {
               // associate sid to username in socketHandler
               // Add in 200 response / redirect to chat page. May need to be #/ instead of /
               socketHandler.sessionMap[sid] = username;
-              res.status(200).send("Login Successful");
+              res.status(200).send(username);
             } else {
               return next(new Error('No User'));
             }
@@ -63,6 +63,65 @@ exports.signup = function(req, res, next) {
       console.log('signup successful');
       socketHandler.sessionMap[sid] = username;
       // res.status(200).send("Signup Successful");
+    })
+    .fail(function(error) {
+      next(error);
+    });
+}
+
+exports.addFriend = function(user1, user2) {
+  var findUser = Q.nbind(User.findOne, User);
+  
+  findUser({username: user1})
+    .then(function(user) {
+      if(!user) {
+        next(new Error('User does not exist'));
+      } else {
+        user.friends.push(user2);
+        user.save(function (err) {
+          if(err) {
+            console.error('ERROR!');
+          }
+        });
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    });
+}
+
+
+exports.addFriends = function (acceptFriendObj) {
+  var friend1 = acceptFriendObj.from; //yilin
+  var friend2 = acceptFriendObj.to;   //nate
+  exports.addFriend(friend1, friend2);
+  exports.addFriend(friend2, friend1);
+};
+
+exports.getFriends = function (req, res, next) {
+  var user = req.params.username;
+  var findUser = Q.nbind(User.findOne, User);
+
+  findUser({username: user})
+    .then(function(user) {
+      if (!user) {
+        next(new Error('User does not exist'));
+      } else {
+        // console.log("USER OBJ FROM SERVER", user);
+        res.send(user);
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    });
+};
+
+exports.getAllUsers = function(req, res, next) {
+  var findAllUsers = Q.nbind(User.find, User);
+
+  findAllUsers()
+    .then(function(users) {
+      res.json(users);
     })
     .fail(function(error) {
       next(error);

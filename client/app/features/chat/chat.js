@@ -1,35 +1,37 @@
 angular.module('Locket.chat', [])
 
-.controller('chatController', function ($scope, authFactory) {
+.controller('chatController', function ($scope, authFactory, $stateParams) {
   var socket = io();
+  $scope.currentUser = $stateParams.currentUser;
+  // console.log($scope.currentUser);
+  // console.log(authFactory);
+  $scope.friends = [];
 
-  $scope.friends = [{
-    service: "facebook",
-    username: "nate",
-    name: "nate dawg",
-    newMessage: false,
-    online: true,
-    messages: [{
-      to: 'nate',
-      from: 'me',
-      message: 'hi nate!',
-      timestamp: new Date()
-    }]
-  },
-  {
-    service: "facebook",
-    username: "livvie",
-    name: "livvie dawg",
-    newMessage: false,
-    online: true,
-    messages: [{
-      to: 'livvie',
-      from: 'me',
-      message: 'hi livvie!',
-      timestamp: new Date()
-    }]
-  }];
+  function createFriendObj(friend) {
+    return {
+      service: "Locket",
+      username: friend,
+      name: friend + " daawwggg",
+      newMessage: false,
+      online: true,
+      messages:[]
+    }
+  }
 
+
+  $scope.getFriends = function () {
+    authFactory.getFriends($scope.currentUser).then(function(friends) {
+      console.log('userObj from client', friends);
+      for (var i = 0; i < friends.length; i++) {
+        var friend = friends[i];
+        $scope.friends.push(createFriendObj(friend));
+      }
+    });
+  };
+
+
+  $scope.friendRequests = [];
+  $scope.acceptedfriendRequests = [];
   //currently hardcoded for first friend
   //represents the user selected in the friends list
   $scope.activeFriend = $scope.friends[0];
@@ -86,6 +88,27 @@ angular.module('Locket.chat', [])
     authFactory.logout();
   };
 
+  $scope.acceptFriendRequest = function (friend) {
+    socket.emit('friendRequestAccepted', {from: $scope.currentUser, to: friend});
+    for (var i = 0; i < $scope.friendRequests.length; i++) {
+      if (friend === $scope.friendRequests[i]) {
+        $scope.friendRequests.splice(i, 1);
+        $scope.friends.push(createFriendObj(friend));
+      }
+    }
+  };
+
+  $scope.ignoreFriendRequest = function (friend) {
+    // console.log(friend);
+    // console.log(friendRequests);
+    for (var i = 0; i < $scope.friendRequests.length; i++) {
+      if (friend === $scope.friendRequests[i]) {
+        $scope.friendRequests.splice(i, 1);
+      }
+    }
+  };
+
+
   socket.on('friendLoggedIn', function(friend){
     findFriend(friend, function(index){
       //if user is in friends list
@@ -109,9 +132,22 @@ angular.module('Locket.chat', [])
 
   socket.on('friendRequest', function(friendRequest){
     
-    console.log('friend request received from ' + friendRequest);
+    console.log('friend request received from ' + friendRequest.from);
+
+    $scope.$apply(function(){
+      $scope.friendRequests.push(friendRequest.from);
+    });    
   });
 
+  socket.on('friendRequestAccepted', function(acceptFriendObj) {
+    console.log('FRIEND REQ ACCEPTED', acceptFriendObj);
+    // acceptFriendObj.from
+
+    $scope.$apply(function(){
+      $scope.acceptedfriendRequests.push(acceptFriendObj.from);
+      $scope.friends.push(createFriendObj(acceptFriendObj.from));
+    });   
+  })
 
   //hoist helper functions
   function findFriend(friend, cb){ 

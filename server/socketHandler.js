@@ -1,7 +1,7 @@
 var app = require(__dirname + "/server.js");
 var io = module.exports.io = require('socket.io').listen(app.server);
 
-var userController = require("./features/users/userController.js"); 
+var UserController = require("./features/users/userController.js"); 
 
 
 console.log("Socket.io server listening");
@@ -47,6 +47,41 @@ io.on('connection', function(socket) {
     }
   });
 
+  socket.on('addFriend', function (friendRequestObj) {
+    console.log(friendRequestObj.to); //yilin
+    var recipientSocket = userMap[friendRequestObj.to];
+    
+    console.log('recipient socket', recipientSocket);
+    
+    if (recipientSocket) {
+      io.to(recipientSocket).emit('friendRequest', {
+        to: friendRequestObj.to,
+        from: username,
+        timestamp: new Date()
+      });
+    } else {
+
+    }
+
+    console.log(username);
+  });
+
+  socket.on('friendRequestAccepted', function(acceptFriendObj) {
+    console.log("accepted", acceptFriendObj);
+
+    //acceptFriendObj.from = yilin
+    //acceptFriendObj.to = nate
+    var recipientSocket = userMap[acceptFriendObj.to];
+    if (recipientSocket) {
+      UserController.addFriends(acceptFriendObj);
+      io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
+    } else {
+
+    }
+
+  });
+
+
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
@@ -56,13 +91,17 @@ io.on('connection', function(socket) {
 
   // });
 
+
+
   socket.on('login', function(username, password) {
 
-  })
+  });
 
   socket.on('signup', function(username, password) {
 
-  })
+  });
+
+
 });
 
 /*

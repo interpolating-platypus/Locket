@@ -1,6 +1,7 @@
 angular.module('Locket.authFactory', [])
 
 .factory('authFactory', function($http, $state){
+  var auth = {};
 
   var login = function(username, password){
     return $http({
@@ -9,12 +10,21 @@ angular.module('Locket.authFactory', [])
       data: {username: username, password:password }
     }).then(function(resp){
       if (resp.status === 200) {
-        $state.go('chat');
-      }
+        $state.go('chat', {currentUser: resp.data});
+      } 
       return resp;
     });
-
   };
+
+  var getFriends = function(username) {
+    return $http({
+      method: 'GET',
+      url: '/api/users/' + username,
+    }).then(function(resp) {
+      return resp.data.friends;
+    });
+  };
+
 
   var logout = function(){
     $state.go('login');
@@ -44,8 +54,9 @@ angular.module('Locket.authFactory', [])
   return {
     login: login,
     logout: logout,
-    signup: signup
-  }
+    signup: signup,
+    getFriends: getFriends
+  };
 
 
 });
