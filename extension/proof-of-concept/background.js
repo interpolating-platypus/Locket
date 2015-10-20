@@ -22,17 +22,22 @@ $(document).ready(function() {
   console.log(document.getElementById('iframe'));
 });
 
-var tabIds = {
-}
-chrome.runtime.onMessage.addListener(function(message, sender) {
+var tabIds = {}
+var unsentMessages = [];
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   console.log('message data',message.data);
   if (message.event === "registerTabId") {
     tabIds[message.data] = sender.tab.id;
   }
   if (message.event === "sendNewMessage") {
-    if (tabIds['facebook']) {
-      chrome.tabs.sendMessage(tabIds['facebook'], message.data);
-    }
+    unsentMessages.push(message.data);
+  }
+  if (message.event === "updateStatus") {
+    sendResponse({
+      postMessages: unsentMessages.slice()
+    });
+    unsentMessages = [];
   }
   console.log('tabIds', tabIds);
 });
