@@ -31,3 +31,4 @@ extensionTesting/
 
 # vim swp files
 *.swp
+*.swo
