@@ -116,7 +116,17 @@ exports.getFriends = function (req, res, next) {
     });
 };
 
+exports.getAllUsers = function(req, res, next) {
+  var findAllUsers = Q.nbind(User.find, User);
 
+  findAllUsers()
+    .then(function(users) {
+      res.json(users);
+    })
+    .fail(function(error) {
+      next(error);
+    });
+}
 
 exports.checkAuth = function(req, res, next) {
   var token = req.headers['x-access-token'];
