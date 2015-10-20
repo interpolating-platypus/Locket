@@ -138,6 +138,8 @@ io.on('connection', function(socket) {
     delete userMap[username];
     delete sessionMap[expressCookie];
     io.emit('friendLoggedOut', username);
+    console.log('disconnect sessionmap', sessionMap);
+    console.log('disconnect usermap', userMap);
   });
 
   socket.on('logout', function(){
@@ -145,14 +147,6 @@ io.on('connection', function(socket) {
     // remove user from sessionMap and userMap
     socket.disconnect();
   });
-
-  // socket.on('login', function(username, password) {
-
-  // });
-
-  // socket.on('signup', function(username, password) {
-
-  // });
 });
 
 /*
