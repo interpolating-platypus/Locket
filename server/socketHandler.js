@@ -29,20 +29,23 @@ io.on('connection', function(socket) {
   console.log('USER MAP', userMap);
 
   // emit friendLoggedIn event to all user's friends
-  // var currentFriends = UserModel.findOne({username: username}).friends;
-  // hardcode for now until addFriends functionality working
-  var currentFriends = ['nate', 'livvie'];
-  for (var friendIndex = 0; friendIndex < currentFriends.length; friendIndex++) {
-    var friendSocket = userMap[currentFriends[friendIndex]];
-    if (friendSocket) {
-      io.to(friendSocket).emit('friendLoggedIn', username);
-      // emit event to current user to update current user's friend list with correct online property
-      io.to(userMap[username]).emit('friendLoggedIn', currentFriends[friendIndex]);
+  UserModel.findOne({username: username}, function (err, user) {
+    if (err) {
+      throw err;
     } else {
-      // if friend not logged in, emit event to tell current user friend is offline
-      io.to(userMap[username]).emit('friendLoggedOut', currentFriends[friendIndex]);
+      for (var friendIndex = 0; friendIndex < user.friends.length; friendIndex++) {
+        var friendSocket = userMap[user.friends[friendIndex]];
+        if (friendSocket) {
+          io.to(friendSocket).emit('friendLoggedIn', username);
+          // emit event to current user to update current user's friend list with correct online property
+          io.to(userMap[username]).emit('friendLoggedIn', user.friends[friendIndex]);
+        } else {
+          // if friend not logged in, emit event to tell current user friend is offline
+          io.to(userMap[username]).emit('friendLoggedOut', user.friends[friendIndex]);
+        }
+      }
     }
-  }
+  });
 
   socket.on('sendMessage', function(msg){
     // msg looks like {to: xx, message: }
