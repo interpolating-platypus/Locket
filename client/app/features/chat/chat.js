@@ -1,10 +1,8 @@
 angular.module('Locket.chat', [])
 
 .controller('chatController', function ($scope, authFactory, $stateParams) {
-  var socket = io();
+  var socket = io.connect({forceNew: true});
   $scope.currentUser = $stateParams.currentUser;
-  // console.log($scope.currentUser);
-  // console.log(authFactory);
   $scope.friends = [];
 
   function createFriendObj(friend) {
@@ -83,6 +81,7 @@ angular.module('Locket.chat', [])
   };
 
   $scope.logout = function() {
+    $scope.currentUser = null;
     authFactory.logout();
     socket.emit('logout');
   };
