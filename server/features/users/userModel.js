@@ -36,7 +36,6 @@ UserSchema.methods.comparePasswords = function (candidatePassword) {
   return defer.promise;
 };
 
-
 UserSchema.pre('save', function (next) {
   var user = this;
 
