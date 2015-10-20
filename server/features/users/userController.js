@@ -58,11 +58,11 @@ exports.signup = function(req, res, next) {
     })
     .then(function(user) {
       var token = jwt.encode(user, 'secret');
-      res.json({token: token}); // change this to redirect
+      // res.json({token: token}); // change this to redirect
       
       console.log('signup successful');
       socketHandler.sessionMap[sid] = username;
-      // res.status(200).send("Signup Successful");
+      res.status(200).send(username);
     })
     .fail(function(error) {
       next(error);
