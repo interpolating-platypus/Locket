@@ -1,7 +1,6 @@
 angular.module('Locket.auth', [])
 
 .controller('authController', function ($scope, authFactory) {
-
   $scope.loginFailed = false;
   $scope.signupFailed = false;
 

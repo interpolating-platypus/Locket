@@ -1,12 +1,15 @@
 angular.module('Locket.socketFactory', [])
 .factory('socket', function ($rootScope) {
-   var socket;
-   if (window.__karma__) {
-     socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337, {forceNew: true});
-   } else {
-     socket = io.connect({forceNew: true});
-   }
+  console.log('factory loaded');
+  var socket;
   return {
+    connect: function() {
+      if (window.__karma__) {
+        socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337, {forceNew: true});
+      } else {
+        socket = io.connect({forceNew: true});
+      }
+    },
     on: function (eventName, callback) {
       socket.on(eventName, function () {
         var args = arguments;
