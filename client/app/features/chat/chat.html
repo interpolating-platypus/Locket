@@ -30,6 +30,7 @@
             <span>{{message.from}}</span>
             <span>{{message.message}}</span>
             <span>{{message.timestamp}}</span>
+            <button ng-show="message.from === currentUser" ng-click="revokeMessage()">Revoke</button>
           </div>
         </div>
 
