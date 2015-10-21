@@ -48,9 +48,28 @@ describe("chat tests", function(){
     it('should store the friend currently being talked to', function() {
     });
     it('should be able to send messages', function() {
+      // spy on the socket emit
     });
     describe('Message Receiving', function() {
-      it('should be able to receive messages from the active user', function() {
+      it('should be able to receive messages from the active user', function(done) {
+        $scope.friends.push({name: 'nate', messages: []});
+        var sampleMessage = {
+          from: 'nate',
+          to: 'livvie',
+          message: 'hi',
+          timestamp: Date.now()
+        };
+        socket.emit('echo', {
+          name: 'newMessage',
+          data: sampleMessage 
+        });
+        /*socket.on('test', function(obj) {
+          console.log(obj);
+        });*/
+        setTimeout(function() {
+          console.log($scope.friends[0]);
+          done();
+        }, 1000);
       });
       it('should be able to receive messages from other users', function() {
       });
