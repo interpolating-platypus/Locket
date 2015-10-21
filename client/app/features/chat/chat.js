@@ -46,7 +46,6 @@ angular.module('Locket.chat', [])
         //show red encryption symbol/button (warning user chat is not secure)
   };
 
-
   //messaging
   $scope.sendMessage = function(messageText){
     //reset message text
@@ -62,6 +61,10 @@ angular.module('Locket.chat', [])
       //request other user's public key and save message contents to be encrypted on receipt of user's key 
         //user would like to have an encrypted conversation with you:
         //user's public key
+  };
+
+  $scope.revokeMessage = function(message) {
+    socket.emit('revokeMessage', message);
   };
 
   socket.on('newMessage', function(message){
@@ -80,6 +83,50 @@ angular.module('Locket.chat', [])
         $scope.$apply(function(){
           $scope.friends[index].messages.push(message);
         });
+      }
+    });
+  });
+
+  socket.on('destroyMessage', function(message) {
+    findFriend(message.from, function(index){
+      if (index !== -1) {
+        var messageIndex = -1;
+        // iterate through messages to find one that matches message to be destroyed
+        for (var i = 0; i < $scope.friends[index].messages.length; i++) {
+          var thisMessage = $scope.friends[index].messages[i];
+          // if match found, set messageIndex to index in messages array
+          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
+            messageIndex = i;
+            break;
+          }
+        }
+        if (messageIndex !== -1) {
+          $scope.$apply(function(){
+            $scope.friends[index].messages.splice(messageIndex, 1);
+          });
+        }
+      }
+    });
+  });
+
+  socket.on('deleteMessage', function(message) {
+    findFriend(message.to, function(index){
+      if (index !== -1) {
+        var messageIndex = -1;
+        // iterate through messages to find one that matches message to be destroyed
+        for (var i = 0; i < $scope.friends[index].messages.length; i++) {
+          var thisMessage = $scope.friends[index].messages[i];
+          // if match found, set messageIndex to index in messages array
+          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
+            messageIndex = i;
+            break;
+          }
+        }
+        if (messageIndex !== -1) {
+          $scope.$apply(function(){
+            $scope.friends[index].messages.splice(messageIndex, 1);
+          });
+        }
       }
     });
   });

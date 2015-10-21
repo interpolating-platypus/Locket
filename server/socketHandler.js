@@ -74,12 +74,19 @@ io.on('connection', function(socket) {
       message: msg.message,
       timestamp: new Date()
     };
-    console.log('recipient socket', recipientSocket);
     if (recipientSocket) {
       io.to(recipientSocket).emit('newMessage', message);
       io.to(userMap[username]).emit('messageSent', message);
     } else {
       // Send error message to the client
+    }
+  });
+
+  socket.on('revokeMessage', function (message) {
+    var recipientSocket = userMap[message.to];
+    if (recipientSocket) {
+      io.to(recipientSocket).emit('destroyMessage', message);
+      io.to(userMap[username]).emit('deleteMessage', message);
     }
   });
 
