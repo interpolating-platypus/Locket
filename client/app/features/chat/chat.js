@@ -12,8 +12,8 @@ angular.module('Locket.chat', [])
       name: friend + " daawwggg",
       newMessage: false,
       online: true,
-      messages:[]
-    }
+      messages: []
+    };
   }
 
   $scope.getFriends = function () {
@@ -46,7 +46,6 @@ angular.module('Locket.chat', [])
         //show red encryption symbol/button (warning user chat is not secure)
   };
 
-
   //messaging
   $scope.sendMessage = function(messageText){
     //reset message text
@@ -62,6 +61,10 @@ angular.module('Locket.chat', [])
       //request other user's public key and save message contents to be encrypted on receipt of user's key 
         //user would like to have an encrypted conversation with you:
         //user's public key
+  };
+
+  $scope.revokeMessage = function(message) {
+    socket.emit('revokeMessage', message);
   };
 
   socket.on('newMessage', function(message){
@@ -84,7 +87,49 @@ angular.module('Locket.chat', [])
     });
   });
 
+  socket.on('destroyMessage', function(message) {
+    findFriend(message.from, function(index){
+      if (index !== -1) {
+        var messageIndex = -1;
+        // iterate through messages to find one that matches message to be destroyed
+        for (var i = 0; i < $scope.friends[index].messages.length; i++) {
+          var thisMessage = $scope.friends[index].messages[i];
+          // if match found, set messageIndex to index in messages array
+          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
+            messageIndex = i;
+            break;
+          }
+        }
+        if (messageIndex !== -1) {
+          $scope.$apply(function(){
+            $scope.friends[index].messages.splice(messageIndex, 1);
+          });
+        }
+      }
+    });
+  });
 
+  socket.on('deleteMessage', function(message) {
+    findFriend(message.to, function(index){
+      if (index !== -1) {
+        var messageIndex = -1;
+        // iterate through messages to find one that matches message to be destroyed
+        for (var i = 0; i < $scope.friends[index].messages.length; i++) {
+          var thisMessage = $scope.friends[index].messages[i];
+          // if match found, set messageIndex to index in messages array
+          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
+            messageIndex = i;
+            break;
+          }
+        }
+        if (messageIndex !== -1) {
+          $scope.$apply(function(){
+            $scope.friends[index].messages.splice(messageIndex, 1);
+          });
+        }
+      }
+    });
+  });
 
   //friends
   $scope.addFriend = function(username){
@@ -123,12 +168,13 @@ angular.module('Locket.chat', [])
 
 
   socket.on('friendLoggedIn', function(friend){
+    console.log(friend + ' logged in');
     findFriend(friend, function(index){
       //if user is in friends list
       if(index >= 0){
         $scope.friends[index].online = true;
         $scope.$apply();
-      } else{
+      } else {
         //if user is not in friends list, add them
         $scope.friends.push(friend);
       }
@@ -136,6 +182,7 @@ angular.module('Locket.chat', [])
   });
   
   socket.on('friendLoggedOut', function(friend){
+    console.log(friend + ' logged out');
     findFriend(friend, function(index){
       //verify user is in friends list
       if(index >= 0){
@@ -158,7 +205,7 @@ angular.module('Locket.chat', [])
 
     $scope.$apply(function(){
       $scope.friendRequests.push(friendRequest.from);
-    });    
+    });
   });
 
   socket.on('friendRequestAccepted', function(acceptFriendObj) {
@@ -168,8 +215,8 @@ angular.module('Locket.chat', [])
     $scope.$apply(function(){
       $scope.acceptedfriendRequests.push(acceptFriendObj.from);
       $scope.friends.push(createFriendObj(acceptFriendObj.from));
-    });   
-  })
+    });
+  });
 
   //hoist helper functions
   function findFriend(friend, cb){ 

@@ -46,6 +46,21 @@ io.on('connection', function(socket) {
   }
   console.log('USER MAP', userMap);
 
+  // emit friendLoggedIn event to all user's friends
+  // var currentFriends = userModel.findOne({username: username}).friends;
+  // hardcode for now until addFriends functionality working
+  var currentFriends = ['nate', 'livvie'];
+  for (var friendIndex = 0; friendIndex < currentFriends.length; friendIndex++) {
+    var friendSocket = userMap[currentFriends[friendIndex]];
+    if (friendSocket) {
+      io.to(friendSocket).emit('friendLoggedIn', username);
+      // emit event to current user to update current user's friend list with correct online property
+      io.to(userMap[username]).emit('friendLoggedIn', currentFriends[friendIndex]);
+    } else {
+      // if friend not logged in, emit event to tell current user friend is offline
+      io.to(userMap[username]).emit('friendLoggedOut', currentFriends[friendIndex]);
+    }
+  }
 
   socket.on('sendMessage', function(msg){
     // msg looks like {to: xx, message: }
@@ -59,7 +74,6 @@ io.on('connection', function(socket) {
       message: msg.message,
       timestamp: new Date()
     };
-    console.log('recipient socket', recipientSocket);
     if (recipientSocket) {
       io.to(recipientSocket).emit('newMessage', message);
       io.to(userMap[username]).emit('messageSent', message);
@@ -68,11 +82,25 @@ io.on('connection', function(socket) {
     }
   });
 
+  socket.on('revokeMessage', function (message) {
+    var recipientSocket = userMap[message.to];
+    if (recipientSocket) {
+      io.to(recipientSocket).emit('destroyMessage', message);
+      io.to(userMap[username]).emit('deleteMessage', message);
+    }
+  });
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+    // remove user from sessionMap and userMap
+    delete userMap[username];
+    delete sessionMap[expressCookie];
+    io.emit('friendLoggedOut', username);
+  });
+
   socket.on('addFriend', function (friendRequestObj) {
-    console.log(friendRequestObj.to); //yilin
+    console.log(friendRequestObj.to);
     var recipientSocket = userMap[friendRequestObj.to];
-    
-    console.log('recipient socket', recipientSocket);
     
     if (recipientSocket) {
       io.to(recipientSocket).emit('friendRequest', {
@@ -80,29 +108,48 @@ io.on('connection', function(socket) {
         from: username,
         timestamp: new Date()
       });
+      io.to(userMap[username]).emit('newMessage', {
+        to: msg.to,
+        from: msg.to,
+        message: msg.message,
+        timestamp: new Date()
+      });
     } else {
 
     }
-
     console.log(username);
   });
 
   socket.on('friendRequestAccepted', function(acceptFriendObj) {
     console.log("accepted", acceptFriendObj);
 
-    //acceptFriendObj.from = yilin
-    //acceptFriendObj.to = nate
     var recipientSocket = userMap[acceptFriendObj.to];
     if (recipientSocket) {
       UserController.addFriends(acceptFriendObj);
       io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
     } else {
-
+      // user is not online, later should allow even if no recipient socket
+      // perhaps have an unsent friend request storage
     }
 
   });
 
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+    // remove user from sessionMap and userMap
+    delete userMap[username];
+    delete sessionMap[expressCookie];
+    io.emit('friendLoggedOut', username);
+    console.log('disconnect sessionmap', sessionMap);
+    console.log('disconnect usermap', userMap);
+  });
 
+  socket.on('logout', function(){
+    console.log('user logged out');
+    // remove user from sessionMap and userMap
+    socket.disconnect();
+  });
+  
   socket.on('disconnect', function(){
     console.log('user disconnected');
     // remove user from sessionMap and userMap

@@ -4,7 +4,6 @@
   <h1>CHAT PAGE</h1>
   <div class="container">
     <div class="row">
-      
       <div class="col-md-4 friendsList" ng-init="getFriends()">
         Friends List
         <form ng-submit='addFriend(username)' name='addFriendForm'>
@@ -31,6 +30,7 @@
             <span>{{message.from}}</span>
             <span>{{message.message}}</span>
             <span>{{message.timestamp}}</span>
+            <button ng-show="message.from === currentUser" ng-click="revokeMessage(message)">Revoke</button>
           </div>
         </div>
 

@@ -107,8 +107,7 @@ exports.getFriends = function (req, res, next) {
       if (!user) {
         next(new Error('User does not exist'));
       } else {
-        // console.log("USER OBJ FROM SERVER", user);
-        res.send(user);
+        res.send(user.friends);
       }
     })
     .fail(function(error) {
@@ -126,7 +125,7 @@ exports.getAllUsers = function(req, res, next) {
     .fail(function(error) {
       next(error);
     });
-}
+};
 
 exports.checkAuth = function(req, res, next) {
   console.log('req', req);

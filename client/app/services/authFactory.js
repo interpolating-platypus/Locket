@@ -14,7 +14,7 @@ angular.module('Locket.authFactory', [])
     return $http({
       method: 'POST',
       url: '/api/users/login',
-      data: { username: username, password:password }
+      data: { username: username, password: password }
     }).then(function(resp){
       if (resp.status === 200) {
         $state.go('chat', {currentUser: resp.data});
@@ -28,21 +28,14 @@ angular.module('Locket.authFactory', [])
       method: 'GET',
       url: '/api/users/' + username,
     }).then(function(resp) {
-      return resp.data.friends;
+      console.log('data', resp.data);
+      return resp.data;
     });
   };
 
 
   var logout = function(){
     $state.go('login');
-
-    //do we need to issue get request to API for logout? 
-    // return $http({
-    //   method: 'GET',
-    //   url: '/api/users/logout'
-    // }).then(function(resp){
-    //   return resp;
-    // });
   };
 
   var signup = function(username, password){
