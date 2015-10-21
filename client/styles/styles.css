@@ -7,17 +7,21 @@
 }
 
 .message-right {
+  /*background-color: green;*/
   text-align: right;
+  /*color: white;*/
 }
 
 .message-left {
   text-align: left;
+  /*background-color: gray;*/
 }
 
 .messageText {
   border: 1px solid black;
   border-radius: 15px;
   display: inline-block;
+  padding: 6px;
 }
 
 
