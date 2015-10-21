@@ -79,9 +79,27 @@ describe("chat tests", function(){
         done();
       }, 1000);
     });
-    it('should be able to add friends', function() {
+    it('should be able to add friends', function(done) {
+      var username = 'livvie';
+      sinon.stub(socket, 'emit', function(eventName, obj) {
+        expect(eventName).to.equal('addFriend');
+        expect(obj.to).to.equal(username);
+        done();
+      });
+      $scope.addFriend(username);
+      socket.emit.restore();
     });
-    it('should be able to accept friend requests', function() {
+    it('should be able to accept friend requests', function(done) {
+      $scope.friends = [];
+      $scope.friendRequests = ['kyle'];
+      sinon.stub(socket, 'emit', function(eventName, obj) {
+        expect(eventName).to.equal('friendRequestAccepted');
+        expect(obj.to).to.equal('kyle');
+        done();
+      });
+      $scope.acceptFriendRequest('kyle');
+      expect($scope.friends).to.not.be.empty;
+      expect($scope.friendRequests).to.be.empty;
     });
     it('should be able to ignore friend requests', function() {
     });
