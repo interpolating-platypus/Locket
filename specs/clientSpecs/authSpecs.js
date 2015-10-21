@@ -27,11 +27,11 @@ describe("auth tests", function(){
       it('should have a login function which calls the login service with the correct username and password', function(done) {
         assert.isFunction($scope.login);
         $scope.user = {};
-        $scope.user.username = 'test2';
-        $scope.user.password = 'me';
+        $scope.user.usernameLogin = 'test2';
+        $scope.user.passwordLogin = 'me';
         var stub = sinon.stub(authFactory, "login", function(username, password) {
-          assert(username === $scope.user.username);
-          assert(password === $scope.user.password);
+          assert(username === $scope.user.usernameLogin);
+          assert(password === $scope.user.passwordLogin);
           done();
         });
         $scope.login();
@@ -40,11 +40,11 @@ describe("auth tests", function(){
       it('should have a signup function which calls the signup service', function(done) {
         assert.isFunction($scope.signup);
         $scope.user = {};
-        $scope.user.username = 'test2';
-        $scope.user.password = 'me';
+        $scope.user.usernameSignup = 'test2';
+        $scope.user.passwordSignup = 'me';
         var stub = sinon.stub(authFactory, "signup", function(username, password) {
-          assert(username === $scope.user.username);
-          assert(password === $scope.user.password);
+          assert(username === $scope.user.usernameSignup);
+          assert(password === $scope.user.passwordSignup);
           done();
         });
         $scope.signup();
