@@ -1,7 +1,6 @@
 angular.module('Locket.chat', [])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket) {
-  var socket = io.connect({forceNew: true});
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
