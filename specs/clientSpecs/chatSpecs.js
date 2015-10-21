@@ -102,6 +102,9 @@ describe("chat tests", function(){
       expect($scope.friendRequests).to.be.empty;
     });
     it('should be able to ignore friend requests', function() {
+      $scope.friendRequests = ['kyle'];
+      $scope.ignoreFriendRequest('kyle');
+      expect($scope.friendRequests).to.be.empty;
     });
     it('should be able to acknowledge friend requests', function() {
     });
