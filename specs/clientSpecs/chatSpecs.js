@@ -107,6 +107,11 @@ describe("chat tests", function(){
       expect($scope.friendRequests).to.be.empty;
     });
     it('should be able to acknowledge friend requests', function() {
+      $scope.friends = [];
+      $scope.friendRequests = ['kyle'];
+      $scope.acceptFriendRequest('kyle');
+      expect($scope.friendRequests).to.be.empty;
+      expect($scope.friends).to.not.be.empty;
     });
     describe('Friends List', function() {
       it('should update when a friend logs in', function() {
