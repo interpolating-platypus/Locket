@@ -108,12 +108,6 @@ io.on('connection', function(socket) {
         from: username,
         timestamp: new Date()
       });
-      io.to(userMap[username]).emit('newMessage', {
-        to: msg.to,
-        from: msg.to,
-        message: msg.message,
-        timestamp: new Date()
-      });
     } else {
 
     }
