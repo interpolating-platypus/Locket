@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "grunt test",
-    "mochaTest": "mocha specs/serverSpecs/serverSpec.js specs/clientSpecs/clientSpec.js"
+    "mochaTest": "mocha specs/serverSpecs/serverSpec.js",
+    "karmaTest": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
   },
   "repository": {
     "type": "git",
