@@ -107,16 +107,36 @@ describe("chat tests", function(){
       expect($scope.friendRequests).to.be.empty;
     });
     it('should be able to acknowledge friend requests', function() {
-      $scope.friends = [];
-      $scope.friendRequests = ['kyle'];
-      $scope.acceptFriendRequest('kyle');
-      expect($scope.friendRequests).to.be.empty;
-      expect($scope.friends).to.not.be.empty;
+      $scope.acceptedfriendRequests = ['kyle'];
+      $scope.acknowledgeFriendRequest(0);
+      expect($scope.acceptedFriendRequests).to.be.empty;
     });
     describe('Friends List', function() {
-      it('should update when a friend logs in', function() {
+      beforeEach(function() {
+        $scope.friends = [];
+        $scope.friends.push({username: 'nate'});
       });
-      it('should update when a friend logs out', function() {
+      it('should update when a friend logs in', function(done) {
+        socket.emit('echo', {
+          name: 'friendLoggedIn',
+          data: 'nate'
+        });
+        setTimeout(function() {
+          expect($scope.friends[0].online).to.equal(true);
+          done();
+        }, 1000);
+      });
+      it('should update when a friend logs out', function(done) {
+        $scope.friends = [];
+        $scope.friends.push({username: 'nate', online: true});
+        socket.emit('echo', {
+          name: 'friendLoggedOut',
+          data: 'nate'
+        });
+        setTimeout(function() {
+          expect($scope.friends[0].online).to.equal(false);
+          done();
+        }, 1000);
       });
     });
   });
