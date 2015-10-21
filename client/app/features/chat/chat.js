@@ -132,8 +132,9 @@ angular.module('Locket.chat', [])
   });
 
   //friends
-  $scope.addFriend = function(username){
-    socket.emit('addFriend', { to: username });
+  $scope.addFriend = function(newFriendUsername){
+    $scope.newFriendUsername = '';
+    socket.emit('addFriend', { to: newFriendUsername });
   };
 
   $scope.logout = function() {

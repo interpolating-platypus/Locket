@@ -27,8 +27,8 @@
 
       <div class="col-md-4 friendListWindow" ng-init="getFriends()">
         Friends List
-        <form ng-submit='addFriend(username)' name='addFriendForm'>
-          <input type='text' name='username' ng-model='username' required/>
+        <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
+          <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
           <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
         </form>
         Online Friends
