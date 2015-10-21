@@ -1,6 +1,5 @@
 angular.module('Locket.socketFactory', [])
 .factory('socket', function ($rootScope) {
-  console.log('factory loaded');
   var socket;
   return {
     connect: function() {
