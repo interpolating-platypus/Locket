@@ -1,6 +1,8 @@
 angular.module('Locket.chat', [])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket) {
+  console.log('chat controller loaded');
+  socket.connect();
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
@@ -69,9 +71,7 @@ angular.module('Locket.chat', [])
   socket.on('newMessage', function(message){
     findFriend(message.from, function(index){
       if (index !== -1) {
-        $scope.$apply(function(){
-          $scope.friends[index].messages.push(message);
-        });
+        $scope.friends[index].messages.push(message);
       }
     });
   });
@@ -79,9 +79,7 @@ angular.module('Locket.chat', [])
   socket.on('messageSent', function(message){
     findFriend(message.to, function(index){
       if (index !== -1) {
-        $scope.$apply(function(){
-          $scope.friends[index].messages.push(message);
-        });
+        $scope.friends[index].messages.push(message);
       }
     });
   });
@@ -100,9 +98,7 @@ angular.module('Locket.chat', [])
           }
         }
         if (messageIndex !== -1) {
-          $scope.$apply(function(){
-            $scope.friends[index].messages.splice(messageIndex, 1);
-          });
+          $scope.friends[index].messages.splice(messageIndex, 1);
         }
       }
     });
@@ -122,9 +118,7 @@ angular.module('Locket.chat', [])
           }
         }
         if (messageIndex !== -1) {
-          $scope.$apply(function(){
-            $scope.friends[index].messages.splice(messageIndex, 1);
-          });
+          $scope.friends[index].messages.splice(messageIndex, 1);
         }
       }
     });
@@ -172,7 +166,6 @@ angular.module('Locket.chat', [])
       //if user is in friends list
       if(index >= 0){
         $scope.friends[index].online = true;
-        $scope.$apply();
       } else {
         //if user is not in friends list, add them
         $scope.friends.push(friend);
@@ -190,10 +183,7 @@ angular.module('Locket.chat', [])
             $scope.activeFriend = null;
           }
         }
-        $scope.$apply();
       }
-
-
     });
   });
 
@@ -201,19 +191,15 @@ angular.module('Locket.chat', [])
     
     console.log('friend request received from ' + friendRequest.from);
 
-    $scope.$apply(function(){
-      $scope.friendRequests.push(friendRequest.from);
-    });
+    $scope.friendRequests.push(friendRequest.from);
   });
 
   socket.on('friendRequestAccepted', function(acceptFriendObj) {
     console.log('FRIEND REQ ACCEPTED', acceptFriendObj);
     // acceptFriendObj.from
 
-    $scope.$apply(function(){
-      $scope.acceptedfriendRequests.push(acceptFriendObj.from);
-      $scope.friends.push(createFriendObj(acceptFriendObj.from));
-    });
+    $scope.acceptedfriendRequests.push(acceptFriendObj.from);
+    $scope.friends.push(createFriendObj(acceptFriendObj.from));
   });
 
   //hoist helper functions
