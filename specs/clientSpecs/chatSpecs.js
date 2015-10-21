@@ -1,10 +1,11 @@
 describe("chat tests", function(){
   beforeEach(module('Locket'));
-  var $controller, authFactory;
+  var $controller, authFactory, socket;
 
   // Inject a fresh controller
-  beforeEach(inject(function(_$controller_){
+  beforeEach(inject(function(_$controller_, _socket_){
     $controller = _$controller_;
+    socket = _socket_;
   }));
   
   // Inject auth factory
@@ -21,10 +22,26 @@ describe("chat tests", function(){
     it('should store the current user', function() {
     });
     it('should store a friends list', function() {
+      expect($scope.friends).to.be.an.array;
     });
     it('should get friends from the server', function() {
     });
-    it('should store friend requests', function() {
+    it('should receive friend requests', function() {
+    });
+    it('should be able to accept friend requests', function() {
+      var newFriend = {
+        service: "Locket",
+        username: 'nate',
+        name: 'nate daawwggg',
+        newMessage: false,
+        online: true,
+        messages:[]
+      };
+      $scope.friends = [];
+      $scope.friendRequests.push(newFriend);
+      $scope.acceptFriendRequest(newFriend);
+      expect($scope.friends).to.not.be.empty;
+      expect($scope.friendRequests).to.be.empty;
     });
     it('should store accepted friend requests', function() {
     });
