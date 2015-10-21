@@ -63,13 +63,7 @@ describe("chat tests", function(){
           name: 'newMessage',
           data: sampleMessage 
         });
-        /*socket.on('test', function(obj) {
-          console.log(obj);
-        });*/
-        setTimeout(function() {
-          console.log($scope.friends[0]);
-          done();
-        }, 1000);
+        this.timeout(5000);
       });
       it('should be able to receive messages from other users', function() {
       });
