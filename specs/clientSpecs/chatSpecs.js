@@ -57,8 +57,6 @@ describe("chat tests", function(){
       expect($scope.friends).to.not.be.empty;
       expect($scope.friendRequests).to.be.empty;
     });
-    it('should store accepted friend requests', function() {
-    });
     it('should be able to send messages to the active user', function(done) {
       // spy on the socket emit
       sinon.stub(socket, 'emit', function(eventName, obj) {
