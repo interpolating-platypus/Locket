@@ -12,8 +12,8 @@ angular.module('Locket.chat', [])
       name: friend + " daawwggg",
       newMessage: false,
       online: true,
-      messages:[]
-    }
+      messages: []
+    };
   }
 
   $scope.getFriends = function () {
@@ -84,8 +84,6 @@ angular.module('Locket.chat', [])
     });
   });
 
-
-
   //friends
   $scope.addFriend = function(username){
     socket.emit('addFriend', { to: username });
@@ -129,7 +127,7 @@ angular.module('Locket.chat', [])
       if(index >= 0){
         $scope.friends[index].online = true;
         $scope.$apply();
-      } else{
+      } else {
         //if user is not in friends list, add them
         $scope.friends.push(friend);
       }
@@ -160,7 +158,7 @@ angular.module('Locket.chat', [])
 
     $scope.$apply(function(){
       $scope.friendRequests.push(friendRequest.from);
-    });    
+    });
   });
 
   socket.on('friendRequestAccepted', function(acceptFriendObj) {
@@ -170,8 +168,8 @@ angular.module('Locket.chat', [])
     $scope.$apply(function(){
       $scope.acceptedfriendRequests.push(acceptFriendObj.from);
       $scope.friends.push(createFriendObj(acceptFriendObj.from));
-    });   
-  })
+    });
+  });
 
   //hoist helper functions
   function findFriend(friend, cb){ 

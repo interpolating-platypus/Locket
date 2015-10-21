@@ -89,15 +89,11 @@ io.on('connection', function(socket) {
     delete userMap[username];
     delete sessionMap[expressCookie];
     io.emit('friendLoggedOut', username);
-    console.log('disconnect sessionmap', sessionMap);
-    console.log('disconnect usermap', userMap);
   });
 
   socket.on('addFriend', function (friendRequestObj) {
-    console.log(friendRequestObj.to); //yilin
+    console.log(friendRequestObj.to);
     var recipientSocket = userMap[friendRequestObj.to];
-    
-    console.log('recipient socket', recipientSocket);
     
     if (recipientSocket) {
       io.to(recipientSocket).emit('friendRequest', {
@@ -120,14 +116,13 @@ io.on('connection', function(socket) {
   socket.on('friendRequestAccepted', function(acceptFriendObj) {
     console.log("accepted", acceptFriendObj);
 
-    //acceptFriendObj.from = yilin
-    //acceptFriendObj.to = nate
     var recipientSocket = userMap[acceptFriendObj.to];
     if (recipientSocket) {
       UserController.addFriends(acceptFriendObj);
       io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
     } else {
-
+      // user is not online, later should allow even if no recipient socket
+      // perhaps have an unsent friend request storage
     }
 
   });
