@@ -72,7 +72,6 @@ angular.module('Locket.chat', [])
       if (index !== -1) {
         $scope.friends[index].messages.push(message);
       }
-      console.log('INDEX',index);
     });
   });
 
