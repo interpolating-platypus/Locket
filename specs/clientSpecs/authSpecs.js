@@ -52,4 +52,5 @@ describe("client tests", function(){
       });
     });
   });
+  // TODO: test auth services
 });
