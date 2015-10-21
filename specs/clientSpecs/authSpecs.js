@@ -52,8 +52,4 @@ describe("client tests", function(){
       });
     });
   });
-  describe('chat', function() {
-  });
-  describe('services', function() {
-  });
 });
