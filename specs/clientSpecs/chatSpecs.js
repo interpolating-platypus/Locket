@@ -50,8 +50,17 @@ describe("chat tests", function(){
     });
     it('should store the friend currently being talked to', function() {
     });
-    it('should be able to send messages', function() {
+    it('should be able to send messages to the active user', function(done) {
       // spy on the socket emit
+      sinon.stub(socket, 'emit', function(eventName, obj) {
+        expect(eventName).to.equal('sendMessage');
+        expect(obj.to).to.equal('nate');
+        expect(obj.message).to.equal('hi');
+        done();
+      });
+      $scope.activeFriend = {username: 'nate'};
+      $scope.sendMessage('hi');
+      socket.emit.restore();
     });
     it('should be able to receive messages', function(done) {
       $scope.friends.push({username: 'nate', messages: []});
@@ -70,9 +79,6 @@ describe("chat tests", function(){
         done();
       }, 1000);
     });
-      /*it('should be able to receive messages from the active user', function(done) {
-      it('should be able to receive messages from other users', function() {
-      });*/
     it('should be able to add friends', function() {
     });
     it('should be able to accept friend requests', function() {
