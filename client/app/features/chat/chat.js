@@ -18,7 +18,7 @@ angular.module('Locket.chat', [])
 
   $scope.getFriends = function () {
     authFactory.getFriends($scope.currentUser).then(function(friends) {
-      console.log('userObj from client', friends);
+      // console.log('userObj from client', friends);
       for (var i = 0; i < friends.length; i++) {
         var friend = friends[i];
         $scope.friends.push(createFriendObj(friend));

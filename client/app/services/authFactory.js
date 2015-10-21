@@ -28,7 +28,7 @@ angular.module('Locket.authFactory', [])
       method: 'GET',
       url: '/api/users/' + username,
     }).then(function(resp) {
-      console.log('data', resp.data);
+      // console.log('data', resp.data);
       return resp.data;
     });
   };
