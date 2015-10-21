@@ -29,7 +29,16 @@ describe("chat tests", function(){
     });
     it('should get friends from the server', function() {
     });
-    it('should receive friend requests', function() {
+    it('should receive friend requests', function(done) {
+      $scope.friendRequests = [];
+      socket.emit('echo', {
+        name: 'friendRequest',
+        data: { from: 'kyle' }
+      });
+      setTimeout(function() {
+        expect($scope.friendRequests).to.not.be.empty;
+        done();
+      }, 1000);
     });
     it('should be able to accept friend requests', function() {
       var newFriend = {
@@ -47,8 +56,6 @@ describe("chat tests", function(){
       expect($scope.friendRequests).to.be.empty;
     });
     it('should store accepted friend requests', function() {
-    });
-    it('should store the friend currently being talked to', function() {
     });
     it('should be able to send messages to the active user', function(done) {
       // spy on the socket emit
