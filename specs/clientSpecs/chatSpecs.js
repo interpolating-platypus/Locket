@@ -50,24 +50,26 @@ describe("chat tests", function(){
     it('should be able to send messages', function() {
       // spy on the socket emit
     });
-    describe('Message Receiving', function() {
-      it('should be able to receive messages from the active user', function(done) {
-        $scope.friends.push({name: 'nate', messages: []});
-        var sampleMessage = {
-          from: 'nate',
-          to: 'livvie',
-          message: 'hi',
-          timestamp: Date.now()
-        };
-        socket.emit('echo', {
-          name: 'newMessage',
-          data: sampleMessage 
-        });
-        this.timeout(5000);
+    it('should be able to receive messages', function(done) {
+      $scope.friends.push({username: 'nate', messages: []});
+      var sampleMessage = {
+        from: 'nate',
+        to: 'livvie',
+        message: 'hi',
+        timestamp: Date.now()
+      };
+      socket.emit('echo', {
+        name: 'newMessage',
+        data: sampleMessage 
       });
-      it('should be able to receive messages from other users', function() {
-      });
+      setTimeout(function() {
+        expect($scope.friends[0].messages).to.not.be.empty;
+        done();
+      }, 1000);
     });
+      /*it('should be able to receive messages from the active user', function(done) {
+      it('should be able to receive messages from other users', function() {
+      });*/
     it('should be able to add friends', function() {
     });
     it('should be able to accept friend requests', function() {

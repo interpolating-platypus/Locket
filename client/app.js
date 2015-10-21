@@ -22,5 +22,5 @@ angular.module('Locket', [
       controller: 'authController'
     });
 
-  $urlRouterProvider.otherwise('/login');
+  //$urlRouterProvider.otherwise('/login');
 });

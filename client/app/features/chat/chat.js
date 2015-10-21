@@ -72,6 +72,7 @@ angular.module('Locket.chat', [])
       if (index !== -1) {
         $scope.friends[index].messages.push(message);
       }
+      console.log('INDEX',index);
     });
   });
 
@@ -146,8 +147,6 @@ angular.module('Locket.chat', [])
   };
 
   $scope.ignoreFriendRequest = function (friend) {
-    // console.log(friend);
-    // console.log(friendRequests);
     for (var i = 0; i < $scope.friendRequests.length; i++) {
       if (friend === $scope.friendRequests[i]) {
         $scope.friendRequests.splice(i, 1);

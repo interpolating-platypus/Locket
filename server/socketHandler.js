@@ -132,7 +132,6 @@ io.on('connection', function(socket) {
 
   // Echo function, useful for debugging & testing
   socket.on('echo', function (obj) {
-    console.log('ECHOING ', obj.name, obj.data);
     socket.emit(obj.name, obj.data);
   });
 
