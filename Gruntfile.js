@@ -6,6 +6,9 @@ module.exports = function(grunt) {
     "shell": {
       mochaTest: {
         command: 'npm run mochaTest'
+      },
+      karmaTest: {
+        command: 'npm run karmaTest'
       }
     }
 
@@ -13,7 +16,7 @@ module.exports = function(grunt) {
 
   // Run all tests once
   grunt.registerTask('test',function (n) {
-    grunt.task.run([ 'shell:mochaTest' ] );
+    grunt.task.run([ 'shell:mochaTest', 'shell:karmaTest' ] );
   });
 
 };

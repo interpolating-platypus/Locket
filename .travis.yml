@@ -5,6 +5,7 @@ before_install:
 - npm install -g grunt-cli
 - npm install -g bower
 - npm install -g mocha
+- cd client && bower install && cd ..
 install:
 - npm install
 script: npm test
