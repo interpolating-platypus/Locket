@@ -1,13 +1,34 @@
 <!-- contains friends lists, and chat window -->
 <div>
-  <h2>{{currentUser}}</h2>
-  <h1>CHAT PAGE</h1>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+    <a class="navbar-brand" href="#">Locket</a>
+      <!-- <div class="appName navbar-header text-center">Locket</div> -->
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser}}</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li role="separator" class="divider"></li>
+            
+            <li ng-click="logout()"><a href="#">Log Out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
   <div class="container">
     <div class="row">
-      <div class="col-md-4 friendsList" ng-init="getFriends()">
+
+      <div class="col-md-4 friendListWindow" ng-init="getFriends()">
         Friends List
-        <form ng-submit='addFriend(username)' name='addFriendForm'>
-          <input type='text' name='username' ng-model='username' required/>
+        <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
+          <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
           <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
         </form>
         Online Friends
@@ -21,57 +42,58 @@
         </ul>
       </div>
 
-
-      <div class="col-md-8 chatWindow" ng-show="activeFriend">
-        <div class="activeFriendBox">Chat with {{activeFriend.name}}</div>
-        
-        <div class="messages">
-          <div ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
-            <span>{{message.from}}</span>
-            <span>{{message.message}}</span>
-            <span>{{message.timestamp}}</span>
-            <button ng-show="message.from === currentUser" ng-click="revokeMessage(message)">Revoke</button>
+      <div class="col-md-4 chatWindow">
+        <div ng-show="activeFriend">
+          <div class="activeFriendBox">Chat with {{activeFriend.name}}</div>
+          
+          <div class="messages">
+            <div ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
+              <span>{{message.from}}</span>
+              <span>{{message.message}}</span>
+              <span>{{message.timestamp}}</span>
+            </div>
           </div>
-        </div>
 
-        <div class="sendMessage">
-          <form ng-submit='sendMessage(messageText)' name='messageForm'>
-            <input type='text' name='message' ng-model='messageText' required/>
-            <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
-          </form>
+          <div class="sendMessage">
+            <form ng-submit='sendMessage(messageText)' name='messageForm'>
+              <input type='text' name='message' ng-model='messageText' required/>
+              <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
+            </form>
+          </div>
+
         </div>
       </div>
       
-    </div>
+      <div class="col-md-4 friendRequestsWindow">
+        <div class="friendRequests">
+          <ul>
+            <li ng-repeat='friend in friendRequests track by $index'>
+              <span>New friend Request from: {{friend}}</span>
+              <button ng-click='acceptFriendRequest(friend)'>Accept</button>
+              <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="acceptedFriendRequests">
+          <ul>
+            <li ng-repeat='friend in acceptedfriendRequests track by $index'>
+              <span>{{friend}} accepted your friend request</span>
+              <button ng-click='acknowledgeFriendRequest($index)'>Acknowledge</button>
+            </li>
+          </ul>
+        </div>
+      </div>
     
-    <div class="row">
-      <div class="friendRequests">
-        <ul>
-          <li ng-repeat='friend in friendRequests track by $index'>
-            <span>New friend Request from: {{friend}}</span>
-            <button ng-click='acceptFriendRequest(friend)'>Accept</button>
-            <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
-          </li>
-        </ul>
-      </div>
-      
-      <div class="acceptedFriendRequests">
-        <ul>
-          <li ng-repeat='friend in acceptedfriendRequests track by $index'>
-            <span>{{friend}} accepted your friend request</span>
-            <button ng-click='acknowledgeFriendRequest($index)'>Acknowledge</button>
-          </li>
-        </ul>
-      </div>
     </div>
-
-    <div class="row">
+  
+<!--     <div class="row">
       <div class="logout">
         <form ng-submit='logout()' name='logoutForm'>
           <input type='submit' value='Logout'>
         </form>
       </div>
-    </div>
-
-  </div>
+    </div> -->
+  
+  </div> 
 </div>
