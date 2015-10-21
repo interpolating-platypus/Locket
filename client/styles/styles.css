@@ -4,6 +4,7 @@
 
 .messages {
   /*display: inline-block;*/
+  padding-bottom: 5px;
 }
 
 .message-right {
@@ -18,11 +19,24 @@
 }
 
 .messageText {
-  border: 1px solid black;
+  /*border: 1px solid black;*/
+  border-color: transparent;
   border-radius: 15px;
   display: inline-block;
   padding: 6px;
 }
+
+.messageTextFrom {
+  background-color: aliceblue;
+}
+
+.messageTextTo {
+  background-color: beige;
+}
+
+
+
+
 
 
 
