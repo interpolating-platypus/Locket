@@ -130,6 +130,7 @@ io.on('connection', function(socket) {
     console.log('disconnect usermap', userMap);
   });
 
+  // Echo function, useful for debugging & testing
   socket.on('echo', function(obj) {
     socket.emit(obj.event, obj.data);
   });
