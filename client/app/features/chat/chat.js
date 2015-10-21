@@ -168,7 +168,6 @@ angular.module('Locket.chat', [])
 
 
   socket.on('friendLoggedIn', function(friend){
-    console.log(friend + ' logged in');
     findFriend(friend, function(index){
       //if user is in friends list
       if(index >= 0){
@@ -182,7 +181,6 @@ angular.module('Locket.chat', [])
   });
   
   socket.on('friendLoggedOut', function(friend){
-    console.log(friend + ' logged out');
     findFriend(friend, function(index){
       //verify user is in friends list
       if(index >= 0){
