@@ -1,13 +1,18 @@
-var chai = require('chai');
-
-var assert = chai.assert;
-var should = chai.should();
-var expect = chai.expect;
-
 describe("client tests", function(){
-  
-  it('should pass a test', function(){
-    assert(true);
+  beforeEach(module('Locket'));
+  beforeEach(inject(function(_$controller_){
+    $controller = _$controller_;
+  }));
+  describe('features', function() {
+    describe('auth', function() {
+      it('should have a login function', function() {
+        assert(true);
+      });
+      it('should have a signup function', function() {
+        assert(true);
+      });
+    });
   });
-  
+  describe('services', function() {
+  });
 });
