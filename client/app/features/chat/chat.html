@@ -1,6 +1,6 @@
 <!-- contains friends lists, and chat window -->
 <div>
-  <nav class="navbar navbar-default">
+  <nav class="navbar navbar-inverse">
     <div class="container-fluid">
     <a class="navbar-brand" href="#">Locket</a>
       <!-- <div class="appName navbar-header text-center">Locket</div> -->
@@ -46,11 +46,12 @@
         <div ng-show="activeFriend">
           <div class="activeFriendBox">Chat with {{activeFriend.name}}</div>
           
-          <div class="messages">
-            <div ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
-              <span>{{message.from}}</span>
-              <span>{{message.message}}</span>
-              <span>{{message.timestamp}}</span>
+          <div class="messageList">
+            <div class="messages"  
+              ng-class="{ 'message-right': message.from === currentUser, 'message-left': message.from !==currentUser }" 
+              ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
+              <!-- <span>{{message.from}}</span> -->
+              <span class="messageText">{{message.message}}</span>
               <button ng-click="revokeMessage(message)" ng-if="message.from === currentUser">Revoke</button>
             </div>
           </div>

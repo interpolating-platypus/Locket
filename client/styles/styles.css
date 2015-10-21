@@ -1,3 +1,26 @@
 /*.currentUser {
   margin-right: 40px;
 }*/
+
+.messages {
+  /*display: inline-block;*/
+}
+
+.message-right {
+  text-align: right;
+}
+
+.message-left {
+  text-align: left;
+}
+
+.messageText {
+  border: 1px solid black;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+
+
+
+
