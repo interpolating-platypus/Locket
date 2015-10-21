@@ -1,4 +1,4 @@
-describe("client tests", function(){
+describe("auth tests", function(){
   // Before each test, create fresh locket module
   beforeEach(module('Locket'));
   var $controller, authFactory;
