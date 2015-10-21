@@ -35,6 +35,7 @@ describe("client tests", function(){
           done();
         });
         $scope.login();
+        authFactory.login.restore();
       });
       it('should have a signup function which calls the signup service', function(done) {
         assert.isFunction($scope.signup);
@@ -47,8 +48,11 @@ describe("client tests", function(){
           done();
         });
         $scope.signup();
+        authFactory.signup.restore();
       });
     });
+  });
+  describe('chat', function() {
   });
   describe('services', function() {
   });
