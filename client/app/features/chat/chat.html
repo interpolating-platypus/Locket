@@ -4,22 +4,6 @@
   <h1>CHAT PAGE</h1>
   <div class="container">
     <div class="row">
-  <div>
-    <ul>
-      Friends List
-      <!-- track by $index prevents errors on duplicates -->
-      <form ng-submit='addFriend(username)' name='addFriendForm'>
-        <input type='text' name='username' ng-model='username' required/>
-        <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
-      </form>
-      Online Friends
-      <span ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
-        <li ng-if='friend.online'>
-          <span class='friendService'>{{friend.service}}</span>
-          <span class='friendName'>{{friend.name}}</span>
-        </li>
-      </span>
-      
       <div class="col-md-4 friendsList" ng-init="getFriends()">
         Friends List
         <form ng-submit='addFriend(username)' name='addFriendForm'>
