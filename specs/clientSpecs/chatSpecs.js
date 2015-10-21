@@ -1,5 +1,8 @@
 describe("chat tests", function(){
   beforeEach(module('Locket'));
+  beforeEach(module(function($urlRouterProvider) {
+    $urlRouterProvider.deferIntercept();
+  }));
   var $controller, authFactory, socket;
 
   // Inject a fresh controller
