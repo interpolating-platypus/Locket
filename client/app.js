@@ -20,11 +20,6 @@ angular.module('Locket', [
       url: '/login',
       templateUrl: 'app/features/auth/login.html',
       controller: 'authController'
-    })
-    .state('signup', {
-      url: '/signup',
-      templateUrl: 'app/features/auth/signup.html',
-      controller: 'authController'
     });
 
   $urlRouterProvider.otherwise('/login');

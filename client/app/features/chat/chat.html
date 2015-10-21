@@ -51,6 +51,7 @@
               <span>{{message.from}}</span>
               <span>{{message.message}}</span>
               <span>{{message.timestamp}}</span>
+              <button ng-click="revokeMessage(message)" ng-if="message.from === currentUser">Revoke</button>
             </div>
           </div>
 
