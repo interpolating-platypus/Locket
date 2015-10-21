@@ -53,4 +53,39 @@ describe("auth tests", function(){
     });
   });
   // TODO: test auth services
+  describe('services', function () {
+    var $scope = {};
+    var controller;
+
+    // Set appropriate controller
+    beforeEach(function() {
+      $scope = {};
+      controller = $controller('authController', { $scope: $scope });
+    });
+
+    // Inject auth factory which we can spy
+    var authFactory = {};
+    beforeEach(inject(function(_authFactory_) {
+      authFactory = _authFactory_;
+    }));
+
+    describe('auth factory', function() {
+      it('should have a login method', function(done) {
+        expect(authFactory.login).to.be.a('function');
+        done();
+      });
+      it('should have a getFriends method', function(done) {
+        expect(authFactory.getFriends).to.be.a('function');
+        done();
+      });
+      it('should have a logout method', function(done) {
+        expect(authFactory.logout).to.be.a('function');
+        done();
+      });
+      it('should have a signup method', function(done) {
+        expect(authFactory.signup).to.be.a('function');
+        done();
+      });
+    });
+  });
 });
