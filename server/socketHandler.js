@@ -90,14 +90,6 @@ io.on('connection', function(socket) {
     }
   });
 
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-    // remove user from sessionMap and userMap
-    delete userMap[username];
-    delete sessionMap[expressCookie];
-    io.emit('friendLoggedOut', username);
-  });
-
   socket.on('addFriend', function (friendRequestObj) {
     console.log(friendRequestObj.to);
     var recipientSocket = userMap[friendRequestObj.to];
