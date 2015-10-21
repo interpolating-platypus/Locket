@@ -117,6 +117,10 @@ angular.module('Locket.chat', [])
     }
   };
 
+  $scope.acknowledgeFriendRequest = function (index) {
+    $scope.acceptedfriendRequests.splice(index, 1);
+  };
+
 
   socket.on('friendLoggedIn', function(friend){
     findFriend(friend, function(index){
