@@ -22,12 +22,14 @@ describe("chat tests", function(){
       $scope = {};
       controller = $controller('chatController', { $scope: $scope });
     });
-    it('should store the current user', function() {
-    });
-    it('should store a friends list', function() {
-      expect($scope.friends).to.be.an.array;
-    });
-    it('should get friends from the server', function() {
+    it('should get friends from the server', function(done) {
+      $scope.currentUser = 'nate';
+      sinon.stub(authFactory, 'getFriends', function(username) {
+        expect(username).to.equal($scope.currentUser);
+        done();
+      });
+      $scope.getFriends();
+      authFactory.getFriends.restore();
     });
     it('should receive friend requests', function(done) {
       $scope.friendRequests = [];
@@ -117,6 +119,11 @@ describe("chat tests", function(){
       $scope.acceptedfriendRequests = ['kyle'];
       $scope.acknowledgeFriendRequest(0);
       expect($scope.acceptedFriendRequests).to.be.empty;
+    });
+    it('should be able to logout', function() {
+      $scope.currentUser = 'nate';
+      $scope.logout();
+      expect($scope.currentUser).to.equal(null);
     });
     describe('Friends List', function() {
       beforeEach(function() {
