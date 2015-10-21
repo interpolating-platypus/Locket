@@ -1,3 +1,44 @@
 /*.currentUser {
   margin-right: 40px;
 }*/
+
+.messages {
+  /*display: inline-block;*/
+  padding-bottom: 5px;
+}
+
+.message-right {
+  /*background-color: green;*/
+  text-align: right;
+  /*color: white;*/
+}
+
+.message-left {
+  text-align: left;
+  /*background-color: gray;*/
+}
+
+.messageText {
+  /*border: 1px solid black;*/
+  border-color: transparent;
+  border-radius: 15px;
+  display: inline-block;
+  padding: 6px;
+}
+
+.messageTextFrom {
+  background-color: aliceblue;
+}
+
+.messageTextTo {
+  background-color: beige;
+}
+
+
+
+
+
+
+
+
+
