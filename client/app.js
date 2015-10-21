@@ -2,6 +2,7 @@ angular.module('Locket', [
   'Locket.chat',
   'Locket.auth',
   'Locket.authFactory',
+  'Locket.socketFactory',
   // 'Locket.encryptionFactory',
   'ui.router'
 ])
