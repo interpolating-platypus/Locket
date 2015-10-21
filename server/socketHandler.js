@@ -143,22 +143,6 @@ io.on('connection', function(socket) {
     // remove user from sessionMap and userMap
     socket.disconnect();
   });
-  
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-    // remove user from sessionMap and userMap
-    delete userMap[username];
-    delete sessionMap[expressCookie];
-    io.emit('friendLoggedOut', username);
-    console.log('disconnect sessionmap', sessionMap);
-    console.log('disconnect usermap', userMap);
-  });
-
-  socket.on('logout', function(){
-    console.log('user logged out');
-    // remove user from sessionMap and userMap
-    socket.disconnect();
-  });
 });
 
 /*
