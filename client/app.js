@@ -3,8 +3,9 @@ angular.module('Locket', [
   'Locket.auth',
   'Locket.authFactory',
   'Locket.socketFactory',
+  'ui.router',
   // 'Locket.encryptionFactory',
-  'ui.router'
+  'luegg.directives'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
   console.log('working');
