@@ -58,9 +58,11 @@
 
 .dropdown-toggle {
   margin-right: 34px;
+  color: aquamarine !important;
 }
 
 .navbar-brand {
+  color: deepskyblue !important;
   margin-left: 13px !important;
 }
 
@@ -71,6 +73,9 @@
   padding: 5px;
   color: black;
 }
+
+
+
 
 
 
