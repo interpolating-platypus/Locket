@@ -1,7 +1,6 @@
 angular.module('Locket.chat', [])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket) {
-  console.log('chat controller loaded');
   socket.connect();
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
@@ -147,8 +146,6 @@ angular.module('Locket.chat', [])
   };
 
   $scope.ignoreFriendRequest = function (friend) {
-    // console.log(friend);
-    // console.log(friendRequests);
     for (var i = 0; i < $scope.friendRequests.length; i++) {
       if (friend === $scope.friendRequests[i]) {
         $scope.friendRequests.splice(i, 1);

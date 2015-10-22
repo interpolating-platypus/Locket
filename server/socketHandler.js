@@ -130,6 +130,11 @@ io.on('connection', function(socket) {
     console.log('disconnect usermap', userMap);
   });
 
+  // Echo function, useful for debugging & testing
+  socket.on('echo', function (obj) {
+    socket.emit(obj.name, obj.data);
+  });
+
   socket.on('logout', function(){
     console.log('user logged out');
     // remove user from sessionMap and userMap
