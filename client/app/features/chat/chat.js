@@ -1,4 +1,4 @@
-angular.module('Locket.chat', [])
+angular.module('Locket.chat', ['luegg.directives'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket) {
   socket.connect();

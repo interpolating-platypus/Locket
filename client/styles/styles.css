@@ -34,6 +34,26 @@
   background-color: beige;
 }
 
+.chatWindow {
+  height: 700px;
+  /*overflow: scroll;*/
+  border: 1px solid black;
+}
+
+.messageList {
+  height: 620px;
+  border: 1px solid black;
+  overflow: auto;
+}
+
+.sendMessage {
+  margin-bottom: 20px;
+  position: fixed; 
+  bottom: 0;  
+  border: 1px solid black;
+  /*width: 20%;*/
+/*  margin-left: 30px;*/
+}
 
 
 
