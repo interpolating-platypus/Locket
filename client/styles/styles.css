@@ -62,6 +62,7 @@
 }
 
 .navbar-brand {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   color: deepskyblue !important;
   margin-left: 13px !important;
 }
@@ -73,6 +74,16 @@
   padding: 5px;
   color: black;
 }
+
+
+
+.loginFailed {
+  float: left;
+  color: white;
+  margin-top: 3px;
+  margin-right: 8px;
+}
+
 
 
 
