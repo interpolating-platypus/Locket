@@ -1,3 +1,5 @@
+var testTimeout = 1000;
+var testDuration = 2000;
 describe("chat tests", function(){
   beforeEach(module('Locket'));
   beforeEach(module(function($urlRouterProvider) {
@@ -37,10 +39,11 @@ describe("chat tests", function(){
         name: 'friendRequest',
         data: { from: 'kyle' }
       });
+      this.timeout(testDuration);
       setTimeout(function() {
         expect($scope.friendRequests).to.not.be.empty;
         done();
-      }, 1000);
+      }, testTimeout);
     });
     it('should be able to accept friend requests', function() {
       var newFriend = {
@@ -81,10 +84,11 @@ describe("chat tests", function(){
         name: 'newMessage',
         data: sampleMessage 
       });
+      this.timeout(testDuration);
       setTimeout(function() {
         expect($scope.friends[0].messages).to.not.be.empty;
         done();
-      }, 1000);
+      }, testTimeout);
     });
     it('should be able to add friends', function(done) {
       var username = 'livvie';
@@ -133,10 +137,11 @@ describe("chat tests", function(){
           name: 'friendLoggedIn',
           data: 'nate'
         });
+        this.timeout(testDuration);
         setTimeout(function() {
           expect($scope.friends[0].online).to.equal(true);
           done();
-        }, 1000);
+        }, testTimeout);
       });
       it('should update when a friend logs out', function(done) {
         $scope.friends = [];
@@ -145,10 +150,11 @@ describe("chat tests", function(){
           name: 'friendLoggedOut',
           data: 'nate'
         });
+        this.timeout(testDuration);
         setTimeout(function() {
           expect($scope.friends[0].online).to.equal(false);
           done();
-        }, 1000);
+        }, testTimeout);
       });
     });
   });
