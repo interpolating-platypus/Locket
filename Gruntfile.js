@@ -10,7 +10,8 @@ module.exports = function(grunt) {
         command: 'npm run mochaTest'
       },
       karmaTest: {
-        command: 'npm run karmaTest'
+        command: ['npm run karmaTest',
+          'killall node'].join('&&')
       }
     },
     "nodemon": {
