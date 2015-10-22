@@ -39,7 +39,7 @@ describe("chat tests", function(){
         name: 'friendRequest',
         data: { from: 'kyle' }
       });
-      this.timeout(2000);
+      this.timeout(testDuration);
       setTimeout(function() {
         expect($scope.friendRequests).to.not.be.empty;
         done();
@@ -84,7 +84,7 @@ describe("chat tests", function(){
         name: 'newMessage',
         data: sampleMessage 
       });
-      this.timeout(2000);
+      this.timeout(testDuration);
       setTimeout(function() {
         expect($scope.friends[0].messages).to.not.be.empty;
         done();
@@ -137,7 +137,7 @@ describe("chat tests", function(){
           name: 'friendLoggedIn',
           data: 'nate'
         });
-        this.timeout(2000);
+        this.timeout(testDuration);
         setTimeout(function() {
           expect($scope.friends[0].online).to.equal(true);
           done();
@@ -150,7 +150,7 @@ describe("chat tests", function(){
           name: 'friendLoggedOut',
           data: 'nate'
         });
-        this.timeout(2000);
+        this.timeout(testDuration);
         setTimeout(function() {
           expect($scope.friends[0].online).to.equal(false);
           done();
