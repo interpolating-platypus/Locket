@@ -33,12 +33,13 @@
       </form>
       Online Friends
       <ul>
-        <span ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
-          <li ng-if='friend.online'>
-            <span class='friendService'>{{friend.service}}</span>
-            <span class='friendName'>{{friend.name}}</span>
-          </li>
-        </span>
+        <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
+          <span class='friendService'>{{friend.service}}</span>
+          <span class='friendName'>{{friend.name}}</span>
+          <div class="unreadMessage" ng-if="friend.unreadMessage">
+            New message from {{friend.name}}
+          </div>
+        </li>
       </ul>
 
       <div class="friendRequests">

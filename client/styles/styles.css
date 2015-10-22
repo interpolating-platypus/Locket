@@ -64,6 +64,13 @@
   margin-left: 13px !important;
 }
 
+.unreadMessage {
+  display: inline-block;
+  background-color: lavender;
+  border-radius: 10px;
+  padding: 5px;
+  color: black;
+}
 
 
 

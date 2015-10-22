@@ -10,7 +10,7 @@ angular.module('Locket.chat', ['luegg.directives'])
       service: "Locket",
       username: friend,
       name: friend + " daawwggg",
-      newMessage: false,
+      unreadMessage: false,
       online: true,
       messages: []
     };
@@ -35,6 +35,9 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.startChat = function(friend){
     findFriend(friend.username, function(index){
       $scope.activeFriend = $scope.friends[index];
+      if ($scope.friends[index].unreadMessage) {
+        $scope.friends[index].unreadMessage = false;
+      }
     });
     //if $scope.friends[username] has publicPGPKey
       //update chat view with current conversation
@@ -72,7 +75,13 @@ angular.module('Locket.chat', ['luegg.directives'])
   socket.on('newMessage', function(message){
     findFriend(message.from, function(index){
       if (index !== -1) {
+        // newMessageFrom = $scope.friends[index];
         $scope.friends[index].messages.push(message);
+        if ($scope.activeFriend === null || $scope.friends[index].username !== $scope.activeFriend.username) {
+          console.log('blaaargh');
+          console.log($scope.friends[index]);
+          $scope.friends[index].unreadMessage = true;
+        }
       }
     });
   });
