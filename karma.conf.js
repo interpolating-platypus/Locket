@@ -15,11 +15,11 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      "client/bower_components/socket.io-client/socket.io.js",
+      'client/bower_components/socket.io-client/socket.io.js',
       'client/bower_components/angular/angular.js',
+      'client/bower_components/angular-scroll-glue/src/scrollglue.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
       'client/bower_components/angular-mocks/angular-mocks.js',
-      "client/bower_components/angular-scroll-glue/src/scrollglue.js",
       'client/app.js',
       "client/app/**/*",
       'specs/clientSpecs/**/*.js'
