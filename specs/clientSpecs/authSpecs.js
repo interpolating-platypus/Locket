@@ -70,10 +70,6 @@ describe("auth tests", function(){
     var authFactory = {};
     beforeEach(inject(function(_authFactory_, $injector) {
       $httpBackend = $injector.get('$httpBackend');
-      // var loginPageHandler = $httpBackend.when('GET', '/app/features/auth/login.html')
-      //   .respond(200,'');
-      // var authReqHandler = $httpBackend.when('POST', '/api/users/login')
-      //   .respond('nate');
       authFactory = _authFactory_;
     }));
 
