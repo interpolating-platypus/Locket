@@ -16,118 +16,35 @@ io.use(app.socketSession(app.session, {
   autoSave: true
 }));
 
-io.on('connection', function(socket) {
-  console.log('a user connected');
-  console.log('SESSION MAP', sessionMap);
+io.on('connection', function (socket) {
   
   var expressCookie = socket.handshake.sessionID;
 
   var username = sessionMap[expressCookie];
-  if (username) {
-    userMap[username] = socket.id;
-    // emit friendLoggedIn event to all user's friends
-    UserModel.findOne({username: username}, function (err, user) {
-      if (err) {
-        throw err;
-      } else {
-        for (var friendIndex = 0; friendIndex < user.friends.length; friendIndex++) {
-          var friendSocket = userMap[user.friends[friendIndex]];
-          if (friendSocket) {
-            io.to(friendSocket).emit('friendLoggedIn', username);
-            // emit event to current user to update current user's friend list with correct online property
-            io.to(userMap[username]).emit('friendLoggedIn', user.friends[friendIndex]);
-          } else {
-            // if friend not logged in, emit event to tell current user friend is offline
-            io.to(userMap[username]).emit('friendLoggedOut', user.friends[friendIndex]);
-          }
-        }
-      }
-    });
-  }
-  console.log('USER MAP', userMap);
+  console.log(username + ' connected');
 
-  // emit friendLoggedIn event to all user's friends
-  // var currentFriends = userModel.findOne({username: username}).friends;
-  // hardcode for now until addFriends functionality working
-  var currentFriends = ['nate', 'livvie'];
-  for (var friendIndex = 0; friendIndex < currentFriends.length; friendIndex++) {
-    var friendSocket = userMap[currentFriends[friendIndex]];
-    if (friendSocket) {
-      io.to(friendSocket).emit('friendLoggedIn', username);
-      // emit event to current user to update current user's friend list with correct online property
-      io.to(userMap[username]).emit('friendLoggedIn', currentFriends[friendIndex]);
-    } else {
-      // if friend not logged in, emit event to tell current user friend is offline
-      io.to(userMap[username]).emit('friendLoggedOut', currentFriends[friendIndex]);
-    }
-  }
+  //let friends know user has logged in
+  notifyFriends('friendLoggedIn', username, socket);
 
-  socket.on('sendMessage', function(msg){
-    // msg looks like {to: xx, message: }
-    // We need to look up the to
-    // And then we need to send it to that guy
-    console.log(msg);
-    var recipientSocket = userMap[msg.to];
-    var message = {
-      to: msg.to,
-      from: username,
-      message: msg.message,
-      timestamp: new Date()
-    };
-    if (recipientSocket) {
-      io.to(recipientSocket).emit('newMessage', message);
-      io.to(userMap[username]).emit('messageSent', message);
-    } else {
-      // Send error message to the client
-    }
+
+  socket.on('sendMessage', function (msg) {
+    sendMessage(msg, username);
   });
 
-  socket.on('revokeMessage', function (message) {
-    var recipientSocket = userMap[message.to];
-    if (recipientSocket) {
-      io.to(recipientSocket).emit('destroyMessage', message);
-      io.to(userMap[username]).emit('deleteMessage', message);
-    }
+  socket.on('revokeMessage', function (msg) {
+    revokeMessage(msg, username);
   });
 
   socket.on('addFriend', function (friendRequestObj) {
-    console.log(friendRequestObj.to);
-    var recipientSocket = userMap[friendRequestObj.to];
-    
-    if (recipientSocket) {
-      io.to(recipientSocket).emit('friendRequest', {
-        to: friendRequestObj.to,
-        from: username,
-        timestamp: new Date()
-      });
-    } else {
-
-    }
-    console.log(username);
+    addFriend(friendRequestObj, username);
   });
 
-  socket.on('friendRequestAccepted', function(acceptFriendObj) {
-    console.log("accepted", acceptFriendObj);
-
-    var recipientSocket = userMap[acceptFriendObj.to];
-    if (recipientSocket) {
-      UserController.addFriends(acceptFriendObj);
-      io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
-    } else {
-      // user is not online, later should allow even if no recipient socket
-      // perhaps have an unsent friend request storage
-    }
-
+  socket.on('friendRequestAccepted', function (acceptedObj) {
+    friendRequestAccepted(acceptedObj);
   });
 
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-    // remove user from sessionMap and userMap
-    delete userMap[username];
-    delete sessionMap[expressCookie];
-    io.emit('friendLoggedOut', username);
-    console.log('disconnect sessionmap', sessionMap);
-    console.log('disconnect usermap', userMap);
+  socket.on('disconnect', function () {
+    disconnect(username, expressCookie, socket);
   });
 
   // Echo function, useful for debugging & testing
@@ -135,12 +52,113 @@ io.on('connection', function(socket) {
     socket.emit(obj.name, obj.data);
   });
 
-  socket.on('logout', function(){
-    console.log('user logged out');
-    // remove user from sessionMap and userMap
+  socket.on('logout', function () {
+    console.log(username + ' logged out');
     socket.disconnect();
   });
 });
+
+
+var sendMessage = function (msg, username) {
+  // msg looks like {to: xx, message: }
+  // We need to look up the to
+  // And then we need to send it to that guy
+  console.log(msg);
+
+  var recipientSocket = userMap[msg.to];
+  
+  var message = {
+    to: msg.to,
+    from: username,
+    message: msg.message,
+    timestamp: new Date()
+  };
+
+  if (recipientSocket) {
+    io.to(recipientSocket).emit('newMessage', message);
+    io.to(userMap[username]).emit('messageSent', message);
+  } else {
+    // Send error message to the client
+  }
+};
+
+var revokeMessage = function (msg, username) {
+  var recipientSocket = userMap[msg.to];
+
+  if (recipientSocket) {
+    io.to(recipientSocket).emit('destroyMessage', msg);
+    io.to(userMap[username]).emit('deleteMessage', msg);
+  }
+};
+
+var addFriend = function (friendRequestObj, username) {
+  console.log(friendRequestObj.to);
+  var recipientSocket = userMap[friendRequestObj.to];
+  
+  if (recipientSocket) {
+    io.to(recipientSocket).emit('friendRequest', {
+      to: friendRequestObj.to,
+      from: username,
+      timestamp: new Date()
+    });
+  } else {
+
+  }
+  console.log(username);
+};
+
+var friendRequestAccepted = function (acceptFriendObj) {
+  console.log("accepted", acceptFriendObj);
+
+  var recipientSocket = userMap[acceptFriendObj.to];
+  if (recipientSocket) {
+    UserController.addFriends(acceptFriendObj);
+    io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
+  } else {
+    // user is not online, later should allow even if no recipient socket
+    // perhaps have an unsent friend request storage
+  }
+
+};
+
+var disconnect = function (username, expressCookie, socket) {
+  console.log(username + ' disconnected');
+  // remove user from sessionMap and userMap
+  delete userMap[username];
+  delete sessionMap[expressCookie];
+
+  notifyFriends('friendLoggedOut', username, socket);
+  console.log('disconnect sessionmap', sessionMap);
+  console.log('disconnect usermap', userMap); 
+};
+
+var notifyFriends = function(event, username, socket){
+  if (username) {
+    userMap[username] = socket.id;
+    // emit friendLoggedIn event to all user's friends
+    UserModel.findOne({username: username}, function (err, user) {
+      if (err) {
+        throw err;
+      } else {
+
+        for (var friendIndex = 0; friendIndex < user.friends.length; friendIndex++) {
+          var friendSocket = userMap[user.friends[friendIndex]];
+          if (friendSocket) {
+            io.to(friendSocket).emit(event, username);
+            // emit event to current user to update current user's friend list with correct online property
+            io.to(userMap[username]).emit(event, user.friends[friendIndex]);
+          } else {
+            // if friend not logged in, emit event to tell current user friend is offline
+            io.to(userMap[username]).emit('friendLoggedOut', user.friends[friendIndex]);
+          }
+        }
+
+      }
+    });
+  } else {
+    console.log('user does not have socket mapped');
+  }
+};
 
 /*
   module.exports.listen to server.js to set up io
