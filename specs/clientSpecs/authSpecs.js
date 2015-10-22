@@ -56,6 +56,7 @@ describe("auth tests", function(){
   describe('services', function () {
     var $scope = {};
     var controller;
+    var $httpBackend;
 
     // Set appropriate controller
     beforeEach(function() {
@@ -65,7 +66,8 @@ describe("auth tests", function(){
 
     // Inject auth factory which we can spy
     var authFactory = {};
-    beforeEach(inject(function(_authFactory_) {
+    beforeEach(inject(function(_authFactory_, $injector) {
+      $httpBackend = $injector.get('$httpBackend');
       authFactory = _authFactory_;
     }));
 
