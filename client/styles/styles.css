@@ -3,19 +3,15 @@
 }*/
 
 .messages {
-  /*display: inline-block;*/
   padding-bottom: 5px;
 }
 
 .message-right {
-  /*background-color: green;*/
   text-align: right;
-  /*color: white;*/
 }
 
 .message-left {
   text-align: left;
-  /*background-color: gray;*/
 }
 
 .messageText {
@@ -58,6 +54,24 @@
 
 .sendMessageInput {
   width: 693px;
+}
+
+.dropdown-toggle {
+  margin-right: 34px;
+  color: aquamarine !important;
+}
+
+.navbar-brand {
+  color: deepskyblue !important;
+  margin-left: 13px !important;
+}
+
+.unreadMessage {
+  display: inline-block;
+  background-color: lavender;
+  border-radius: 10px;
+  padding: 5px;
+  color: black;
 }
 
 

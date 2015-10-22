@@ -33,20 +33,23 @@
       </form>
       Online Friends
       <ul>
-        <span ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
-          <li ng-if='friend.online'>
-            <span class='friendService'>{{friend.service}}</span>
-            <span class='friendName'>{{friend.name}}</span>
-          </li>
-        </span>
+        <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
+          <span class='friendService'>{{friend.service}}</span>
+          <span class='friendName'>{{friend.name}}</span>
+          <div class="unreadMessage" ng-if="friend.unreadMessage">
+            New message from {{friend.name}}
+          </div>
+        </li>
       </ul>
 
       <div class="friendRequests">
         <ul>
           <li ng-repeat='friend in friendRequests track by $index'>
             <span>New friend Request from: {{friend}}</span>
-            <button ng-click='acceptFriendRequest(friend)'>Accept</button>
-            <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+            <div class="friendRequestOptions">
+              <button ng-click='acceptFriendRequest(friend)'>Accept</button>
+              <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+            </div>
           </li>
         </ul>
       </div>
@@ -73,15 +76,14 @@
             <!-- <span>{{message.from}}</span> -->
             <span 
               ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser }"
-              class="messageText">{{message.message}}
+              ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
             </span>
-            <!-- <button ng-click="revokeMessage(message)" ng-if="message.from === currentUser">Revoke</button> -->
           </div>
         </div>
 
         <div class="sendMessage">
           <form ng-submit='sendMessage(messageText)' name='messageForm'>
-            <input class="sendMessageInput" type='text' name='message' ng-model='messageText' required/>
+            <input class="sendMessageInput" type='text' name='message' ng-model='messageText' maxlength="120" required/>
             <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
           </form>
         </div>
