@@ -81,7 +81,7 @@
 
         <div class="sendMessage">
           <form ng-submit='sendMessage(messageText)' name='messageForm'>
-            <input type='text' name='message' ng-model='messageText' required/>
+            <input class="sendMessageInput" type='text' name='message' ng-model='messageText' required/>
             <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
           </form>
         </div>

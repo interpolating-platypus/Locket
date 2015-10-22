@@ -19,6 +19,7 @@ module.exports = function (config) {
       'client/bower_components/angular/angular.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
       'client/bower_components/angular-mocks/angular-mocks.js',
+      "client/bower_components/angular-scroll-glue/src/scrollglue.js",
       'client/app.js',
       "client/app/**/*",
       'specs/clientSpecs/**/*.js'

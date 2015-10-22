@@ -53,7 +53,13 @@
   border: 1px solid black;
   /*width: 20%;*/
 /*  margin-left: 30px;*/
+  width: 748px;
 }
+
+.sendMessageInput {
+  width: 693px;
+}
+
 
 
 
