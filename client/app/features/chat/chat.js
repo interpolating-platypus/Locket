@@ -64,7 +64,9 @@ angular.module('Locket.chat', ['luegg.directives'])
   };
 
   $scope.revokeMessage = function(message) {
-    socket.emit('revokeMessage', message);
+    if (message.from === $scope.currentUser) {
+      socket.emit('revokeMessage', message);
+    }
   };
 
   socket.on('newMessage', function(message){

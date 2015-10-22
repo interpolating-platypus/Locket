@@ -45,8 +45,10 @@
         <ul>
           <li ng-repeat='friend in friendRequests track by $index'>
             <span>New friend Request from: {{friend}}</span>
-            <button ng-click='acceptFriendRequest(friend)'>Accept</button>
-            <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+            <div class="friendRequestOptions">
+              <button ng-click='acceptFriendRequest(friend)'>Accept</button>
+              <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+            </div>
           </li>
         </ul>
       </div>
@@ -73,9 +75,8 @@
             <!-- <span>{{message.from}}</span> -->
             <span 
               ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser }"
-              class="messageText">{{message.message}}
+              ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
             </span>
-            <!-- <button ng-click="revokeMessage(message)" ng-if="message.from === currentUser">Revoke</button> -->
           </div>
         </div>
 

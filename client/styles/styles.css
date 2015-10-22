@@ -3,19 +3,15 @@
 }*/
 
 .messages {
-  /*display: inline-block;*/
   padding-bottom: 5px;
 }
 
 .message-right {
-  /*background-color: green;*/
   text-align: right;
-  /*color: white;*/
 }
 
 .message-left {
   text-align: left;
-  /*background-color: gray;*/
 }
 
 .messageText {
@@ -60,7 +56,13 @@
   width: 693px;
 }
 
+.dropdown-toggle {
+  margin-right: 34px;
+}
 
+.navbar-brand {
+  margin-left: 13px !important;
+}
 
 
 
