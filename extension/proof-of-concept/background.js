@@ -19,34 +19,55 @@ chrome.webRequest.onHeadersReceived.addListener(
 );
 
 var mainTabId;
-var unsentMessages = []; // Messages we're going to send out over facebook
 var unreadMessages = []; // Messages loaded by facebook.js awaiting main.js connection
 
+// Store any actions that need to be taken by the facebook script
+var facebookTODO = {
+  postMessages: [],
+  getFriends: false
+};
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  // This event is issued when the main content script is launched
   if (message.event === "registerTabId") {
     mainTabId = sender.tab.id;
-    // If there are any messages they haven't seen, send em
+    // Send any unread messages to the client
     if (unreadMessages.length) {
-      chrome.tabs.sendMessage(mainTabId, {event: "receivedNewMessage", data: unreadMessages});
+      chrome.tabs.sendMessage(mainTabId, {event: "receivedNewFacebookMessage", data: unreadMessages});
     }
   }
-  if (message.event === "sendNewMessage") {
-    unsentMessages.push(message.data);
-  }
+  // The facebook content script is requesting any new actions to be taken
   if (message.event === "updateStatus") {
     sendResponse({
-      postMessages: unsentMessages.slice()
+      postMessages: facebookTODO.postMessages.slice(),
+      getFriends: facebookTODO.getFriends
     });
-    unsentMessages = [];
+    // TODO: modularize this so it's a 1-line reset to defaults
+    facebookTODO.postMessages = [];
+    facebookTODO.getFriends = false;
   }
-  if (message.event === "receivedNewMessage") {
-    // if they're already on our app, send the new messages
+  if (message.event === "receivedNewFacebookMessage") {
+    console.log('background: received new message', message.data);
+    // if the client is already on our app, send the new messages
     if (mainTabId) {
-      chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewMessage', data: message.data});
+      chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewFacebookMessage', data: message.data});
     }
-    // Otherwise, store them for the future
+    // Otherwise, store the new messages for the future
     else {
       unreadMessages = unreadMessages.concat(message.data);
     }
+  }
+  // The content script is asking for facebook friends
+  if (message.event === "getFacebookFriends") {
+    facebookTODO.getFriends = true;
+  }
+  // The facebook script has sent us back its friendslist
+  if (message.event === "facebookFriendsList") {
+    // Send the friendslist back to the content script (for relay to the app)
+    chrome.tabs.sendMessage(mainTabId, {event: 'facebookFriendsList', data: message.data});
+  }
+  // The content script is giving us a message to send over facebook
+  if (message.event === "sendFacebookMessage") {
+    facebookTODO.postMessages.push(message.data);
   }
 });

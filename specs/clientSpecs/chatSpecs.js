@@ -68,7 +68,7 @@ describe("chat tests", function(){
         expect(obj.message).to.equal('hi');
         done();
       });
-      $scope.activeFriend = {username: 'nate'};
+      $scope.activeFriend = {username: 'nate', service: "Locket"};
       $scope.sendMessage('hi');
       socket.emit.restore();
     });
