@@ -5,9 +5,9 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
-  function createFriendObj(friend) {
+  function createFriendObj(friend, service) {
     return {
-      service: "Locket",
+      service: service || "Locket",
       username: friend,
       name: friend + " daawwggg",
       unreadMessage: false,
@@ -17,12 +17,26 @@ angular.module('Locket.chat', ['luegg.directives'])
   }
 
   $scope.getFriends = function () {
+    // Get friends through our service
     authFactory.getFriends($scope.currentUser).then(function(friends) {
       // console.log('userObj from client', friends);
       for (var i = 0; i < friends.length; i++) {
         var friend = friends[i];
         $scope.friends.push(createFriendObj(friend));
       }
+    });
+    // Get friends from facebook
+    console.log('Issuing getFacebookFriends request');
+    window.postMessage({ type: 'getFacebookFriends', text: "" }, "*");
+    window.addEventListener('message', function(event) {
+      if (event.source != window)
+        return;
+      if (event.data.type && (event.data.type == 'facebookFriendsList')) {
+        for (var i = 0; i < event.data.text.length; i++) {
+          $scope.friends.push(createFriendObj(event.data.text[i], "Facebook"));
+        }
+      }
+      $scope.$apply();
     });
   };
 
@@ -221,27 +235,40 @@ angular.module('Locket.chat', ['luegg.directives'])
     //if friend not in list
     cb(-1);
   }
+        //console.log("facebookFriendsList" + event.data.text);
+        // NEEDS TO BE TIED TO USERS. This active user is a proof of concept hacky thing of terribleness
+        // (This code was for injecting new messages into the DOM)
+        // if ($scope.activeFriend) {
+        //   console.log('active friend');
+        //   $scope.activeFriend.messages.push({
+        //     to: $scope.currentUser,
+        //     from: $scope.activeFriend,
+        //     timestamp: Date.now(),
+        //     message: event.data.text
+        //   });
+        //   $scope.$apply();
+        // }
 
-  window.addEventListener('message', function(event) {
-    console.log('CHAT CTRL MESSAGE LISTENER');
-    // We only accept messages from ourselves
-    if (event.source != window)
-      return;
-    if (event.data.type && (event.data.type == 'receivedNewMessage')) {
-      console.log("Page received: " + event.data.text);
-      // NEEDS TO BE TIED TO USERS. This active user is a proof of concept hacky thing of terribleness
-      if ($scope.activeFriend) {
-        console.log('active friend');
-        $scope.activeFriend.messages.push({
-          to: $scope.currentUser,
-          from: $scope.activeFriend,
-          timestamp: Date.now(),
-          message: event.data.text
-        });
-        $scope.$apply();
-      }
-    }
-  });
+  // window.addEventListener('message', function(event) {
+  //   console.log('CHAT CTRL MESSAGE LISTENER');
+  //   // We only accept messages from ourselves
+  //   if (event.source != window)
+  //     return;
+  //   if (event.data.type && (event.data.type == 'receivedNewMessage')) {
+  //     console.log("Page received: " + event.data.text);
+  //     // NEEDS TO BE TIED TO USERS. This active user is a proof of concept hacky thing of terribleness
+  //     if ($scope.activeFriend) {
+  //       console.log('active friend');
+  //       $scope.activeFriend.messages.push({
+  //         to: $scope.currentUser,
+  //         from: $scope.activeFriend,
+  //         timestamp: Date.now(),
+  //         message: event.data.text
+  //       });
+  //       $scope.$apply();
+  //     }
+  //   }
+  // });
 });
 
 

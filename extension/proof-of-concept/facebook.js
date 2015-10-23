@@ -15,7 +15,10 @@ $(document).ready(function() {
     return 1 + getFrameDepth (winToID.parent);
   }
   // Only inject code into the outermost iFrame
-  if (getFrameDepth(window.self) === 0) {
+  if (getFrameDepth(window.self) === 1) {
+    console.log('facebook iFrame');
+
+    // Retrieves list of most-recently talked-with facebook friends
     var getFacebookFriends = function() {
       var spans = $('._l4').find('._l2 ._l1');
       var results = [];
@@ -24,15 +27,25 @@ $(document).ready(function() {
       });
       return results;
     };
-    console.log("Facebook Friends: ",getFacebookFriends());
 
     // Check for mew messages from background process
     var checkWithBackgroundProcess = function() {
       chrome.runtime.sendMessage({event: 'updateStatus' }, 
         function(response) {
+          // Background process wants to post a message through facebook
           if (response.postMessages.length) {
             document.getElementsByName('message_body')[0].value = response.postMessages;
             document.getElementById('u_0_r').click();
+          }
+          // Background process wants to get facebook friends
+          if (response.getFriends) {
+            // Retrieve friends from facebook DOM
+            var friends = getFacebookFriends();
+            // Send to the background process
+            chrome.runtime.sendMessage({
+              event: 'facebookFriendsList',
+              data: friends
+            });
           }
         }
       );
