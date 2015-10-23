@@ -32,7 +32,6 @@
 
 .chatWindow {
   height: 700px;
-  /*overflow: scroll;*/
   border: 1px solid black;
 }
 
@@ -44,11 +43,9 @@
 
 .sendMessage {
   margin-bottom: 20px;
-  position: fixed; 
+  position: absolute; 
   bottom: 0;  
   border: 1px solid black;
-  /*width: 20%;*/
-/*  margin-left: 30px;*/
   width: 748px;
 }
 
@@ -62,8 +59,10 @@
 }
 
 .navbar-brand {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   color: deepskyblue !important;
   margin-left: 13px !important;
+  font-size: 28px;
 }
 
 .unreadMessage {
@@ -72,6 +71,20 @@
   border-radius: 10px;
   padding: 5px;
   color: black;
+}
+
+
+
+.loginFailed {
+  float: left;
+  color: white;
+  margin-top: 3px;
+  margin-right: 8px;
+}
+
+img {
+  margin-top: 30px;
+  margin-left: 24px;
 }
 
 
