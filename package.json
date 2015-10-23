@@ -6,7 +6,9 @@
   "scripts": {
     "test": "grunt test",
     "mochaTest": "mocha specs/serverSpecs/serverSpec.js",
-    "karmaTest": "karma start --single-run --browsers PhantomJS"
+    "karmaTest": "karma start --single-run --browsers PhantomJS",
+    "start": "server/server.js",
+    "postinstall": "cd client && bower install"
   },
   "repository": {
     "type": "git",
