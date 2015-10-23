@@ -2,7 +2,7 @@ var express = require('express');
 var parser = require('body-parser');
 var mongoose = require('mongoose');
 
-var mongo = require('mongodb');
+var mongodb = require('mongodb');
 var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/locket';
 
 
@@ -19,8 +19,8 @@ var app = express();
 var server = require('http').createServer(app);
 // mongoose.connect('mongodb://localhost/locket');
 
-mongo.Db.connect(mongoUri, function (err, db) {
-
+mongodb.MongoClient.connect(uri, function(err, db) {
+  if(err) throw err;
 });
 
 
