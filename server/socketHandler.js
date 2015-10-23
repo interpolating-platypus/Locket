@@ -123,13 +123,15 @@ var friendRequestAccepted = function (acceptFriendObj) {
 
 var disconnect = function (username, expressCookie, socket) {
   console.log(username + ' disconnected');
+
+  notifyFriends('friendLoggedOut', username, socket);
+  
   // remove user from sessionMap and userMap
   delete userMap[username];
   delete sessionMap[expressCookie];
 
-  notifyFriends('friendLoggedOut', username, socket);
   console.log('disconnect sessionmap', sessionMap);
-  console.log('disconnect usermap', userMap); 
+  console.log('disconnect usermap', userMap);
 };
 
 var notifyFriends = function(event, username, socket){
