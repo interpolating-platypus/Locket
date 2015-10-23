@@ -7,8 +7,7 @@
     "test": "grunt test",
     "mochaTest": "mocha specs/serverSpecs/serverSpec.js",
     "karmaTest": "karma start --single-run --browsers PhantomJS",
-    "start": "server/server.js",
-    "postinstall": "cd client && bower install"
+    "postinstall": "./node_modules/bower/bin/bower install"
   },
   "repository": {
     "type": "git",
@@ -23,6 +22,7 @@
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.1",
+    "bower": "^1.6.3",
     "chai": "^3.3.0",
     "cookie-parser": "^1.4.0",
     "express": "^4.13.3",
