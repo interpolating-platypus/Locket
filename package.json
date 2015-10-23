@@ -4,6 +4,7 @@
   "description": "Secure communication for the privacy minded individual",
   "main": "server.js",
   "scripts": {
+    "start": "node server/server.js",
     "test": "grunt test",
     "mochaTest": "mocha specs/serverSpecs/serverSpec.js",
     "karmaTest": "karma start --single-run --browsers PhantomJS"
@@ -44,5 +45,8 @@
     "mocha": "^2.3.3",
     "phantomjs": "^1.9.18",
     "sinon": "^1.17.1"
+  },
+  "engines": {
+    "node": "4.2.1"
   }
 }
