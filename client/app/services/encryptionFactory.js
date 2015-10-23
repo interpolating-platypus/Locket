@@ -18,11 +18,13 @@ angular.module('Locket.encryptionFactory', [])
 
     return options;
   };
+
+  var options = generateOptions(10);
   
   var generateKeyPair = function () {
     var keyring = {};
     
-    return openpgp.generateKeyPair(generateOptions(10))
+    return openpgp.generateKeyPair(options)
     .then(function (keypair) {
       keyring.privkey = keypair.privateKeyArmored;
       keyring.pubkey = keypair.publicKeyArmored;
@@ -42,52 +44,22 @@ angular.module('Locket.encryptionFactory', [])
     });
   };
 
-  var decryptMessage = function (pgpMessage, keyring) {
+  var decryptMessage = function (keyring, pgpMessage) {
     var privKey = keyring.privkey;
     var privateKey = openpgp.key.readArmored(privKey).keys[0];
+    privateKey.decrypt(options.passphrase);
+    pgpMessage = openpgp.message.readArmored(pgpMessage);
+
+    return openpgp.decryptMessage(privateKey, pgpMessage).then(function (plaintext) {
+      console.log('decrypted message', plaintext);
+      return plaintext;
+    });
   };
-
-  // var keyring = {};
-  // var publicKey;
-  // var privateKey;
-  // openpgp.generateKeyPair(options)
-  // .then(function(keypair) {
-  //   // success
-  //   // var privkey = keypair.privateKeyArmored;
-  //   // var pubkey = keypair.publicKeyArmored;
-  //   keyring.privkey = keypair.privateKeyArmored;
-  //   keyring.pubkey = keypair.publicKeyArmored;
-  //   console.log('keys', keyring);
-  // }).then(function() {
-  //   var pubKey = keyring.pubkey;
-  //   publicKey = openpgp.key.readArmored(pubKey);
-  // }).then(function() {
-  //   openpgp.encryptMessage(publicKey.keys, 'Hello, World!')
-  //   .then(function(pgpMessage) {
-  //     // success
-  //     console.log('encrypted message', pgpMessage);
-      
-  //     var privKey = keyring.privkey;
-  //     privateKey = openpgp.key.readArmored(privKey).keys[0];
-  //     privateKey.decrypt(options.passphrase);
-  //     pgpMessage = openpgp.message.readArmored(pgpMessage);
-
-  //     openpgp.decryptMessage(privateKey, pgpMessage).then(function(plaintext) {
-  //       // success
-  //       console.log('decrypted message', plaintext);
-  //     }).catch(function(error) {
-  //       // failure
-  //     });
-  //   }).catch(function(error) {
-  //     // failure
-  //   });
-  // }).catch(function(error) {
-  //   // failure
-  // });
 
   return {
     generateKeyPair: generateKeyPair,
-    encryptMessage: encryptMessage
+    encryptMessage: encryptMessage,
+    decryptMessage: decryptMessage
   };
 
 });

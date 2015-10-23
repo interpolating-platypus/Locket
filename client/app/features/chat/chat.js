@@ -143,6 +143,14 @@ angular.module('Locket.chat', ['luegg.directives'])
   socket.on('messageSent', function(message){
     findFriend(message.to, function(index){
       if (index !== -1) {
+        // decrypt message
+        keyring.then(function (keypair) {
+          encryptionFactory.decryptMessage(keypair, message.message)
+          .then(function (decryptedMessage) {
+            console.log('decrypted message in controller', decryptedMessage);
+          });
+        });
+
         $scope.friends[index].messages.push(message);
       }
     });
