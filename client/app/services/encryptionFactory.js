@@ -39,7 +39,7 @@ angular.module('Locket.encryptionFactory', [])
     var pubKey = keyring.pubkey;
     return openpgp.encryptMessage(openpgp.key.readArmored(pubKey).keys, message)
     .then(function (pgpMessage) {
-      console.log('encrypted message', pgpMessage);
+      // console.log('encrypted message sent', pgpMessage);
       return pgpMessage;
     });
   };
@@ -51,7 +51,7 @@ angular.module('Locket.encryptionFactory', [])
     pgpMessage = openpgp.message.readArmored(pgpMessage);
 
     return openpgp.decryptMessage(privateKey, pgpMessage).then(function (plaintext) {
-      console.log('decrypted message', plaintext);
+      // console.log('decrypted message', plaintext);
       return plaintext;
     });
   };
