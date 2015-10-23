@@ -2,6 +2,10 @@ var express = require('express');
 var parser = require('body-parser');
 var mongoose = require('mongoose');
 
+var mongo = require('mongodb');
+var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/locket';
+
+
 var session = exports.session = require("express-session")({
   secret: "mr meeseeks",
   resave: true,
@@ -13,7 +17,13 @@ var socketSession = exports.socketSession = require('express-socket.io-session')
 var app = express();
 
 var server = require('http').createServer(app);
-mongoose.connect('mongodb://localhost/locket');
+// mongoose.connect('mongodb://localhost/locket');
+
+mongo.Db.connect(mongoUri, function (err, db) {
+
+});
+
+
 
 // var routes = require(__dirname + '/routes.js');
 // var users = require(__dirname + 'features/users/users.js');
