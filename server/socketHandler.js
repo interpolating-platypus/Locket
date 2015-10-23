@@ -103,6 +103,7 @@ var sendMessage = function (msg, username) {
     to: msg.to,
     from: username,
     message: msg.message,
+    encryptedMessage: msg.message,
     timestamp: new Date()
   };
 
@@ -115,6 +116,7 @@ var sendMessage = function (msg, username) {
 };
 
 var revokeMessage = function (msg, username) {
+  console.log('revoke', msg);
   var recipientSocket = userMap[msg.to];
 
   if (recipientSocket) {

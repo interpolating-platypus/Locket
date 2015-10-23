@@ -104,6 +104,7 @@ angular.module('Locket.chat', ['luegg.directives'])
       // encrypt typed message
       encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
       .then(function (encryptedMessage) {
+        $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage});
         socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
       });
     } else if ($scope.activeFriend.service === "Facebook") {
@@ -124,7 +125,7 @@ angular.module('Locket.chat', ['luegg.directives'])
 
   $scope.revokeMessage = function(message) {
     if (message.from === $scope.currentUser) {
-      socket.emit('revokeMessage', message);
+      socket.emit('revokeMessage', {to: message.to, from: message.from, message: message.encryptedMessage, timestamp: message.timestamp});
     }
   };
 
@@ -132,7 +133,6 @@ angular.module('Locket.chat', ['luegg.directives'])
     findFriend(keyObj.friend, function (index) {
       if (index !== -1) {
         $scope.friends[index].key = keyObj.key;
-        console.log($scope.friends[index]);
         socket.emit('returnPGP', {friend: keyObj.friend, key: publicKey});
       }
     });
@@ -142,7 +142,6 @@ angular.module('Locket.chat', ['luegg.directives'])
     findFriend(keyObj.friend, function (index) {
       if (index !== -1) {
         $scope.friends[index].key = keyObj.key;
-        console.log($scope.friends[index]);
         console.log('key exchange complete');
       }
     });
@@ -162,8 +161,6 @@ angular.module('Locket.chat', ['luegg.directives'])
           });
         });
         if ($scope.activeFriend === null || $scope.friends[index].username !== $scope.activeFriend.username) {
-          console.log('blaaargh');
-          console.log($scope.friends[index]);
           $scope.friends[index].unreadMessage = true;
         }
       }
@@ -173,7 +170,15 @@ angular.module('Locket.chat', ['luegg.directives'])
   socket.on('messageSent', function(message){
     findFriend(message.to, function(index){
       if (index !== -1) {
-        $scope.friends[index].messages.push(message);
+        // $scope.friends[index].messages.push(message);
+        // iterate through unsent messages to find the message
+        for (var i = 0; i < $scope.friends[index].unsentMessages.length; i++) {
+          if ($scope.friends[index].unsentMessages[i].encryptedMessage === message.message) {
+            message.message = $scope.friends[index].unsentMessages[i].message;
+            $scope.friends[index].unsentMessages.splice(i, 1);
+            $scope.friends[index].messages.push(message);
+          }
+        }
       }
     });
   });
@@ -186,7 +191,7 @@ angular.module('Locket.chat', ['luegg.directives'])
         for (var i = 0; i < $scope.friends[index].messages.length; i++) {
           var thisMessage = $scope.friends[index].messages[i];
           // if match found, set messageIndex to index in messages array
-          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.to === thisMessage.to) {
+          if (message.to === thisMessage.to && message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.encryptedMessage) {
             messageIndex = i;
             break;
           }
@@ -206,7 +211,7 @@ angular.module('Locket.chat', ['luegg.directives'])
         for (var i = 0; i < $scope.friends[index].messages.length; i++) {
           var thisMessage = $scope.friends[index].messages[i];
           // if match found, set messageIndex to index in messages array
-          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
+          if (message.to === thisMessage.to && message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.encryptedMessage) {
             messageIndex = i;
             break;
           }
