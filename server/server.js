@@ -19,7 +19,7 @@ var app = express();
 var server = require('http').createServer(app);
 // mongoose.connect('mongodb://localhost/locket');
 
-mongodb.MongoClient.connect(uri, function(err, db) {
+mongodb.MongoClient.connect(mongoUri, function(err, db) {
   if(err) throw err;
 });
 
