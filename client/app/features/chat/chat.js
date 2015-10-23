@@ -1,6 +1,6 @@
 angular.module('Locket.chat', ['luegg.directives'])
 
-.controller('chatController', function ($scope, authFactory, $stateParams, socket) {
+.controller('chatController', function ($scope, authFactory, $stateParams, socket, $window) {
   socket.connect();
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
