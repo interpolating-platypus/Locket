@@ -3,10 +3,6 @@ angular.module('Locket.encryptionFactory', [])
 .factory('encryptionFactory', function ($window) {
 
   var generateOptions = function (n) {
-    // var randomIdIndex = Math.floor(Math.random() * 10);
-    // console.log('random id index', randomIdIndex);
-    // var randomPassphraseIndex = Math.floor(Math.random() * 10);
-    // console.log('random passphrase index', randomPassphraseIndex);
     var randomIdArray = new Uint32Array(n);
     var randomId = $window.crypto.getRandomValues(randomIdArray).join('');
     var randomPassphraseArray = new Uint32Array(n);
@@ -14,7 +10,6 @@ angular.module('Locket.encryptionFactory', [])
     console.log('random id', randomId);
     console.log('random passphrase', randomPassphrase);
 
-    // should randomly generate
     var options = {
       numBits: 2048,
       userId: randomId,
@@ -23,7 +18,7 @@ angular.module('Locket.encryptionFactory', [])
 
     return options;
   };
-
+  
   var generateKeyPair = function () {
     var keyring = {};
     
@@ -38,12 +33,18 @@ angular.module('Locket.encryptionFactory', [])
     });
   };
 
-  var encryptMessage = function (keyring) {
+  var encryptMessage = function (keyring, message) {
     var pubKey = keyring.pubkey;
-    openpgp.encryptMessage(openpgp.key.readArmored(pubKey).keys, 'Hello, World!')
+    return openpgp.encryptMessage(openpgp.key.readArmored(pubKey).keys, message)
     .then(function (pgpMessage) {
       console.log('encrypted message', pgpMessage);
+      return pgpMessage;
     });
+  };
+
+  var decryptMessage = function (pgpMessage, keyring) {
+    var privKey = keyring.privkey;
+    var privateKey = openpgp.key.readArmored(privKey).keys[0];
   };
 
   // var keyring = {};

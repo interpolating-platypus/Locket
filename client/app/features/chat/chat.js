@@ -5,10 +5,12 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
-  encryptionFactory.generateKeyPair()
-  .then(function (keyring) {
-    encryptionFactory.encryptMessage(keyring);
-  });
+  // encryptionFactory.generateKeyPair()
+  // .then(function (keyring) {
+  //   encryptionFactory.encryptMessage(keyring);
+  // });
+
+  var keyring = encryptionFactory.generateKeyPair();
 
   function createFriendObj(friend) {
     return {
@@ -93,11 +95,19 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.sendMessage = function(messageText){
     //reset message text
     $scope.messageText = '';
+
     if ($scope.activeFriend.service === "Locket") {
-      socket.emit('sendMessage', { to: $scope.activeFriend.username, message: messageText });
+      // encrypt typed message
+      keyring.then(function (keypair) {
+        encryptionFactory.encryptMessage(keypair, messageText)
+        .then(function (encryptedMessage) {
+          socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+        });
+      });
     } else if ($scope.activeFriend.service === "Facebook") {
       window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, "*");
     }
+
     //if service is us
       //if we have recipients pgp key
         //encrypt and send message
