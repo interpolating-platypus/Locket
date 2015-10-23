@@ -22,7 +22,8 @@ angular.module('Locket.chat', ['luegg.directives'])
       unreadMessage: false,
       online: true,
       key: null,
-      messages: []
+      messages: [],
+      unsentMessages: [] // added this in for revoke and show decrypted message for sender
     };
   }
 
@@ -185,7 +186,7 @@ angular.module('Locket.chat', ['luegg.directives'])
         for (var i = 0; i < $scope.friends[index].messages.length; i++) {
           var thisMessage = $scope.friends[index].messages[i];
           // if match found, set messageIndex to index in messages array
-          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
+          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.to === thisMessage.to) {
             messageIndex = i;
             break;
           }
