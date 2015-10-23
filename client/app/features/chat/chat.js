@@ -1,11 +1,14 @@
 angular.module('Locket.chat', ['luegg.directives'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory) {
+  var keyring = encryptionFactory.generateKeyPair();
+
+  // keyring.then(function (keypair) {
+  //   socket.connect
+  // })
   socket.connect();
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
-
-  var keyring = encryptionFactory.generateKeyPair();
 
   function createFriendObj(friend) {
     return {
@@ -144,6 +147,7 @@ angular.module('Locket.chat', ['luegg.directives'])
           .then(function (decryptedMessage) {
             message.message = decryptedMessage;
             $scope.friends[index].messages.push(message);
+            $scope.$apply();
           });
         });
       }
