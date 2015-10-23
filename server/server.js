@@ -9,7 +9,8 @@ var options = { server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000
 
 // var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/locket';
 var mongodbUri = process.env.MONGOLAB_URI;
-var mongooseUri = uriUtil.formatMongoose(mongodbUri) || 'mongodb://localhost/locket';
+// var mongooseUri = uriUtil.formatMongoose(mongodbUri) || 'mongodb://localhost/locket';
+var mongooseUri = 'mongodb://localhost/locket' || uriUtil.formatMongoose(mongodbUri)
 
 mongoose.connect(mongooseUri, options);
 
