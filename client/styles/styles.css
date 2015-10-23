@@ -65,6 +65,7 @@
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   color: deepskyblue !important;
   margin-left: 13px !important;
+  font-size: 28px;
 }
 
 .unreadMessage {
@@ -84,6 +85,10 @@
   margin-right: 8px;
 }
 
+img {
+  margin-top: 30px;
+  /*margin-right: 1px;*/
+}
 
 
 
