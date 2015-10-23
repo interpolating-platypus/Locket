@@ -26,6 +26,13 @@ io.on('connection', function (socket) {
   //let friends know user has logged in
   notifyFriends('friendLoggedIn', username, socket);
 
+  socket.on('sendPGP', function (publicKey) {
+    sendPGP(publicKey, username);
+  });
+
+  socket.on('returnPGP', function (returnKeyObj) {
+    returnPGP(returnKeyObj, username);
+  });
 
   socket.on('sendMessage', function (msg) {
     sendMessage(msg, username);
@@ -58,6 +65,31 @@ io.on('connection', function (socket) {
   });
 });
 
+var sendPGP = function (publicKey, username) {
+  if (username) {
+    UserModel.findOne({username: username}, function (err, user) {
+      if (err) {
+        throw err;
+      } else {
+        for (var friendIndex = 0; friendIndex < user.friends.length; friendIndex++) {
+          var friendSocket = userMap[user.friends[friendIndex]];
+          if (friendSocket) {
+            io.to(friendSocket).emit('receivePGP', {friend: username, key: publicKey});
+          }
+        }
+      }
+    });
+  } else {
+    console.log('user does not have socket mapped');
+  }
+};
+
+var returnPGP = function (returnKeyObj, username) {
+  var friendSocket = userMap[returnKeyObj.friend];
+  if (friendSocket) {
+    io.to(friendSocket).emit('completePGP', {friend: username, key: returnKeyObj.key});
+  }
+};
 
 var sendMessage = function (msg, username) {
   // msg looks like {to: xx, message: }

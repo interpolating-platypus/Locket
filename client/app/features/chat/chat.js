@@ -1,12 +1,16 @@
 angular.module('Locket.chat', ['luegg.directives'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory) {
-  var keyring = encryptionFactory.generateKeyPair();
-
-  // keyring.then(function (keypair) {
-  //   socket.connect
-  // })
   socket.connect();
+
+  var keyring = encryptionFactory.generateKeyPair();
+  var publicKey;
+  // send public key to friends on login
+  keyring.then(function (keypair) {
+    publicKey = keypair.pubkey;
+    socket.emit('sendPGP', keypair.pubkey);
+  });
+
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
@@ -17,6 +21,7 @@ angular.module('Locket.chat', ['luegg.directives'])
       name: name || (username + " daawwggg"),
       unreadMessage: false,
       online: true,
+      key: null,
       messages: []
     };
   }
@@ -123,6 +128,30 @@ angular.module('Locket.chat', ['luegg.directives'])
       socket.emit('revokeMessage', message);
     }
   };
+
+  socket.on('receivePGP', function (keyObj) {
+    findFriend(keyObj.friend, function (index) {
+      if (index !== -1) {
+        $scope.friends[index].key = keyObj.key;
+        console.log($scope.friends[index]);
+        socket.emit('returnPGP', {friend: keyObj.friend, key: publicKey});
+      }
+    });
+  });
+
+  socket.on('completePGP', function (keyObj) {
+    findFriend(keyObj.friend, function (index) {
+      if (index !== -1) {
+        $scope.friends[index].key = keyObj.key;
+        console.log($scope.friends[index]);
+        console.log('key exchange complete');
+      }
+    });
+  });
+
+  // socket.on('requestPGP', function (returnSocket) {
+  //   io.to(returnSocket).emit('returnPGP', keypair.pubkey);
+  // });
 
   socket.on('newMessage', function(message){
     findFriend(message.from, function(index){
