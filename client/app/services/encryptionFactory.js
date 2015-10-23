@@ -26,16 +26,23 @@ angular.module('Locket.encryptionFactory', [])
 
   var generateKeyPair = function () {
     var keyring = {};
-
+    
     openpgp.generateKeyPair(generateOptions(10))
     .then(function (keypair) {
       keyring.privkey = keypair.privateKeyArmored;
       keyring.pubkey = keypair.publicKeyArmored;
-    }).then(function () {
-      console.log(keyring);
-      return keyring;
     }).catch(function (error) {
       // failure
+    });
+
+    return keyring;
+  };
+
+  var encryptMessage = function (keyring) {
+    var pubKey = keyring.pubkey;
+    openpgp.encryptMessage(openpgp.key.readArmored(pubKey).keys, 'Hello, World!')
+    .then(function (pgpMessage) {
+      console.log('encrypted message', pgpMessage);
     });
   };
 
@@ -78,7 +85,8 @@ angular.module('Locket.encryptionFactory', [])
   // });
 
   return {
-    generateKeyPair: generateKeyPair
+    generateKeyPair: generateKeyPair,
+    encryptMessage: encryptMessage
   };
 
 });
