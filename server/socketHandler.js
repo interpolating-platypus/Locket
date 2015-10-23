@@ -110,6 +110,7 @@ var sendMessage = function (msg, username) {
   if (recipientSocket) {
     io.to(recipientSocket).emit('newMessage', message);
     io.to(userMap[username]).emit('messageSent', message);
+    console.log('sending out message', message);
   } else {
     // Send error message to the client
   }
