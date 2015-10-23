@@ -5,19 +5,10 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
-  // var keyring = encryptionFactory.generateKeyPair();
-  // console.log(keyring);
-  // encryptionFactory.encryptMessage(keyring);
-  $scope.generateKeyPair = function () {
-    var keyring = encryptionFactory.generateKeyPair();
-    // .then(function (keyring) {
-    //   // success
-    // });
-    setTimeout(function () {
-      console.log('keyring', keyring);
-    }, 1000);
-  };
-  $scope.generateKeyPair();
+  encryptionFactory.generateKeyPair()
+  .then(function (keyring) {
+    encryptionFactory.encryptMessage(keyring);
+  });
 
   function createFriendObj(friend) {
     return {

@@ -27,15 +27,15 @@ angular.module('Locket.encryptionFactory', [])
   var generateKeyPair = function () {
     var keyring = {};
     
-    openpgp.generateKeyPair(generateOptions(10))
+    return openpgp.generateKeyPair(generateOptions(10))
     .then(function (keypair) {
       keyring.privkey = keypair.privateKeyArmored;
       keyring.pubkey = keypair.publicKeyArmored;
+    }).then(function () {
+      return keyring;
     }).catch(function (error) {
       // failure
     });
-
-    return keyring;
   };
 
   var encryptMessage = function (keyring) {
