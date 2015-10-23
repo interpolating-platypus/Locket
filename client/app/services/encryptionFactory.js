@@ -7,8 +7,8 @@ angular.module('Locket.encryptionFactory', [])
     var randomId = $window.crypto.getRandomValues(randomIdArray).join('');
     var randomPassphraseArray = new Uint32Array(n);
     var randomPassphrase = $window.crypto.getRandomValues(randomPassphraseArray).join('');
-    console.log('random id', randomId);
-    console.log('random passphrase', randomPassphrase);
+    // console.log('random id', randomId);
+    // console.log('random passphrase', randomPassphrase);
 
     var options = {
       numBits: 2048,
