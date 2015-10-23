@@ -36,15 +36,8 @@ UserSchema.methods.comparePasswords = function (candidatePassword) {
   return defer.promise;
 };
 
-UserSchema.validPassword = function(password) {
-  var savedPassword = this.password;
-  bcrypt.compare(password, savedPassword, function (err, isMatch) {
-    if(err || !isMatch){
-      return false;
-    }else {
-      return true;
-    }
-  });
+UserSchema.methods.validPassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
 };
 
 UserSchema.pre('save', function (next) {

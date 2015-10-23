@@ -15,7 +15,7 @@ var mongooseUri = uriUtil.formatMongoose(mongodbUri);
 mongoose.connect(mongooseUri, options);
 
 var passport = require('passport');
-require('./features/auth/passport');
+require('./features/auth/passport')(passport);;
 
 var session = exports.session = require("express-session")({
   secret: "mr meeseeks",
