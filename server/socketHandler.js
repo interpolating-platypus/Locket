@@ -121,7 +121,7 @@ var revokeMessage = function (msg, username) {
 
   if (recipientSocket) {
     io.to(recipientSocket).emit('destroyMessage', msg);
-    io.to(userMap[username]).emit('deleteMessage', msg);
+    io.to(userMap[username]).emit('destroyMessage', msg);
   }
 };
 

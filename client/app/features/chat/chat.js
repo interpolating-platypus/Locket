@@ -184,27 +184,13 @@ angular.module('Locket.chat', ['luegg.directives'])
   });
 
   socket.on('destroyMessage', function(message) {
-    findFriend(message.from, function(index){
-      if (index !== -1) {
-        var messageIndex = -1;
-        // iterate through messages to find one that matches message to be destroyed
-        for (var i = 0; i < $scope.friends[index].messages.length; i++) {
-          var thisMessage = $scope.friends[index].messages[i];
-          // if match found, set messageIndex to index in messages array
-          if (message.to === thisMessage.to && message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.encryptedMessage) {
-            messageIndex = i;
-            break;
-          }
-        }
-        if (messageIndex !== -1) {
-          $scope.friends[index].messages.splice(messageIndex, 1);
-        }
-      }
-    });
-  });
-
-  socket.on('deleteMessage', function(message) {
-    findFriend(message.to, function(index){
+    var friend;
+    if (message.from === $scope.currentUser) {
+      friend = message.to;
+    } else {
+      friend = message.from;
+    }
+    findFriend(friend, function(index){
       if (index !== -1) {
         var messageIndex = -1;
         // iterate through messages to find one that matches message to be destroyed
