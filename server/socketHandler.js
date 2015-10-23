@@ -1,3 +1,4 @@
+var passport = require('passport');
 var app = require(__dirname + "/server.js");
 var io = module.exports.io = require('socket.io').listen(app.server);
 
@@ -23,8 +24,9 @@ io.on('connection', function (socket) {
   var username = sessionMap[expressCookie];
   console.log(username + ' connected');
 
-  //let friends know user has logged in
-  notifyFriends('friendLoggedIn', username, socket);
+  passport.authenticate('local', function(){
+    //let friends know user has logged in
+    notifyFriends('friendLoggedIn', username, socket);
 
   socket.on('sendPGP', function (publicKey) {
     sendPGP(publicKey, username);
@@ -34,34 +36,35 @@ io.on('connection', function (socket) {
     returnPGP(returnKeyObj, username);
   });
 
-  socket.on('sendMessage', function (msg) {
-    sendMessage(msg, username);
-  });
+    socket.on('sendMessage', function (msg) {
+      sendMessage(msg, username);
+    });
 
-  socket.on('revokeMessage', function (msg) {
-    revokeMessage(msg, username);
-  });
+    socket.on('revokeMessage', function (msg) {
+      revokeMessage(msg, username);
+    });
 
-  socket.on('addFriend', function (friendRequestObj) {
-    addFriend(friendRequestObj, username);
-  });
+    socket.on('addFriend', function (friendRequestObj) {
+      addFriend(friendRequestObj, username);
+    });
 
-  socket.on('friendRequestAccepted', function (acceptedObj) {
-    friendRequestAccepted(acceptedObj);
-  });
+    socket.on('friendRequestAccepted', function (acceptedObj) {
+      friendRequestAccepted(acceptedObj);
+    });
 
-  socket.on('disconnect', function () {
-    disconnect(username, expressCookie, socket);
-  });
+    socket.on('disconnect', function () {
+      disconnect(username, expressCookie, socket);
+    });
 
-  // Echo function, useful for debugging & testing
-  socket.on('echo', function (obj) {
-    socket.emit(obj.name, obj.data);
-  });
+    // Echo function, useful for debugging & testing
+    socket.on('echo', function (obj) {
+      socket.emit(obj.name, obj.data);
+    });
 
-  socket.on('logout', function () {
-    console.log(username + ' logged out');
-    socket.disconnect();
+    socket.on('logout', function () {
+      console.log(username + ' logged out');
+      socket.disconnect();
+    });
   });
 });
 

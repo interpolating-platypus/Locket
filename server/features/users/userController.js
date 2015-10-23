@@ -128,7 +128,6 @@ exports.getAllUsers = function(req, res, next) {
 };
 
 exports.checkAuth = function(req, res, next) {
-  console.log('req', req);
   var token = req.headers['x-access-token'];
   if (!token) {
     next(new Error('No token'));
