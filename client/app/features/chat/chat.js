@@ -101,11 +101,9 @@ angular.module('Locket.chat', ['luegg.directives'])
 
     if ($scope.activeFriend.service === "Locket") {
       // encrypt typed message
-      keyring.then(function (keypair) {
-        encryptionFactory.encryptMessage(keypair, messageText)
-        .then(function (encryptedMessage) {
-          socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
-        });
+      encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+      .then(function (encryptedMessage) {
+        socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
       });
     } else if ($scope.activeFriend.service === "Facebook") {
       window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, "*");
@@ -149,15 +147,19 @@ angular.module('Locket.chat', ['luegg.directives'])
     });
   });
 
-  // socket.on('requestPGP', function (returnSocket) {
-  //   io.to(returnSocket).emit('returnPGP', keypair.pubkey);
-  // });
-
   socket.on('newMessage', function(message){
     findFriend(message.from, function(index){
       if (index !== -1) {
         // newMessageFrom = $scope.friends[index];
-        $scope.friends[index].messages.push(message);
+        // decrypt message
+        keyring.then(function (keypair) {
+          encryptionFactory.decryptMessage(keypair, message.message)
+          .then(function (decryptedMessage) {
+            message.message = decryptedMessage;
+            $scope.friends[index].messages.push(message);
+            $scope.$apply();
+          });
+        });
         if ($scope.activeFriend === null || $scope.friends[index].username !== $scope.activeFriend.username) {
           console.log('blaaargh');
           console.log($scope.friends[index]);
@@ -170,15 +172,7 @@ angular.module('Locket.chat', ['luegg.directives'])
   socket.on('messageSent', function(message){
     findFriend(message.to, function(index){
       if (index !== -1) {
-        // decrypt message
-        keyring.then(function (keypair) {
-          encryptionFactory.decryptMessage(keypair, message.message)
-          .then(function (decryptedMessage) {
-            message.message = decryptedMessage;
-            $scope.friends[index].messages.push(message);
-            $scope.$apply();
-          });
-        });
+        $scope.friends[index].messages.push(message);
       }
     });
   });
