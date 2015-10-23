@@ -20,16 +20,25 @@ chrome.runtime.sendMessage({
   data: 'webapp'
 });
 
-// Listen to requests from web application
+// Listen to requests from web app
 window.addEventListener('message', function(event) {
-  console.log('NEW EVENT fb iframe', event.data.type);
   if (event.source != window)
     return;
-  if (event.data.type && (event.data.type == 'getFacebookFriends')) {
-    console.log('Getting Facebook Friends');
+  // App requesting facebook friends
+  if (event.data.type && (event.data.type === 'getFacebookFriends')) {
     chrome.runtime.sendMessage({
       event: 'getFacebookFriends',
       data: ''
+    });
+  }
+  // App sending facebook message
+  if (event.data.type && (event.data.type === 'sendFacebookMessage')) {
+    chrome.runtime.sendMessage({
+      event: 'sendFacebookMessage',
+      data: {
+        to: event.data.to,
+        text: event.data.text
+      }
     });
   }
 });

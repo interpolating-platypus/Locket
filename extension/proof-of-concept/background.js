@@ -36,9 +36,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       chrome.tabs.sendMessage(mainTabId, {event: "receivedNewMessage", data: unreadMessages});
     }
   }
-  if (message.event === "sendNewMessage") {
-    facebookTODO.postMessages.push(message.data);
-  }
   // The facebook content script is requesting any new actions to be taken
   if (message.event === "updateStatus") {
     sendResponse({
@@ -67,5 +64,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.event === "facebookFriendsList") {
     // Send the friendslist back to the content script (for relay to the app)
     chrome.tabs.sendMessage(mainTabId, {event: 'facebookFriendsList', data: message.data});
+  }
+  // The content script is giving us a message to send over facebook
+  if (message.event === "sendFacebookMessage") {
+    facebookTODO.postMessages.push(message.data);
   }
 });

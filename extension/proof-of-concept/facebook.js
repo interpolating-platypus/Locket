@@ -34,8 +34,11 @@ $(document).ready(function() {
         function(response) {
           // Background process wants to post a message through facebook
           if (response.postMessages.length) {
-            document.getElementsByName('message_body')[0].value = response.postMessages;
-            document.getElementById('u_0_r').click();
+            console.log('POST MSGS', response.postMessages);
+            for (var i = 0; i < response.postMessages.length; i++) {
+               document.getElementsByName('message_body')[0].value = response.postMessages[i].text;
+               document.getElementById('u_0_r').click();
+            }
           }
           // Background process wants to get facebook friends
           if (response.getFriends) {

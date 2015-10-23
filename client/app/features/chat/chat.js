@@ -67,7 +67,11 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.sendMessage = function(messageText){
     //reset message text
     $scope.messageText = '';
-    socket.emit('sendMessage', { to: $scope.activeFriend.username, message: messageText });
+    if ($scope.activeFriend.service === "Locket") {
+      socket.emit('sendMessage', { to: $scope.activeFriend.username, message: messageText });
+    } else if ($scope.activeFriend.service === "Facebook") {
+      window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, "*");
+    }
     //if service is us
       //if we have recipients pgp key
         //encrypt and send message
