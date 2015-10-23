@@ -80,6 +80,7 @@ angular.module('Locket.chat', ['luegg.directives'])
       //represents the user selected in the friends list
       $scope.activeFriend = null;
 
+      //messaging
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
@@ -97,7 +98,6 @@ angular.module('Locket.chat', ['luegg.directives'])
             //show red encryption symbol/button (warning user chat is not secure)
       };
 
-      //messaging
       $scope.sendMessage = function(messageText){
         //reset message text
         $scope.messageText = '';
@@ -211,16 +211,23 @@ angular.module('Locket.chat', ['luegg.directives'])
         });
       });
 
+
       //friends
+      $scope.getFriends = function(){
+        socket.emit('getFriends', {});
+      };
+
+      socket.on('friendsList', function(friends){
+        for (var i = 0; i < friends.length; i++) {
+          var friend = friends[i];
+          console.log(friend);
+          $scope.friends.push(createFriendObj(friend));
+        }
+      });
+
       $scope.addFriend = function(newFriendUsername){
         $scope.newFriendUsername = '';
         socket.emit('addFriend', { to: newFriendUsername });
-      };
-
-      $scope.logout = function() {
-        $scope.currentUser = null;
-        authFactory.logout();
-        socket.emit('logout');
       };
 
       $scope.acceptFriendRequest = function (friend) {
@@ -246,8 +253,15 @@ angular.module('Locket.chat', ['luegg.directives'])
       };
 
 
-      socket.on('friendLoggedIn', function (friend) {
-        findFriend(friend, function (index) {
+      //login/logout
+      $scope.logout = function() {
+        $scope.currentUser = null;
+        authFactory.logout();
+        socket.emit('logout');
+      };
+
+      socket.on('friendLoggedIn', function(friend){
+        findFriend(friend, function(index){
           //if user is in friends list
           if(index >= 0){
             $scope.friends[index].online = true;
@@ -292,8 +306,9 @@ angular.module('Locket.chat', ['luegg.directives'])
         //if friend not in list
         cb(-1);
       }
-
-    }//end if resp === 'ok'
+      //get friends when we have verified the user is signed in
+      $scope.getFriends();
+    }//end if resp === 'ok'      
   });
 });
 

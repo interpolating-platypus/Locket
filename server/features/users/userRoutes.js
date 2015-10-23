@@ -6,23 +6,24 @@ var userController = require('./userController.js');
 module.exports = function (app) {
   app.post('/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
-      
       req.login(user, function(){
-        console.log("login", err, user, info);
         userController.login(req, res, next);
       });
     })(req, res, next);
   });
   
-  app.post('/signup', userController.signup);
+  app.post('/signup', function (req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
+      req.login(user, function(){
+        userController.signup(req, res, next);
+      });
+    })(req, res, next);
+  });
   
   app.get('/signedin', isLoggedIn, function (req, res, next) {
     res.status(200).send('OK');
   });
 
-  app.get('/:username', function (req, res, next) {
-    passport.authenticate('local', userController.getFriends(req, res, next));
-  });
 };
 
 
