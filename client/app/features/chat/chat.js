@@ -222,6 +222,26 @@ angular.module('Locket.chat', ['luegg.directives'])
     cb(-1);
   }
 
+  window.addEventListener('message', function(event) {
+    console.log('CHAT CTRL MESSAGE LISTENER');
+    // We only accept messages from ourselves
+    if (event.source != window)
+      return;
+    if (event.data.type && (event.data.type == 'receivedNewMessage')) {
+      console.log("Page received: " + event.data.text);
+      // NEEDS TO BE TIED TO USERS. This active user is a proof of concept hacky thing of terribleness
+      if ($scope.activeFriend) {
+        console.log('active friend');
+        $scope.activeFriend.messages.push({
+          to: $scope.currentUser,
+          from: $scope.activeFriend,
+          timestamp: Date.now(),
+          message: event.data.text
+        });
+        $scope.$apply();
+      }
+    }
+  });
 });
 
 
