@@ -14,7 +14,7 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
-  function createFriendObj(friend) {
+  function createFriendObj(username, name, service) {
     return {
       service: service || "Locket",
       username: username,
