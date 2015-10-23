@@ -33,7 +33,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     mainTabId = sender.tab.id;
     // Send any unread messages to the client
     if (unreadMessages.length) {
-      chrome.tabs.sendMessage(mainTabId, {event: "receivedNewMessage", data: unreadMessages});
+      chrome.tabs.sendMessage(mainTabId, {event: "receivedNewFacebookMessage", data: unreadMessages});
     }
   }
   // The facebook content script is requesting any new actions to be taken
@@ -46,10 +46,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     facebookTODO.postMessages = [];
     facebookTODO.getFriends = false;
   }
-  if (message.event === "receivedNewMessage") {
+  if (message.event === "receivedNewFacebookMessage") {
+    console.log('background: received new message', message.data);
     // if the client is already on our app, send the new messages
     if (mainTabId) {
-      chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewMessage', data: message.data});
+      chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewFacebookMessage', data: message.data});
     }
     // Otherwise, store the new messages for the future
     else {

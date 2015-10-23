@@ -20,11 +20,17 @@ $(document).ready(function() {
 
     // Retrieves list of most-recently talked-with facebook friends
     var getFacebookFriends = function() {
-      var spans = $('._l4').find('._l2 ._l1');
+      var friendObjs = $('._k_');
       var results = [];
-      spans.each(function() {
-        results.push($(this).text());
+      friendObjs.each(function() {
+        var link = $(this).attr('href');
+        var span = $(this).find('._l2 ._l1');
+        results.push({
+          username: link.replace('https://www.facebook.com/messages/', ''),
+          name: span.text()
+        });
       });
+
       return results;
     };
 
@@ -68,8 +74,10 @@ $(document).ready(function() {
             newTexts.push($(this).text());
           });
           console.log('NEW MESSAGE', newTexts);
+          // Retrieve the facebook username
+          var username = window.location.pathname.replace('/messages/','');
           // handle sending of new message to the client here
-          chrome.runtime.sendMessage({event: 'receivedNewMessage', data: newTexts});
+          chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {from: username, text: newTexts}});
           seenMessageGroup[id] = texts;
         }
       });

@@ -5,11 +5,11 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
-  function createFriendObj(friend, service) {
+  function createFriendObj(username, name, service) {
     return {
       service: service || "Locket",
-      username: friend,
-      name: friend + " daawwggg",
+      username: username,
+      name: name || (username + " daawwggg"),
       unreadMessage: false,
       online: true,
       messages: []
@@ -19,7 +19,6 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.getFriends = function () {
     // Get friends through our service
     authFactory.getFriends($scope.currentUser).then(function(friends) {
-      // console.log('userObj from client', friends);
       for (var i = 0; i < friends.length; i++) {
         var friend = friends[i];
         $scope.friends.push(createFriendObj(friend));
@@ -33,12 +32,34 @@ angular.module('Locket.chat', ['luegg.directives'])
         return;
       if (event.data.type && (event.data.type == 'facebookFriendsList')) {
         for (var i = 0; i < event.data.text.length; i++) {
-          $scope.friends.push(createFriendObj(event.data.text[i], "Facebook"));
+          //console.log('Friend obj received', event.data.text[i]);
+          $scope.friends.push(createFriendObj(event.data.text[i].username, event.data.text[i].name, "Facebook"));
         }
       }
       $scope.$apply();
     });
   };
+
+  // Accept new facebook messages
+  window.addEventListener('message', function(event) {
+    if (event.source != window)
+      return;
+    if (event.data.type && (event.data.type == 'receivedNewFacebookMessage')) {
+      var username = event.data.text.from;
+      var newMessages = event.data.text.text;
+      findFriend(username, function(index) {
+        for (var i = 0; i < newMessages.length; i++) {
+          $scope.friends[index].messages.push({
+            to: $scope.currentUser,
+            from: username,
+            timestamp: Date.now(),
+            message: newMessages[i]
+          });
+        }
+      });
+      console.log('client: received new msg',event.data);
+    }
+  });
 
   $scope.friendRequests = [];
   $scope.acceptedfriendRequests = [];
@@ -258,7 +279,7 @@ angular.module('Locket.chat', ['luegg.directives'])
   //   // We only accept messages from ourselves
   //   if (event.source != window)
   //     return;
-  //   if (event.data.type && (event.data.type == 'receivedNewMessage')) {
+  //   if (event.data.type && (event.data.type == 'receivedNewFacebookMessage')) {
   //     console.log("Page received: " + event.data.text);
   //     // NEEDS TO BE TIED TO USERS. This active user is a proof of concept hacky thing of terribleness
   //     if ($scope.activeFriend) {

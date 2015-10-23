@@ -3,9 +3,9 @@ console.log('main');
 
 // Receive update from background process
 chrome.runtime.onMessage.addListener(function(message) {
-  if (message.event === "receivedNewMessage") {
-    console.log('received new message event trigger');
-    window.postMessage({ type: 'receivedNewMessage', text: message.data}, "*");
+  if (message.event === "receivedNewFacebookMessage") {
+    console.log('received new message event trigger', message);
+    window.postMessage({ type: 'receivedNewFacebookMessage', text: message.data}, "*");
   }
   // Received facebook friends list
   if (message.event === "facebookFriendsList") {
