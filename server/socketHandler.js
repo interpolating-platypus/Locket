@@ -102,7 +102,6 @@ var sendMessage = function (msg, username) {
   var message = {
     to: msg.to,
     from: username,
-    message: msg.message,
     encryptedMessage: msg.message,
     timestamp: new Date()
   };

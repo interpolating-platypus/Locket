@@ -153,7 +153,7 @@ angular.module('Locket.chat', ['luegg.directives'])
         // newMessageFrom = $scope.friends[index];
         // decrypt message
         keyring.then(function (keypair) {
-          encryptionFactory.decryptMessage(keypair, message.message)
+          encryptionFactory.decryptMessage(keypair, message.encryptedMessage)
           .then(function (decryptedMessage) {
             message.message = decryptedMessage;
             $scope.friends[index].messages.push(message);
@@ -173,7 +173,7 @@ angular.module('Locket.chat', ['luegg.directives'])
         // $scope.friends[index].messages.push(message);
         // iterate through unsent messages to find the message
         for (var i = 0; i < $scope.friends[index].unsentMessages.length; i++) {
-          if ($scope.friends[index].unsentMessages[i].encryptedMessage === message.message) {
+          if ($scope.friends[index].unsentMessages[i].encryptedMessage === message.encryptedMessage) {
             message.message = $scope.friends[index].unsentMessages[i].message;
             $scope.friends[index].unsentMessages.splice(i, 1);
             $scope.friends[index].messages.push(message);
