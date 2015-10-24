@@ -17,7 +17,7 @@ angular.module('Locket.chat', ['luegg.directives'])
       $scope.currentUser = $stateParams.currentUser;
       $scope.friends = [];
 
-      function createFriendObj(username, name, service, online) {
+      function createFriendObj(username, online, name, service) {
         return {
           service: service || 'Locket',
           username: username,
@@ -39,7 +39,7 @@ angular.module('Locket.chat', ['luegg.directives'])
           console.log(event.data);
           for (var i = 0; i < event.data.text.length; i++) {
             var friend = event.data.text[i];
-            var friendObj = createFriendObj(friend.username, friend.name, "Facebook", true);
+            var friendObj = createFriendObj(friend.username, true, friend.name, "Facebook");
             console.log('friendo',friendObj);
             $scope.friends.push(friendObj);
           }
@@ -232,7 +232,10 @@ angular.module('Locket.chat', ['luegg.directives'])
         for (var i = 0; i < $scope.friendRequests.length; i++) {
           if (friend === $scope.friendRequests[i]) {
             $scope.friendRequests.splice(i, 1);
-            $scope.friends.push(createFriendObj(friend));
+            var newFriend = createFriendObj(friend);
+            console.log(newFriend);
+            newFriend.online = true;
+            $scope.friends.push(newFriend);
           }
         }
       };
@@ -289,7 +292,9 @@ angular.module('Locket.chat', ['luegg.directives'])
 
       socket.on('friendRequestAccepted', function(acceptFriendObj) {
         $scope.acceptedfriendRequests.push(acceptFriendObj.from);
-        $scope.friends.push(createFriendObj(acceptFriendObj.from));
+        var newFriend = createFriendObj(acceptFriendObj.from);
+        newFriend.online = true;
+        $scope.friends.push(newFriend);
       });
 
       //hoist helper functions
