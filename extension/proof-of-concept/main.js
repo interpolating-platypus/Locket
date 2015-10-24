@@ -31,6 +31,13 @@ window.addEventListener('message', function(event) {
       data: ''
     });
   }
+  // App telling us to begin the DOM scan
+  if (event.data.type && (event.data.type === 'scanFacebookDOM')) {
+    chrome.runtime.sendMessage({
+      event: 'scanFacebookDOM',
+      data: ''
+    });
+  }
   // App sending facebook message
   if (event.data.type && (event.data.type === 'sendFacebookMessage')) {
     chrome.runtime.sendMessage({

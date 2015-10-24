@@ -5,6 +5,7 @@ var seenMessageGroup = {};
 var usersWithNewMessages = [];
 var messagesToPost = {};
 var usersToClick = [];
+var scanDOM = false;
 
 $(document).ready(function() {
   // Facebook has iFrames. 
@@ -72,6 +73,10 @@ $(document).ready(function() {
               event: 'facebookFriendsList',
               data: friends
             });
+          }
+          // Background process wants us to begin DOM monitoring
+          if (response.scanDOM) {
+            scanDOM = true;
           }
         }
       );
@@ -146,6 +151,10 @@ $(document).ready(function() {
     };
 
     setInterval(checkWithBackgroundProcess, backgroundCheckInterval);
-    setInterval(rescanFacebookDom, rescanDOMInteral);
+    setInterval(function() {
+      if (scanDOM) {
+        rescanFacebookDom();
+      }
+    }, rescanDOMInteral);
   }
 });

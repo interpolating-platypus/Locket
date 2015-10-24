@@ -24,7 +24,8 @@ var unreadMessages = []; // Messages loaded by facebook.js awaiting main.js conn
 // Store any actions that need to be taken by the facebook script
 var facebookTODO = {
   postMessages: [],
-  getFriends: false
+  getFriends: false,
+  scanDOM: false
 };
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -40,7 +41,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.event === "updateStatus") {
     sendResponse({
       postMessages: facebookTODO.postMessages.slice(),
-      getFriends: facebookTODO.getFriends
+      getFriends: facebookTODO.getFriends,
+      scanDOM: facebookTODO.scanDOM
     });
     // TODO: modularize this so it's a 1-line reset to defaults
     facebookTODO.postMessages = [];
@@ -69,5 +71,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   // The content script is giving us a message to send over facebook
   if (message.event === "sendFacebookMessage") {
     facebookTODO.postMessages.push(message.data);
+  }
+  // The content script is telling us to tell the Facebook script to monitor the DOM
+  if (message.event === 'scanFacebookDOM') {
+    facebookTODO.scanDOM = true;
   }
 });
