@@ -28,7 +28,6 @@
   text-align: left;
 }
 
-
 .messageTextFrom {
   background-color: aliceblue;
 }
@@ -50,6 +49,22 @@
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
+.friendList {
+  list-style: none;
+  padding: 0px;
+}
+
+.friendPanel {
+  border-left: 0px;
+  border-right: 0px;
+  border-radius: 0px;
+  padding: 10px 0px 10px 0px;
+}
+
+.friendArrow {
+  float: right;
+  color: #ddd;
+}
 
 .messageList {
   height: 620px;
@@ -88,8 +103,6 @@
   padding: 5px;
   color: black;
 }
-
-
 
 .loginFailed {
   float: left;
