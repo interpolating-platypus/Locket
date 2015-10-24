@@ -47,4 +47,9 @@ How to handle receiving messages from somebody on facebook who isnt our active u
   - FIX:
     - change association of messages to usernames to be based on the urls inside the messagebox
 
+BIG TODOS:
+  - post to anybody
+  - change which side of the page messages appear on
+  - the thingy from above
+
 
