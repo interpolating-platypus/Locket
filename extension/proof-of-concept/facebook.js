@@ -1,6 +1,8 @@
+console.log('facebook');
 var backgroundCheckInterval = 1000;
 var rescanDOMInteral = 3000;
 var seenMessageGroup = {};
+var usersWithNewMessages = [];
 
 $(document).ready(function() {
   // Facebook has iFrames. 
@@ -62,6 +64,7 @@ $(document).ready(function() {
 
     // Check for new messages from facebook DOM
     var rescanFacebookDom = function() {
+      // Check for new messages from non-active users
       $('#webMessengerRecentMessages li').each(function(idx) {
         //console.log($(this).find('p').text());
         var texts = $(this).find('p');
@@ -81,6 +84,16 @@ $(document).ready(function() {
           seenMessageGroup[id] = texts;
         }
       });
+      usersWithNewMessages = [];
+      $('._k_').each(function(idx) {
+        if ($(this).find('._l6').text().indexOf('new') !== -1) {
+          usersWithNewMessages.push(this);
+        }
+      });
+      if (usersWithNewMessages.length !== 0) {
+        usersWithNewMessages[0].click();
+        usersWithNewMessages.shift();
+      }
     };
 
     setInterval(checkWithBackgroundProcess, backgroundCheckInterval);
