@@ -8,7 +8,6 @@ exports.login = function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
   var sid = req.sessionID;
-  console.log('SID FROM USERCONTROLLER', username, sid);
 
   var findUser = Q.nbind(User.findOne, User);
   findUser({username: username})
@@ -19,11 +18,9 @@ exports.login = function(req, res, next) {
         return user.comparePasswords(password)
           .then(function(foundUser) {
             if (foundUser) {
-              console.log('login successful');
               // associate sid to username in socketHandler
-              // Add in 200 response / redirect to chat page. May need to be #/ instead of /
               socketHandler.sessionMap[sid] = username;
-              res.status(200).send(username);
+              res.status(200).send();
             } else {
               return next(new Error('No User'));
             }
@@ -56,10 +53,7 @@ exports.signup = function(req, res, next) {
         return create(newUser);
       }
     })
-    .then(function(user) {
-      var token = jwt.encode(user, 'secret');
-      // res.json({token: token}); // change this to redirect
-      
+    .then(function(user) {      
       console.log('signup successful');
       socketHandler.sessionMap[sid] = username;
       res.status(200).send(username);

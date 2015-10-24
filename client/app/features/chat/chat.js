@@ -220,7 +220,6 @@ angular.module('Locket.chat', ['luegg.directives'])
       socket.on('friendsList', function(friends){
         for (var i = 0; i < friends.length; i++) {
           var friend = friends[i];
-          console.log(friend);
           $scope.friends.push(createFriendObj(friend));
         }
       });

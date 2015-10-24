@@ -29,17 +29,6 @@ angular.module('Locket.authFactory', [])
     });
   };
 
-  var getFriends = function(username) {
-    return $http({
-      method: 'GET',
-      url: '/api/users/' + username,
-    }).then(function(resp) {
-      // console.log('data', resp.data);
-      return resp.data;
-    });
-  };
-
-
   var logout = function(){
     $state.go('login');
   };
@@ -61,9 +50,7 @@ angular.module('Locket.authFactory', [])
     signedin: signedin,
     login: login,
     logout: logout,
-    signup: signup,
-    getFriends: getFriends
+    signup: signup
   };
-
 
 });
