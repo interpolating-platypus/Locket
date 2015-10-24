@@ -30,11 +30,12 @@ angular.module('Locket.chat', ['luegg.directives'])
         };
       }
 
-      // Accept new facebook messages
+      // Listen for events from our extension
       window.addEventListener('message', function(event) {
         console.log('client side message: ', event.data);
         if (event.source != window)
           return;
+        // Recieve a facebook friends list
         if (event.data.type && (event.data.type === 'facebookFriendsList')) {
           console.log(event.data);
           for (var i = 0; i < event.data.text.length; i++) {
@@ -43,17 +44,19 @@ angular.module('Locket.chat', ['luegg.directives'])
             console.log('friendo',friendObj);
             $scope.friends.push(friendObj);
           }
+          // After receiving a facebook friends list, begin monitoring the facebook DOM
+          window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
         }
+        // Receive new facebook message(s)
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
-          var username = event.data.text.from;
+          var username = event.data.text.with;
           var newMessages = event.data.text.text;
-          // TODO fix/reenable this
           findFriend(username, function(index) {
             if (index !== -1) {
               for (var i = 0; i < newMessages.length; i++) {
                 $scope.friends[index].messages.push({
-                  to: $scope.currentUser,
-                  from: username,
+                  to: (event.data.text.from === 'me') ? event.data.text.with : $scope.currentUser,
+                  from: (event.data.text.from === 'me') ? $scope.currentUser : event.data.text.with,
                   timestamp: Date.now(),
                   message: newMessages[i]
                 });

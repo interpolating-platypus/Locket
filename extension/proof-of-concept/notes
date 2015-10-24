@@ -28,23 +28,6 @@ document.getElementsByName('message_body')[0].value = "message goes here"
 
 ----------------------------
 
-NEXT STEP:
-
-Ability to read & send messages to facebook from our web application
-
-----------------------------
-
-CURRENT PROBLEM:
-
-How to handle receiving messages from somebody on facebook who isnt our active user?
-1) reload the entire page. Baaaaaaaaad idea. We'll lose all state on our facebook.js
-2) click the button. Better idea. How can we make sure we're not still loading though? Is it that big a deal? It honestly mostly seems to work...but I could imagine some race conditions where it might not.
-  - POTENTIAL RACE CONDITION: 
-    - click a new user
-    - waiting for that user to load
-    - in the meantime, get a message from the existing user, after the url has changed
-    - mistakenly associate the new message with the new user, instead of the existing user
-  - FIX:
-    - change association of messages to usernames to be based on the urls inside the messagebox
-
+NEXT STEP: ???
+  - encryption
 
