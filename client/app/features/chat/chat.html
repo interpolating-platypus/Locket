@@ -75,7 +75,7 @@
             ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
             <!-- <span>{{message.from}}</span> -->
             <span 
-              ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser }"
+              ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser, 'wrapMessage': message.message.length > 60}"
               ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
             </span>
           </div>
