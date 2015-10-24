@@ -17,13 +17,13 @@ angular.module('Locket.chat', ['luegg.directives'])
       $scope.currentUser = $stateParams.currentUser;
       $scope.friends = [];
 
-      function createFriendObj(username, name, service) {
+      function createFriendObj(username, name, service, online) {
         return {
           service: service || 'Locket',
           username: username,
           name: name || (username + ' daawwggg'),
           unreadMessage: false,
-          online: false,
+          online: online || false,
           key: null,
           messages: [],
           unsentMessages: [] // added this in for revoke and show decrypted message for sender
@@ -32,27 +32,40 @@ angular.module('Locket.chat', ['luegg.directives'])
 
       // Accept new facebook messages
       window.addEventListener('message', function(event) {
+        console.log('client side message: ', event.data);
         if (event.source != window)
           return;
-        if (event.data.type && (event.data.type == 'receivedNewFacebookMessage')) {
+        if (event.data.type && (event.data.type === 'facebookFriendsList')) {
+          console.log(event.data);
+          for (var i = 0; i < event.data.text.length; i++) {
+            var friend = event.data.text[i];
+            var friendObj = createFriendObj(friend.username, friend.name, "Facebook", true);
+            console.log('friendo',friendObj);
+            $scope.friends.push(friendObj);
+          }
+        }
+        if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
           var username = event.data.text.from;
           var newMessages = event.data.text.text;
           // TODO fix/reenable this
           findFriend(username, function(index) {
-            for (var i = 0; i < newMessages.length; i++) {
-              $scope.friends[index].messages.push({
-                to: $scope.currentUser,
-                from: username,
-                timestamp: Date.now(),
-                message: newMessages[i]
-              });
-              if ($scope.friends[index].username !== $scope.activeFriend.username) {
-                $scope.friends[index].unreadMessage = true;
+            if (index !== -1) {
+              for (var i = 0; i < newMessages.length; i++) {
+                $scope.friends[index].messages.push({
+                  to: $scope.currentUser,
+                  from: username,
+                  timestamp: Date.now(),
+                  message: newMessages[i]
+                });
+                if ($scope.activeFriend && $scope.friends[index].username !== $scope.activeFriend.username) {
+                  $scope.friends[index].unreadMessage = true;
+                }
               }
             }
           });
-          $scope.$apply();
         };
+        $scope.$apply();
+        console.log('FRIENDS LIST:',$scope.friends);
       });
 
 
@@ -92,6 +105,7 @@ angular.module('Locket.chat', ['luegg.directives'])
             socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
           });
         } else if ($scope.activeFriend.service === 'Facebook') {
+          console.log('posting message to facebook');
           window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, '*');
         }
 
@@ -194,9 +208,11 @@ angular.module('Locket.chat', ['luegg.directives'])
       });
 
 
-      //friends
+      //Get friends through our socket
       $scope.getFriends = function(){
         socket.emit('getFriends', {});
+        // Get friends through facebook
+        window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
       };
 
       socket.on('friendsList', function(friends){
