@@ -93,8 +93,10 @@ $(document).ready(function() {
           console.log('NEW MESSAGE', newTexts);
           // Retrieve the facebook username
           var activeUsername = $('._r7').find('a').attr('href').replace('https://www.facebook.com/','');
+          var sentBy = $(this).find('a').first().attr('href').replace('https://www.facebook.com/','') === activeUsername ? activeUsername : 'me';
+          //console.log('MESSAGE SENT BY', sentBy);
           // handle sending of new message to the client here
-          chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {from: activeUsername, text: newTexts}});
+          chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {with: activeUsername, from: sentBy, text: newTexts}});
           seenMessageGroup[id] = texts;
 
         }

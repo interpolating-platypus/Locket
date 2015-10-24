@@ -45,15 +45,15 @@ angular.module('Locket.chat', ['luegg.directives'])
           }
         }
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
-          var username = event.data.text.from;
+          var username = event.data.text.with;
           var newMessages = event.data.text.text;
           // TODO fix/reenable this
           findFriend(username, function(index) {
             if (index !== -1) {
               for (var i = 0; i < newMessages.length; i++) {
                 $scope.friends[index].messages.push({
-                  to: $scope.currentUser,
-                  from: username,
+                  to: ($scope.activeFriend.username === event.data.text.from) ? $scope.currentUser : $scope.activeFriend.username,
+                  from: ($scope.activeFriend.username === event.data.text.from) ? $scope.activeFriend.username : $scope.currentUser,
                   timestamp: Date.now(),
                   message: newMessages[i]
                 });
