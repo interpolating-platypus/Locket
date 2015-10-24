@@ -26,13 +26,13 @@
   <div class="row">
 
     <div class="col-md-4 friendListWindow">
-      <p>Friends List</p>
+      <p class="friendHeaders">Friends List</p>
       <span></span>
       <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
         <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
       </form>
-      <p>Online Friends</p>
+      <p class="friendHeaders">Online Friends</p>
       <ul>
         <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
           <span class='friendService'>{{friend.service}}</span>
