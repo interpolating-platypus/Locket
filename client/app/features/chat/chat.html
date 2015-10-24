@@ -26,12 +26,13 @@
   <div class="row">
 
     <div class="col-md-4 friendListWindow">
-      Friends List
+      <p class="friendHeaders">Friends List</p>
+      <span></span>
       <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
         <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
       </form>
-      Online Friends
+      <p class="friendHeaders">Online Friends</p>
       <ul>
         <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
           <span class='friendService'>{{friend.service}}</span>
@@ -75,7 +76,7 @@
             ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
             <!-- <span>{{message.from}}</span> -->
             <span 
-              ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser }"
+              ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser, 'wrapMessage': message.message.length > 60}"
               ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
             </span>
           </div>
@@ -83,7 +84,7 @@
 
         <div class="sendMessage">
           <form ng-submit='sendMessage(messageText)' name='messageForm'>
-            <input class="sendMessageInput" type='text' name='message' ng-model='messageText' maxlength="120" required/>
+            <input class="sendMessageInput" type='text' name='message' ng-model='messageText' required/>
             <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
           </form>
         </div>
