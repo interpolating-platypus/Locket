@@ -23,7 +23,8 @@
     },
     {
       "matches": [
-        "*://localhost/*"
+        "*://localhost/*",
+        "https://quiet-shelf-3419.herokuapp.com"
       ],
       "js": ["bower_components/jquery/dist/jquery.js","main.js"],
       "run_at": "document_end"

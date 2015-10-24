@@ -101,23 +101,32 @@ var sendMessage = function (msg, username) {
   // msg looks like {to: xx, message: }
   // We need to look up the to
   // And then we need to send it to that guy
+  UserModel.findOne({username: username}, function (err, user) {
+    if(err){
+      throw err;
+    }
+    //verify user is friends with the recipient
+    if(~user.friends.indexOf(msg.to)){
 
-  var recipientSocket = userMap[msg.to];
-  
-  var message = {
-    to: msg.to,
-    from: username,
-    encryptedMessage: msg.message,
-    timestamp: new Date()
-  };
+      var recipientSocket = userMap[msg.to];
+      
+      var message = {
+        to: msg.to,
+        from: username,
+        encryptedMessage: msg.message,
+        timestamp: new Date()
+      };
 
-  if (recipientSocket) {
-    io.to(recipientSocket).emit('newMessage', message);
-    io.to(userMap[username]).emit('messageSent', message);
-    console.log('sending out message', message);
-  } else {
-    // Send error message to the client
-  }
+      if (recipientSocket) {
+        io.to(recipientSocket).emit('newMessage', message);
+        io.to(userMap[username]).emit('messageSent', message);
+        console.log('sending out message', message);
+      } else {
+        // Send error message to the client
+      }
+
+    }
+  });
 };
 
 var revokeMessage = function (msg, username) {
@@ -165,7 +174,7 @@ var addFriend = function (friendRequestObj, username) {
 };
 
 var friendRequestAccepted = function (acceptFriendObj, username) {
-  if(acceptFriendObj.to === username || acceptFriendObj.from === username){
+  if(acceptFriendObj.from === username){
     var recipientSocket = userMap[acceptFriendObj.to];
     if (recipientSocket) {
       UserController.addFriends(acceptFriendObj);
