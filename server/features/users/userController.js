@@ -20,7 +20,8 @@ exports.login = function(req, res, next) {
             if (foundUser) {
               // associate sid to username in socketHandler
               socketHandler.sessionMap[sid] = username;
-              res.status(200).send();
+              //send back username to set as $scope.currentUser
+              res.status(200).send(username);
             } else {
               return next(new Error('No User'));
             }

@@ -1,6 +1,7 @@
 angular.module('Locket.chat', ['luegg.directives'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory) {
+  console.log($stateParams.currentUser);
   authFactory.signedin().then(function(resp){
     if (resp === 'OK') {
       socket.connect();
@@ -29,30 +30,6 @@ angular.module('Locket.chat', ['luegg.directives'])
         };
       }
 
-      $scope.getFriends = function () {
-        // Get friends through our service
-        authFactory.getFriends($scope.currentUser).then(function(friends) {
-          for (var i = 0; i < friends.length; i++) {
-            var friend = friends[i];
-            $scope.friends.push(createFriendObj(friend));
-          }
-        });
-        // Get friends from facebook
-        console.log('Issuing getFacebookFriends request');
-        window.postMessage({ type: 'getFacebookFriends', text: '' }, '*');
-        window.addEventListener('message', function(event) {
-          if (event.source != window)
-            return;
-          if (event.data.type && (event.data.type == 'facebookFriendsList')) {
-            for (var i = 0; i < event.data.text.length; i++) {
-              //console.log('Friend obj received', event.data.text[i]);
-              $scope.friends.push(createFriendObj(event.data.text[i].username, event.data.text[i].name, 'Facebook'));
-            }
-          }
-          $scope.$apply();
-        });
-      };
-
       // Accept new facebook messages
       window.addEventListener('message', function(event) {
         if (event.source != window)
@@ -70,7 +47,7 @@ angular.module('Locket.chat', ['luegg.directives'])
               });
             }
           });
-          console.log('client: received new msg',event.data);
+          console.log('client: received new msg', event.data);
         }
       });
 
