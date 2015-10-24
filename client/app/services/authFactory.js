@@ -2,13 +2,19 @@ angular.module('Locket.authFactory', [])
 
 .factory('authFactory', function($http, $state){
 
-  // var signedin = function(currentUser) {
-  //   if (!currentUser) {
-  //     $state.go('login');
-  //   } else {
-  //     $state.go('chat');
-  //   }
-  // };
+  var signedin = function() {
+    
+    return $http({
+      method: 'GET',
+      url: '/api/users/signedin'
+    }).then(function(resp) {
+      if(resp.data === "UNAUTHORIZED"){
+        $state.go('login');
+      }
+      return resp.data;
+    });
+
+  };
 
   var login = function(username, password){
     return $http({
@@ -22,17 +28,6 @@ angular.module('Locket.authFactory', [])
       return resp;
     });
   };
-
-  var getFriends = function(username) {
-    return $http({
-      method: 'GET',
-      url: '/api/users/' + username,
-    }).then(function(resp) {
-      // console.log('data', resp.data);
-      return resp.data;
-    });
-  };
-
 
   var logout = function(){
     $state.go('login');
@@ -52,12 +47,10 @@ angular.module('Locket.authFactory', [])
   };
 
   return {
-    // signedin: signedin,
+    signedin: signedin,
     login: login,
     logout: logout,
-    signup: signup,
-    getFriends: getFriends
+    signup: signup
   };
-
 
 });

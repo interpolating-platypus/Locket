@@ -23,7 +23,7 @@ var UserSchema = new mongoose.Schema({
 });
 
 
-UserSchema.methods.comparePasswords = function (candidatePassword) {
+UserSchema.methods.validPassword = function (candidatePassword) {
   var defer = Q.defer();
   var savedPassword = this.password;
   bcrypt.compare(candidatePassword, savedPassword, function (err, isMatch) {

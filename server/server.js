@@ -1,6 +1,7 @@
 var express = require('express');
 var parser = require('body-parser');
 var mongoose = require('mongoose');
+
 // var mongodb = require('mongodb');
 var uriUtil = require('mongodb-uri');
 
@@ -13,6 +14,9 @@ var mongooseUri = uriUtil.formatMongoose(mongodbUri);
 
 mongoose.connect(mongooseUri, options);
 
+var passport = require('passport');
+require('./features/auth/passport')(passport);;
+
 var session = exports.session = require("express-session")({
   secret: "mr meeseeks",
   resave: true,
@@ -20,6 +24,7 @@ var session = exports.session = require("express-session")({
 });
 
 var socketSession = exports.socketSession = require('express-socket.io-session');
+
 
 var app = express();
 
@@ -36,7 +41,8 @@ var userRouter = express.Router();
 app.use(parser.json());
 
 app.use(session);
-
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static(__dirname + '/../client'));
 app.use('/api/users', userRouter);
@@ -62,14 +68,3 @@ var socketHandler = require(__dirname + '/socketHandler.js');
 
 
 require('./features/users/userRoutes.js')(userRouter);
-
-
-/*
-  serve static files ../client
-  
-  setUp socket listeners
-    socketHandler.js
-
-  route calls through: 
-    routes.js:
-*/
