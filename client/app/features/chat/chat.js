@@ -52,8 +52,8 @@ angular.module('Locket.chat', ['luegg.directives'])
             if (index !== -1) {
               for (var i = 0; i < newMessages.length; i++) {
                 $scope.friends[index].messages.push({
-                  to: ($scope.activeFriend.username === event.data.text.from) ? $scope.currentUser : $scope.activeFriend.username,
-                  from: ($scope.activeFriend.username === event.data.text.from) ? $scope.activeFriend.username : $scope.currentUser,
+                  to: (event.data.text.from === 'me') ? event.data.text.with : $scope.currentUser,
+                  from: (event.data.text.from === 'me') ? $scope.currentUser : event.data.text.with,
                   timestamp: Date.now(),
                   message: newMessages[i]
                 });
