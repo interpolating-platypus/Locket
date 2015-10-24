@@ -1,7 +1,16 @@
 angular.module('Locket.chat', ['luegg.directives'])
 
-.controller('chatController', function ($scope, authFactory, $stateParams, socket) {
+.controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory) {
   socket.connect();
+
+  var keyring = encryptionFactory.generateKeyPair();
+  var publicKey;
+  // send public key to friends on login
+  keyring.then(function (keypair) {
+    publicKey = keypair.pubkey;
+    socket.emit('sendPGP', keypair.pubkey);
+  });
+
   $scope.currentUser = $stateParams.currentUser;
   $scope.friends = [];
 
@@ -12,7 +21,9 @@ angular.module('Locket.chat', ['luegg.directives'])
       name: name || (username + " daawwggg"),
       unreadMessage: false,
       online: true,
-      messages: []
+      key: null,
+      messages: [],
+      unsentMessages: [] // added this in for revoke and show decrypted message for sender
     };
   }
 
@@ -88,11 +99,18 @@ angular.module('Locket.chat', ['luegg.directives'])
   $scope.sendMessage = function(messageText){
     //reset message text
     $scope.messageText = '';
+
     if ($scope.activeFriend.service === "Locket") {
-      socket.emit('sendMessage', { to: $scope.activeFriend.username, message: messageText });
+      // encrypt typed message
+      encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+      .then(function (encryptedMessage) {
+        $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage});
+        socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+      });
     } else if ($scope.activeFriend.service === "Facebook") {
       window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, "*");
     }
+
     //if service is us
       //if we have recipients pgp key
         //encrypt and send message
@@ -107,18 +125,42 @@ angular.module('Locket.chat', ['luegg.directives'])
 
   $scope.revokeMessage = function(message) {
     if (message.from === $scope.currentUser) {
-      socket.emit('revokeMessage', message);
+      socket.emit('revokeMessage', {to: message.to, from: message.from, message: message.encryptedMessage, timestamp: message.timestamp});
     }
   };
+
+  socket.on('receivePGP', function (keyObj) {
+    findFriend(keyObj.friend, function (index) {
+      if (index !== -1) {
+        $scope.friends[index].key = keyObj.key;
+        socket.emit('returnPGP', {friend: keyObj.friend, key: publicKey});
+      }
+    });
+  });
+
+  socket.on('completePGP', function (keyObj) {
+    findFriend(keyObj.friend, function (index) {
+      if (index !== -1) {
+        $scope.friends[index].key = keyObj.key;
+        console.log('key exchange complete');
+      }
+    });
+  });
 
   socket.on('newMessage', function(message){
     findFriend(message.from, function(index){
       if (index !== -1) {
         // newMessageFrom = $scope.friends[index];
-        $scope.friends[index].messages.push(message);
+        // decrypt message
+        keyring.then(function (keypair) {
+          encryptionFactory.decryptMessage(keypair, message.encryptedMessage)
+          .then(function (decryptedMessage) {
+            message.message = decryptedMessage;
+            $scope.friends[index].messages.push(message);
+            $scope.$apply();
+          });
+        });
         if ($scope.activeFriend === null || $scope.friends[index].username !== $scope.activeFriend.username) {
-          console.log('blaaargh');
-          console.log($scope.friends[index]);
           $scope.friends[index].unreadMessage = true;
         }
       }
@@ -128,40 +170,34 @@ angular.module('Locket.chat', ['luegg.directives'])
   socket.on('messageSent', function(message){
     findFriend(message.to, function(index){
       if (index !== -1) {
-        $scope.friends[index].messages.push(message);
+        // $scope.friends[index].messages.push(message);
+        // iterate through unsent messages to find the message
+        for (var i = 0; i < $scope.friends[index].unsentMessages.length; i++) {
+          if ($scope.friends[index].unsentMessages[i].encryptedMessage === message.encryptedMessage) {
+            message.message = $scope.friends[index].unsentMessages[i].message;
+            $scope.friends[index].unsentMessages.splice(i, 1);
+            $scope.friends[index].messages.push(message);
+          }
+        }
       }
     });
   });
 
   socket.on('destroyMessage', function(message) {
-    findFriend(message.from, function(index){
+    var friend;
+    if (message.from === $scope.currentUser) {
+      friend = message.to;
+    } else {
+      friend = message.from;
+    }
+    findFriend(friend, function(index){
       if (index !== -1) {
         var messageIndex = -1;
         // iterate through messages to find one that matches message to be destroyed
         for (var i = 0; i < $scope.friends[index].messages.length; i++) {
           var thisMessage = $scope.friends[index].messages[i];
           // if match found, set messageIndex to index in messages array
-          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
-            messageIndex = i;
-            break;
-          }
-        }
-        if (messageIndex !== -1) {
-          $scope.friends[index].messages.splice(messageIndex, 1);
-        }
-      }
-    });
-  });
-
-  socket.on('deleteMessage', function(message) {
-    findFriend(message.to, function(index){
-      if (index !== -1) {
-        var messageIndex = -1;
-        // iterate through messages to find one that matches message to be destroyed
-        for (var i = 0; i < $scope.friends[index].messages.length; i++) {
-          var thisMessage = $scope.friends[index].messages[i];
-          // if match found, set messageIndex to index in messages array
-          if (message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.message) {
+          if (message.to === thisMessage.to && message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.encryptedMessage) {
             messageIndex = i;
             break;
           }

@@ -26,6 +26,13 @@ io.on('connection', function (socket) {
   //let friends know user has logged in
   notifyFriends('friendLoggedIn', username, socket);
 
+  socket.on('sendPGP', function (publicKey) {
+    sendPGP(publicKey, username);
+  });
+
+  socket.on('returnPGP', function (returnKeyObj) {
+    returnPGP(returnKeyObj, username);
+  });
 
   socket.on('sendMessage', function (msg) {
     sendMessage(msg, username);
@@ -58,6 +65,31 @@ io.on('connection', function (socket) {
   });
 });
 
+var sendPGP = function (publicKey, username) {
+  if (username) {
+    UserModel.findOne({username: username}, function (err, user) {
+      if (err) {
+        throw err;
+      } else {
+        for (var friendIndex = 0; friendIndex < user.friends.length; friendIndex++) {
+          var friendSocket = userMap[user.friends[friendIndex]];
+          if (friendSocket) {
+            io.to(friendSocket).emit('receivePGP', {friend: username, key: publicKey});
+          }
+        }
+      }
+    });
+  } else {
+    console.log('user does not have socket mapped');
+  }
+};
+
+var returnPGP = function (returnKeyObj, username) {
+  var friendSocket = userMap[returnKeyObj.friend];
+  if (friendSocket) {
+    io.to(friendSocket).emit('completePGP', {friend: username, key: returnKeyObj.key});
+  }
+};
 
 var sendMessage = function (msg, username) {
   // msg looks like {to: xx, message: }
@@ -70,24 +102,26 @@ var sendMessage = function (msg, username) {
   var message = {
     to: msg.to,
     from: username,
-    message: msg.message,
+    encryptedMessage: msg.message,
     timestamp: new Date()
   };
 
   if (recipientSocket) {
     io.to(recipientSocket).emit('newMessage', message);
     io.to(userMap[username]).emit('messageSent', message);
+    console.log('sending out message', message);
   } else {
     // Send error message to the client
   }
 };
 
 var revokeMessage = function (msg, username) {
+  console.log('revoke', msg);
   var recipientSocket = userMap[msg.to];
 
   if (recipientSocket) {
     io.to(recipientSocket).emit('destroyMessage', msg);
-    io.to(userMap[username]).emit('deleteMessage', msg);
+    io.to(userMap[username]).emit('destroyMessage', msg);
   }
 };
 
@@ -123,13 +157,15 @@ var friendRequestAccepted = function (acceptFriendObj) {
 
 var disconnect = function (username, expressCookie, socket) {
   console.log(username + ' disconnected');
+
+  notifyFriends('friendLoggedOut', username, socket);
+  
   // remove user from sessionMap and userMap
   delete userMap[username];
   delete sessionMap[expressCookie];
 
-  notifyFriends('friendLoggedOut', username, socket);
   console.log('disconnect sessionmap', sessionMap);
-  console.log('disconnect usermap', userMap); 
+  console.log('disconnect usermap', userMap);
 };
 
 var notifyFriends = function(event, username, socket){
