@@ -1,6 +1,17 @@
 var express = require('express');
 var parser = require('body-parser');
 var mongoose = require('mongoose');
+// var mongodb = require('mongodb');
+var uriUtil = require('mongodb-uri');
+
+var options = { server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }, 
+                replset: { socketOptions: { keepAlive: 1, connectTimeoutMS : 30000 } } };    
+
+var mongodbUri = process.env.MONGOLAB_URI || 'mongodb://localhost/locket';
+
+var mongooseUri = uriUtil.formatMongoose(mongodbUri);
+
+mongoose.connect(mongooseUri, options);
 
 var session = exports.session = require("express-session")({
   secret: "mr meeseeks",
@@ -13,7 +24,9 @@ var socketSession = exports.socketSession = require('express-socket.io-session')
 var app = express();
 
 var server = require('http').createServer(app);
-mongoose.connect('mongodb://localhost/locket');
+// mongoose.connect('mongodb://localhost/locket');
+
+
 
 // var routes = require(__dirname + '/routes.js');
 // var users = require(__dirname + 'features/users/users.js');
