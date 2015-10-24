@@ -158,7 +158,9 @@ var addFriend = function (friendRequestObj, username) {
       timestamp: new Date()
     });
   } else {
-
+    console.log(friendRequestObj.to); // friendRequest sent to this person
+    console.log(username);
+    // UserController.
   }
 };
 
