@@ -1,7 +1,7 @@
 angular.module('Locket.chat', ['luegg.directives'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory) {
-  console.log($stateParams.currentUser);
+  // console.log($stateParams);
   authFactory.signedin().then(function(resp){
     if (resp === 'OK') {
       socket.connect();
@@ -14,7 +14,7 @@ angular.module('Locket.chat', ['luegg.directives'])
         socket.emit('sendPGP', keypair.pubkey);
       });
 
-      $scope.currentUser = $stateParams.currentUser;
+      $scope.currentUser = $stateParams.username;
       $scope.friends = [];
 
       function createFriendObj(username, online, name, service) {
@@ -236,7 +236,7 @@ angular.module('Locket.chat', ['luegg.directives'])
           if (friend === $scope.friendRequests[i]) {
             $scope.friendRequests.splice(i, 1);
             var newFriend = createFriendObj(friend);
-            console.log(newFriend);
+            // console.log(newFriend);
             newFriend.online = true;
             $scope.friends.push(newFriend);
           }
@@ -253,6 +253,11 @@ angular.module('Locket.chat', ['luegg.directives'])
 
       $scope.acknowledgeFriendRequest = function (index) {
         $scope.acceptedfriendRequests.splice(index, 1);
+      };
+
+      $scope.fetchUnreadFriendRequests = function () {
+        console.log($stateParams.friendRequests);
+        $scope.friendRequests = $stateParams.friendRequests;
       };
 
 
@@ -313,6 +318,7 @@ angular.module('Locket.chat', ['luegg.directives'])
       }
       //get friends when we have verified the user is signed in
       $scope.getFriends();
+      $scope.fetchUnreadFriendRequests();
     }//end if resp === 'ok'      
   });
 });

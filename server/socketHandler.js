@@ -167,9 +167,9 @@ var addFriend = function (friendRequestObj, username) {
       timestamp: new Date()
     });
   } else {
-    console.log(friendRequestObj.to); // friendRequest sent to this person
-    console.log(username);
-    // UserController.
+    // console.log(friendRequestObj.to); // friendRequest sent to this person
+    // console.log(username);
+    UserController.friendRequestOffline(friendRequestObj.to, username);
   }
 };
 
@@ -182,6 +182,9 @@ var friendRequestAccepted = function (acceptFriendObj, username) {
     } else {
       // user is not online, later should allow even if no recipient socket
       // perhaps have an unsent friend request storage
+      console.log('176', acceptFriendObj);
+      UserController.removeUnreadFriendRequest(acceptFriendObj.from, acceptFriendObj.to);
+      // UserController.addFriends(acceptFriendObj);
     }
   }
 };

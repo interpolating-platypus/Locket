@@ -20,8 +20,8 @@ exports.login = function(req, res, next) {
             if (foundUser) {
               // associate sid to username in socketHandler
               socketHandler.sessionMap[sid] = username;
-              //send back username to set as $scope.currentUser
-              res.status(200).send(username);
+              //send back username to set as $scope.currentUser and their unread friendRequests
+              res.status(200).send({username:username, friendRequests: user.friendRequests});
             } else {
               return next(new Error('No User'));
             }
@@ -63,6 +63,55 @@ exports.signup = function(req, res, next) {
       next(error);
     });
 };
+
+exports.friendRequestOffline = function(user1, user2) {
+  var findUser = Q.nbind(User.findOne, User);
+
+  findUser({username: user1})
+    .then(function(user) {
+      if(!user) {
+        next(new Error('User does not exist'));
+      } else {
+        user.friendRequests.push(user2);
+        user.save(function (err) {
+          if(err) {
+            console.error('ERROR!');
+          }
+        });
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    }); 
+};
+
+exports.removeUnreadFriendRequest = function(user1, user2) {
+
+  var findUser = Q.nbind(User.findOne, User);
+
+  findUser({username: user1})
+    .then(function(user) {
+      if(!user) {
+        next(new Error('User does not exist'));
+      } else {
+        // console.log(user.friendRequests);
+        for (var i = 0; i < user.friendRequests.length; i++) {
+          if (user.friendRequests[i] === user2) {
+            user.friendRequests.splice(i, 1);
+          }
+        }
+        user.save(function (err) {
+          if(err) {
+            console.error('ERROR!');
+          }
+        });
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    }); 
+};
+
 
 exports.addFriend = function(user1, user2) {
   var findUser = Q.nbind(User.findOne, User);

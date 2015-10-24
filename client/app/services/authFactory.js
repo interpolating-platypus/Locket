@@ -23,7 +23,8 @@ angular.module('Locket.authFactory', [])
       data: { username: username, password: password }
     }).then(function(resp){
       if (resp.status === 200) {
-        $state.go('chat', {currentUser: resp.data});
+        console.log('DATA', resp.data);
+        $state.go('chat', resp.data);
       }
       return resp;
     });
@@ -40,7 +41,7 @@ angular.module('Locket.authFactory', [])
       data: { username: username, password:password }
     }).then(function(resp){
       if (resp.status === 200) {
-        $state.go('chat', {currentUser: resp.data});
+        $state.go('chat', resp.data);
       }
       return resp;
     });
