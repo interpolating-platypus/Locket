@@ -35,7 +35,7 @@
       <p class="friendHeaders">Online Friends</p>
       <ul class="friendList">
         <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
-          <div class='panel panel-default friendPanel'>
+          <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
             <span class='friendService'>{{friend.service}}</span>
             <span class='friendName'>{{friend.name}}</span>
             <span class='friendArrow'>></span>
