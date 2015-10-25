@@ -58,11 +58,11 @@
         </ul>
       </div>
       
-      <div class="acceptedFriendRequests">
+      <div class="acceptedfriendRequests">
         <ul>
           <li ng-repeat='friend in acceptedfriendRequests track by $index'>
             <span>{{friend}} accepted your friend request</span>
-            <button ng-click='acknowledgeFriendRequest($index)'>Acknowledge</button>
+            <button ng-click='acknowledgeFriendRequest(friend)'>Acknowledge</button>
           </li>
         </ul>
       </div>

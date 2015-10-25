@@ -21,7 +21,9 @@ var UserSchema = new mongoose.Schema({
 
   friends: [],
 
-  friendRequests: []
+  friendRequests: [],
+  
+  acceptedfriendRequests: []
 });
 
 

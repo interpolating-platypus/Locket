@@ -55,6 +55,13 @@ io.on('connection', function (socket) {
     friendRequestAccepted(acceptedObj, username);
   });
 
+  socket.on('acknowledgeFriendRequest', function(acknowledgeObj) {
+    console.log(acknowledgeObj);
+    //from yilin
+    //to michael
+    UserController.acknowledgeFriendRequest(acknowledgeObj.from, acknowledgeObj.to);
+  });
+
   socket.on('disconnect', function () {
     disconnect(username, expressCookie);
   });
@@ -176,15 +183,15 @@ var addFriend = function (friendRequestObj, username) {
 var friendRequestAccepted = function (acceptFriendObj, username) {
   if(acceptFriendObj.from === username){
     var recipientSocket = userMap[acceptFriendObj.to];
+    UserController.removeUnreadFriendRequest(acceptFriendObj.from, acceptFriendObj.to);
+    UserController.addFriends(acceptFriendObj);
     if (recipientSocket) {
-      UserController.addFriends(acceptFriendObj);
       io.to(recipientSocket).emit('friendRequestAccepted', acceptFriendObj);
     } else {
       // user is not online, later should allow even if no recipient socket
       // perhaps have an unsent friend request storage
-      console.log('176', acceptFriendObj);
-      UserController.removeUnreadFriendRequest(acceptFriendObj.from, acceptFriendObj.to);
       // UserController.addFriends(acceptFriendObj);
+      UserController.notifyFriendRequestAccepted(acceptFriendObj.to, acceptFriendObj.from);
     }
   }
 };
