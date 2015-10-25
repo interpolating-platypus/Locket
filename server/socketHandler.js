@@ -56,10 +56,11 @@ io.on('connection', function (socket) {
   });
 
   socket.on('acknowledgeFriendRequest', function(acknowledgeObj) {
-    console.log(acknowledgeObj);
-    //from yilin
-    //to michael
     UserController.acknowledgeFriendRequest(acknowledgeObj.from, acknowledgeObj.to);
+  });
+
+  socket.on('ignoreFriendRequest', function(ignoreFriendObj) {
+    UserController.removeUnreadFriendRequest(ignoreFriendObj.from, ignoreFriendObj.to);
   });
 
   socket.on('disconnect', function () {
@@ -174,8 +175,6 @@ var addFriend = function (friendRequestObj, username) {
       timestamp: new Date()
     });
   } else {
-    // console.log(friendRequestObj.to); // friendRequest sent to this person
-    // console.log(username);
     UserController.friendRequestOffline(friendRequestObj.to, username);
   }
 };

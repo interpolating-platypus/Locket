@@ -249,6 +249,7 @@ angular.module('Locket.chat', ['luegg.directives'])
             $scope.friendRequests.splice(i, 1);
           }
         }
+        socket.emit('ignoreFriendRequest', {from: $scope.currentUser, to: friend});
       };
 
       $scope.acknowledgeFriendRequest = function (friend) {
