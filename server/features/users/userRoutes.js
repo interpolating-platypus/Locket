@@ -4,6 +4,7 @@ var userController = require('./userController.js');
 //attaching all our handlers on our userRouter
 
 module.exports = function (app) {
+
   app.post('/login', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
       req.login(user, function(){
@@ -13,11 +14,7 @@ module.exports = function (app) {
   });
   
   app.post('/signup', function (req, res, next) {
-    passport.authenticate('local', function (err, user, info) {
-      req.login(user, function(){
-        userController.signup(req, res, next);
-      });
-    })(req, res, next);
+    userController.signup(req, res, next);
   });
   
   app.get('/signedin', isLoggedIn, function (req, res, next) {
