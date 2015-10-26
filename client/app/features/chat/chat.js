@@ -1,4 +1,4 @@
-angular.module('Locket.chat', ['luegg.directives'])
+angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
   authFactory.signedin().then(function(resp){
