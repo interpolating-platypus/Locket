@@ -51,7 +51,6 @@ html, body {
 }
 
 .friendListWindow {
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   height: 95vh;
   border-right: 1px solid lightgray;
   padding-right: 0;
@@ -176,4 +175,10 @@ img {
   display: inline;
   vertical-align: middle;
   text-align: center;
+}
+
+.windowTitle {
+  border-bottom: 1px solid lightgray;
+  padding: 5px 0px 5px 0px;
+  font-size: 16px;
 }

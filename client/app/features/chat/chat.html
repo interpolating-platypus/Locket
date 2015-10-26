@@ -3,7 +3,6 @@
   <div class="row">
     <nav class="navbar navbar-inverse nav-row">
       <a class="navbar-brand" href="#">Locket</a>
-      <!-- <div class="appName navbar-header text-center">Locket</div> -->
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser}}</a>
@@ -22,12 +21,15 @@
     </nav>
   </div>
 
-<!-- <div class="container-fluid no-padding"> -->
   <div class="row">
 
     <div class="col-md-4 friendListWindow">
+<<<<<<< HEAD
       <p class="friendHeaders">Friends List</p>
       <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
+=======
+      <p class="windowTitle text-center">Friends List</p>
+>>>>>>> Format window titles
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
           <input class='form-control input-display-add' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
@@ -79,13 +81,12 @@
 
     <div class="col-md-8 chatWindow">
       <div ng-show="activeFriend">
-        <div class="activeFriendBox text-center">Chat with {{activeFriend.name}}</div>
+        <div class="windowTitle text-center">Chat with {{activeFriend.name}}</div>
         
         <div class="messageList" scroll-glue>
           <div class="messages"  
             ng-class="{ 'message-right': message.from === currentUser, 'message-left': message.from !==currentUser }" 
             ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
-            <!-- <span>{{message.from}}</span> -->
             <span 
               ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser, 'wrapMessage': message.message.length > 60}"
               ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
@@ -93,13 +94,13 @@
           </div>
         </div>
 
-        <!-- <div class="sendMessage"> -->
         <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
           <div class='form-group'>
             <input class="form-control input-display-send" type='text' name='message' ng-model='messageText' required/>
             <button class="btn btn-default button-display-send form-control" ng-disabled='!messageForm.$valid' type='submit'>Send</button>
           </div>
         </form>
+
         <button ng-click='requestEncryptedChat()' type='submit' value='Chat Securely'>
         <!-- </div> -->
 
