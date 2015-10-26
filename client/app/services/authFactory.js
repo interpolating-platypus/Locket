@@ -9,7 +9,6 @@ angular.module('Locket.authFactory', [])
       url: '/api/users/signedin'
     }).then(function(resp) {
       if(resp.data === "UNAUTHORIZED"){
-        console.log('cream cheese');
         $state.go('login');
       }
       return resp.data;
@@ -24,7 +23,6 @@ angular.module('Locket.authFactory', [])
       data: { username: username, password: password }
     }).then(function(resp){
       if (resp.status === 200) {
-        console.log('DATA', resp.data);
         $state.go('chat', resp.data);
       }
       return resp;

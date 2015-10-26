@@ -20,7 +20,6 @@ module.exports = function (app) {
   app.get('/signedin', isLoggedIn, function (req, res, next) {
     res.status(200).send('OK');
   });
-
 };
 
 

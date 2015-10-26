@@ -70,7 +70,7 @@ exports.signup = function(req, res, next) {
     });
 };
 
-exports.friendRequestOffline = function(user1, user2) {
+exports.friendRequestOffline = function(user1, user2, next) {
   var findUser = Q.nbind(User.findOne, User);
 
   findUser({username: user1})
@@ -164,8 +164,6 @@ exports.acknowledgeFriendRequest = function(user1, user2) {
       next(error);
     }); 
 }
-
-
 
 exports.addFriend = function(user1, user2) {
   var findUser = Q.nbind(User.findOne, User);

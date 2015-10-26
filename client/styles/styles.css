@@ -71,6 +71,10 @@
   color: #ddd;
 }
 
+.friendReqSent {
+  margin-left: 20px;
+}
+
 .messageList {
   height: 620px;
   border: 1px solid black;
