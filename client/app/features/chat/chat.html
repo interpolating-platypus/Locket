@@ -28,9 +28,11 @@
     <div class="col-md-4 friendListWindow">
       <p class="friendHeaders">Friends List</p>
       <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
-      <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
-        <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
-        <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
+      <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
+        <div class='form-group'>
+          <input class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
+          <button class='btn btn-default button-display form-control' type='submit' ng-disabled='!addFriendForm.$valid'>Add Friend</button>
+        </div>
       </form>
 
       <p class="friendHeaders">Friend Requests</p>

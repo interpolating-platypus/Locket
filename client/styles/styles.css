@@ -95,7 +95,7 @@ html, body {
   position: absolute; 
   /*bottom: 0;*/
   /*border: 1px solid black;*/
-  width: 748px;
+  /*width: 748px;*/
 }
 
 /*.sendMessageInput {
@@ -144,5 +144,24 @@ img {
   height: 5vh;
 }
 
+.form-control-inline {
+  min-width: 0;
+  width: auto;
+  display: inline;
+  vertical-align: middle;
+  position: relative;
+}
 
+.input-display {
+  width: 70%;
+  display: inline;
+  vertical-align: top;
+}
+
+.button-display {
+  width: 25%;
+  vertical-align: middle;
+  display: inline;
+  vertical-align: top;
+}
 
