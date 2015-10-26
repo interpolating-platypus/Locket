@@ -90,13 +90,13 @@ html, body {
   overflow: auto;
 }
 
-.sendMessage {
+/*.sendMessage {
   margin-bottom: 20px;
   position: absolute; 
-  /*bottom: 0;*/
-  /*border: 1px solid black;*/
-  /*width: 748px;*/
-}
+  bottom: 0;
+  border: 1px solid black;
+  width: 748px;
+}*/
 
 /*.sendMessageInput {
   width: 693px;
@@ -152,16 +152,28 @@ img {
   position: relative;
 }
 
-.input-display {
-  width: 70%;
+.input-display-add {
+  width: 75%;
   display: inline;
-  vertical-align: top;
-}
-
-.button-display {
-  width: 25%;
   vertical-align: middle;
-  display: inline;
-  vertical-align: top;
 }
 
+.button-display-add {
+  width: 23%;
+  display: inline;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.input-display-send {
+  width: 85%;
+  display: inline;
+  vertical-align: middle;
+}
+
+.button-display-send {
+  width: 13%;
+  display: inline;
+  vertical-align: middle;
+  text-align: center;
+}

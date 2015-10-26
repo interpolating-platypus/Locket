@@ -30,8 +30,8 @@
       <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
-          <input class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
-          <button class='btn btn-default button-display form-control' type='submit' ng-disabled='!addFriendForm.$valid'>Add Friend</button>
+          <input class='form-control input-display-add' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
+          <button class='btn btn-default button-display form-control-add' type='submit' ng-disabled='!addFriendForm.$valid'>Add Friend</button>
         </div>
       </form>
 
@@ -93,13 +93,15 @@
           </div>
         </div>
 
-        <div class="sendMessage">
-          <form class="form-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
-            <input class="sendMessageInput form-control" type='text' name='message' ng-model='messageText' required/>
-            <button class="btn btn-default" ng-disabled='!messageForm.$valid' type='submit'>Send</button>
-          </form>
-          <button ng-click='requestEncryptedChat()' type='submit' value='Chat Securely'>
-        </div>
+        <!-- <div class="sendMessage"> -->
+        <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
+          <div class='form-group'>
+            <input class="form-control input-display-send" type='text' name='message' ng-model='messageText' required/>
+            <button class="btn btn-default button-display-send form-control" ng-disabled='!messageForm.$valid' type='submit'>Send</button>
+          </div>
+        </form>
+        <button ng-click='requestEncryptedChat()' type='submit' value='Chat Securely'>
+        <!-- </div> -->
 
       </div>
     </div>
