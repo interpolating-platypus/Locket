@@ -36,17 +36,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       // Listen for events from our extension
       window.addEventListener('message', function(event) {
-        console.log('client side message: ', event.data);
         if (event.source != window)
           return;
 
         // Recieve a facebook friends list
         if (event.data.type && (event.data.type === 'facebookFriendsList')) {
-          console.log(event.data);
           for (var i = 0; i < event.data.text.length; i++) {
             var friend = event.data.text[i];
             var friendObj = createFriendObj(friend.username, true, friend.name, "Facebook");
-            console.log('friendo',friendObj);
             $scope.friends.push(friendObj);
           }
           // After receiving a facebook friends list, begin monitoring the facebook DOM
@@ -74,6 +71,15 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           });
         };
 
+        // Receive PGP Key (over facebook)
+        if (event.data.type && (event.data.type === 'receivedPGPKey')) {
+          //console.log('RECEIVED PGP KEY', event.data.text);
+          var username = event.data.text.from;
+          findFriend(username, function(index) {
+            $scope.friends[index].key = event.data.text.publicKey;
+          });
+        }
+
         // Receive a request for our PGP key
         if (event.data.type && (event.data.type === 'requestPublicKey')) {
           if (publicKey) {
@@ -84,12 +90,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           }
         }
         $scope.$apply();
-        console.log('FRIENDS LIST:',$scope.friends);
       });
 
       // We are requesting an encrypted chat with somebody. Send them our public key and request their public key in return
       $scope.requestEncryptedChat = function() {
-        console.log('client: requesting encrypted chat');
         window.postMessage({ 
           type: 'requestPublicKey',
           publicKey: publicKey,
@@ -137,8 +141,17 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
           });
         } else if ($scope.activeFriend.service === 'Facebook') {
-          console.log('posting message to facebook');
-          window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, '*');
+          if ($scope.activeFriend.key) {
+            console.log('hi');
+            console.log('Active friends key: ', $scope.activeFriend.key);
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+            .then(function (encryptedMessage) {
+              console.log('posting encrypted message through fb');
+              window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: encryptedMessage}, '*');
+            });
+          } else {
+            window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, '*');
+          }
         }
 
         //if service is us

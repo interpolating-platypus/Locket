@@ -102,13 +102,13 @@ $(document).ready(function() {
         // Handle any new messages
         if (id && seenMessageGroup[id].length !== texts.length) {
           var newTexts = [];
-          var nextIsPGPKey = false;
+          var halfpgpkey = ''; // the pgp key gets split into two messages
           var context = this;
           texts.slice(seenMessageGroup[id].length).each(function(index) {
             // Sometimes a new message will contain a PGP key
-            if (nextIsPGPKey) {
-              console.log('pgp ',$(this).text());
-              nextIsPGPKey = false;
+            if (halfpgpkey) {
+              var publicKey = halfpgpkey + '\n\n'+$(this).text();
+              halfpgpkey = '';
 
               // Determine who sent the PGP key. 
               var activeUsername = getActiveUsername();
@@ -119,7 +119,7 @@ $(document).ready(function() {
                 chrome.runtime.sendMessage({
                   event: 'receivedPGPKey',
                   data: {
-                    publicKey: $(this).text(),
+                    publicKey: publicKey,
                     from: activeUsername
                   }
                 });
@@ -127,7 +127,7 @@ $(document).ready(function() {
             }
             // This is the pgp key header; the next text is the pgp key
             else if ($(this).text().substr(0,36) === '-----BEGIN PGP PUBLIC KEY BLOCK-----') {
-              nextIsPGPKey = true;
+              halfpgpkey = $(this).text();
             }
             // This is a standard message to be sent back to the client
             else {
@@ -141,8 +141,8 @@ $(document).ready(function() {
 
             // handle sending of new messages to the client here
             chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {with: activeUsername, from: sentBy, text: newTexts}});
-            seenMessageGroup[id] = texts;
           }
+          seenMessageGroup[id] = texts;
         }
       });
 

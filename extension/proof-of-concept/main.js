@@ -1,11 +1,10 @@
 // document.body.style.background = 'yellow';
 console.log('main');
 
-// Receive update from background process
+// Receive update from background process (Facebook wants to communicate)
 chrome.runtime.onMessage.addListener(function(message) {
   // Received a new facebook message
   if (message.event === "receivedNewFacebookMessage") {
-    console.log('received new message event trigger', message);
     window.postMessage({ type: 'receivedNewFacebookMessage', text: message.data}, "*");
   }
 
@@ -13,6 +12,11 @@ chrome.runtime.onMessage.addListener(function(message) {
   if (message.event === "facebookFriendsList") {
     // Emit the facebook friends list to the extension
     window.postMessage({ type: 'facebookFriendsList', text: message.data}, "*");
+  }
+
+  // Received facebook PGP key
+  if (message.event === 'receivedPGPKey') {
+    window.postMessage({ type: 'receivedPGPKey', text: message.data}, "*");
   }
 });
 
