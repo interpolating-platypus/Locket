@@ -19,7 +19,11 @@ var UserSchema = new mongoose.Schema({
 
   salt: String,
 
-  friends: []
+  friends: [],
+
+  friendRequests: [],
+  
+  acceptedfriendRequests: []
 });
 
 
