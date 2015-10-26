@@ -317,7 +317,7 @@ angular.module('Locket.chat', ['luegg.directives'])
         $scope.friends.push(newFriend);
         $scope.getFriends();
 
-        // socket.emit('sendPGP', publicKey);
+        socket.emit('sendPGP', publicKey);
       });
 
       //hoist helper functions
