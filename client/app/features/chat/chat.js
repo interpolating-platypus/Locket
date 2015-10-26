@@ -5,6 +5,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
     if (resp === 'OK') {
       socket.connect();
 
+      window.onbeforeunload = function(event){
+        return "All of your messages will be lost";
+      };
+
       var keyring = encryptionFactory.generateKeyPair();
       var publicKey;
       // send public key to friends on login
