@@ -14,13 +14,10 @@ angular.module('Locket.encryptionFactory', [])
     var randomPassphraseArray = new Uint32Array(n);
     var randomPassphraseValues = window.crypto.getRandomValues(randomPassphraseArray);
     var randomPassphrase = '';
-
+    //safari doesnt provide any of the normal array methds on Uint32Arrays
     for(var i = 0; i < randomPassphraseValues.length; i++){
       randomPassphrase += randomPassphraseValues[i];
     }
-
-    // console.log('random id', randomId);
-    // console.log('random passphrase', randomPassphrase);
 
     var options = {
       numBits: 2048,
