@@ -20,11 +20,6 @@ module.exports = function (app) {
   app.get('/signedin', isLoggedIn, function (req, res, next) {
     res.status(200).send('OK');
   });
-
-  app.post('/checkUserExists', function(req, res, next) {
-    userController.checkUserExists(req, res, next);
-  })
-
 };
 
 

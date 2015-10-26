@@ -229,17 +229,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.addFriend = function(newFriendUsername){
         $scope.newFriendUsername = '';
         socket.emit('addFriend', { to: newFriendUsername });
-        authFactory.checkUserExists(newFriendUsername).then(function(response) {
-          if (response.data) {
-            $scope.friendReqSentMessage = "Friend Request Sent";
-          } else {
-            $scope.friendReqSentMessage = "Friend does not exist";
-          }
-          $scope.sentRequest = true;
-          $timeout(function() {
-            $scope.sentRequest = false;
-          }, 2000);
-        });
+        
+        $scope.sentRequest = true;
+        $timeout(function() {
+          $scope.sentRequest = false;
+        }, 2000);
       };
 
       $scope.acceptFriendRequest = function (friend) {
@@ -248,7 +242,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           if (friend === $scope.friendRequests[i]) {
             $scope.friendRequests.splice(i, 1);
             var newFriend = createFriendObj(friend);
-            // newFriend.online = true
             $scope.friends.push(newFriend);
             $scope.getFriends();
           }
@@ -322,7 +315,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       socket.on('friendRequestAccepted', function(acceptFriendObj) {
         $scope.acceptedfriendRequests.push(acceptFriendObj.from);
         var newFriend = createFriendObj(acceptFriendObj.from);
-        // newFriend.online = true;
         $scope.friends.push(newFriend);
         $scope.getFriends();
 

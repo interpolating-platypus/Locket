@@ -9,7 +9,6 @@ angular.module('Locket.authFactory', [])
       url: '/api/users/signedin'
     }).then(function(resp) {
       if(resp.data === "UNAUTHORIZED"){
-        console.log('cream cheese');
         $state.go('login');
       }
       return resp.data;
@@ -47,22 +46,11 @@ angular.module('Locket.authFactory', [])
     });
   };
 
-  var checkUserExists = function(username) {
-    return $http({
-      method: 'POST',
-      url: '/api/users/checkUserExists',
-      data: { username: username }
-    }).then(function(resp){
-      return resp;
-    });
-  };
-
   return {
     signedin: signedin,
     login: login,
     logout: logout,
-    signup: signup,
-    checkUserExists: checkUserExists
+    signup: signup
   };
 
 });
