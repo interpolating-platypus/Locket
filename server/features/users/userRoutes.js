@@ -21,6 +21,10 @@ module.exports = function (app) {
     res.status(200).send('OK');
   });
 
+  app.post('/checkUserExists', function(req, res, next) {
+    userController.checkUserExists(req, res, next);
+  })
+
 };
 
 

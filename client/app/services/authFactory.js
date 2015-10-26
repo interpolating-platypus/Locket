@@ -24,7 +24,6 @@ angular.module('Locket.authFactory', [])
       data: { username: username, password: password }
     }).then(function(resp){
       if (resp.status === 200) {
-        console.log('DATA', resp.data);
         $state.go('chat', resp.data);
       }
       return resp;
@@ -48,11 +47,22 @@ angular.module('Locket.authFactory', [])
     });
   };
 
+  var checkUserExists = function(username) {
+    return $http({
+      method: 'POST',
+      url: '/api/users/checkUserExists',
+      data: { username: username }
+    }).then(function(resp){
+      return resp;
+    });
+  };
+
   return {
     signedin: signedin,
     login: login,
     logout: logout,
-    signup: signup
+    signup: signup,
+    checkUserExists: checkUserExists
   };
 
 });

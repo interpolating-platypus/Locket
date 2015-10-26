@@ -8,7 +8,6 @@ angular.module('Locket', [
   'luegg.directives'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
-  console.log('working');
 
   $stateProvider
     .state('chat', {

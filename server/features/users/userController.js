@@ -70,7 +70,7 @@ exports.signup = function(req, res, next) {
     });
 };
 
-exports.friendRequestOffline = function(user1, user2) {
+exports.friendRequestOffline = function(user1, user2, next) {
   var findUser = Q.nbind(User.findOne, User);
 
   findUser({username: user1})
@@ -164,6 +164,24 @@ exports.acknowledgeFriendRequest = function(user1, user2) {
       next(error);
     }); 
 }
+
+exports.checkUserExists = function(req, res, next) {
+  var username = req.body.username
+  console.log(username);
+  var findUser = Q.nbind(User.findOne, User);
+  findUser({username: username})
+    .then(function(user) {
+      if(!user) {
+        next(new Error('User does not exist'));
+        res.send(false);
+      } else {
+        res.status(200).send(true);
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    });
+};
 
 
 

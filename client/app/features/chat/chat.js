@@ -1,6 +1,6 @@
 angular.module('Locket.chat', ['luegg.directives'])
 
-.controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory) {
+.controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
   authFactory.signedin().then(function(resp){
     if (resp === 'OK') {
       socket.connect();
@@ -15,6 +15,7 @@ angular.module('Locket.chat', ['luegg.directives'])
 
       $scope.currentUser = $stateParams.username;
       $scope.friends = [];
+      $scope.sentRequest = false;
 
       function createFriendObj(username, online, name, service) {
         return {
@@ -228,6 +229,17 @@ angular.module('Locket.chat', ['luegg.directives'])
       $scope.addFriend = function(newFriendUsername){
         $scope.newFriendUsername = '';
         socket.emit('addFriend', { to: newFriendUsername });
+        authFactory.checkUserExists(newFriendUsername).then(function(response) {
+          if (response.data) {
+            $scope.friendReqSentMessage = "Friend Request Sent";
+          } else {
+            $scope.friendReqSentMessage = "Friend does not exist";
+          }
+          $scope.sentRequest = true;
+          $timeout(function() {
+            $scope.sentRequest = false;
+          }, 2000);
+        });
       };
 
       $scope.acceptFriendRequest = function (friend) {
@@ -262,13 +274,10 @@ angular.module('Locket.chat', ['luegg.directives'])
       };
 
       $scope.fetchUnreadFriendRequests = function () {
-        // console.log($stateParams.friendRequests);
         $scope.friendRequests = $stateParams.friendRequests;
       };
 
       $scope.fetchUnreadAcknowledgements = function () {
-        console.log($stateParams);
-        console.log($stateParams.acceptedfriendRequests);
         $scope.acceptedfriendRequests = $stateParams.acceptedfriendRequests;
       };
 
