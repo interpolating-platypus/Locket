@@ -39,6 +39,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         console.log('client side message: ', event.data);
         if (event.source != window)
           return;
+
         // Recieve a facebook friends list
         if (event.data.type && (event.data.type === 'facebookFriendsList')) {
           console.log(event.data);
@@ -51,6 +52,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           // After receiving a facebook friends list, begin monitoring the facebook DOM
           window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
         }
+
         // Receive new facebook message(s)
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
           var username = event.data.text.with;
@@ -71,6 +73,15 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             }
           });
         };
+
+        // Receive a request for our PGP key
+        if (event.data.type && (event.data.type === 'requestPublicKey')) {
+          if (publicKey) {
+            window.postMessage({ type: 'sendPublicKey', text: publicKey}, '*');
+          } else {
+            console.log("This statement only gets called if we have a request for a public key before it's generated. If you see this, add that capability");
+          }
+        }
         $scope.$apply();
         console.log('FRIENDS LIST:',$scope.friends);
       });
