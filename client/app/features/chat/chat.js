@@ -86,6 +86,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         console.log('FRIENDS LIST:',$scope.friends);
       });
 
+      $scope.requestEncryptedChat = function() {
+        window.postMessage({ type: 'requestPublicKey', text: {
+          key: publicKey,
+          from: '????'
+        }, '*');
+      };
+
 
       $scope.friendRequests = [];
       $scope.acceptedfriendRequests = [];
