@@ -4,6 +4,7 @@ var rescanDOMInteral = 500;
 var seenMessageGroup = {};
 var usersWithNewMessages = [];
 var messagesToPost = {};
+var keyExchanges = {};
 var usersToClick = [];
 var scanDOM = false;
 
@@ -48,21 +49,29 @@ $(document).ready(function() {
             console.log('POST MSGS', response.postMessages);
             for (var i = 0; i < response.postMessages.length; i++) {
               var message = response.postMessages[i];
+
               // Store the messages to be sent
               messagesToPost[message.to] = messagesToPost[message.to] || [];
               messagesToPost[message.to].push(message.text);
+
               // Store users to navigate to in order to send messages
               if (usersToClick.indexOf(message.to) === -1) {
                 usersToClick.push(message.to);
               }
             }
+          }
 
-            // NOTE: it's possible that these messages are destined for multiple users
-            // for (var i = 0; i < response.postMessages.length; i++) {
-              // THIS OLD CODE SENT MESSAGE TO CURRENTLY ACTIVE FB USER
-               // document.getElementsByName('message_body')[0].value = response.postMessages[i].text;
-               // document.getElementById('u_0_r').click();
-            // }
+          // Background process wants us to initiate a key exchange. Same logic as handling posting of messages
+          if (response.requestPublicKey.length !== 0) {
+            for (var i = 0; i < response.requestPublicKey.length; i++) {
+              var keyReq = response.requestPublicKey[i];
+
+              // Mark that we want to initiate a key exchange with this user
+              keyExchanges[keyReq.to] = keyReq.publicKey; 
+              if (usersToClick.indexOf(keyReq.to) === -1) {
+                usersToClick.push(keyReq.to);
+              }
+            }
           }
           // Background process wants to get facebook friends
           if (response.getFriends) {
@@ -89,33 +98,70 @@ $(document).ready(function() {
         var texts = $(this).find('p');
         var id = $(this).attr('id');
         seenMessageGroup[id] = seenMessageGroup[id] || [];
+
         // Handle any new messages
         if (id && seenMessageGroup[id].length !== texts.length) {
           var newTexts = [];
-          texts.slice(seenMessageGroup[id].length).each(function() {
-            newTexts.push($(this).text());
-          });
-          console.log('NEW MESSAGE', newTexts);
-          // Retrieve the facebook username
-          var activeUsername = $('._r7').find('a').attr('href').replace('https://www.facebook.com/','');
-          var sentBy = $(this).find('a').first().attr('href').replace('https://www.facebook.com/','') === activeUsername ? activeUsername : 'me';
-          //console.log('MESSAGE SENT BY', sentBy);
-          // handle sending of new message to the client here
-          chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {with: activeUsername, from: sentBy, text: newTexts}});
-          seenMessageGroup[id] = texts;
+          var nextIsPGPKey = false;
+          var context = this;
+          texts.slice(seenMessageGroup[id].length).each(function(index) {
+            // Sometimes a new message will contain a PGP key
+            if (nextIsPGPKey) {
+              console.log('pgp ',$(this).text());
+              nextIsPGPKey = false;
 
+              // Determine who sent the PGP key. 
+              var activeUsername = getActiveUsername();
+              var sentBy = getSender(context, activeUsername);
+
+              // Only report this PGP key to the client if we did not send it
+              if (sentBy !== 'me') {
+                chrome.runtime.sendMessage({
+                  event: 'receivedPGPKey',
+                  data: {
+                    publicKey: $(this).text(),
+                    from: activeUsername
+                  }
+                });
+              }
+            }
+            // This is the pgp key header; the next text is the pgp key
+            else if ($(this).text().substr(0,36) === '-----BEGIN PGP PUBLIC KEY BLOCK-----') {
+              nextIsPGPKey = true;
+            }
+            // This is a standard message to be sent back to the client
+            else {
+              newTexts.push($(this).text());
+            }
+          });
+          if (newTexts.length) {
+            // Retrieve the facebook username
+            var activeUsername = getActiveUsername();
+            var sentBy = getSender(this, activeUsername);
+
+            // handle sending of new messages to the client here
+            chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {with: activeUsername, from: sentBy, text: newTexts}});
+            seenMessageGroup[id] = texts;
+          }
         }
       });
 
-      // Send any queued messages for this user
+      // Send any queued messages / key exchanges for this user
       var activeUsername = $('._r7').find('a').attr('href').replace('https://www.facebook.com/','');
-      console.log('ACTIVE USER', activeUsername);
+
+      // Send any queued key exchanges to this user
+      if (keyExchanges[activeUsername] && keyExchanges[activeUsername].length) {
+        var message = keyExchanges[activeUsername];
+        postFacebookMessage(message);
+        delete keyExchanges[activeUsername];
+      }
+
+      // Send any queued messages to this user
       if (messagesToPost[activeUsername] && messagesToPost[activeUsername].length !== 0) {
         // In a while loop in case more messages are received while we are sending messages
         while (messagesToPost[activeUsername].length) {
           var message = messagesToPost[activeUsername].shift();
-          document.getElementsByName('message_body')[0].value = message;
-          document.getElementById('u_0_r').click();
+          postFacebookMessage(message);
         }
       }
 
@@ -146,8 +192,6 @@ $(document).ready(function() {
           }
         });
       }
-        // usersWithNewMessages[0].click();
-        // usersWithNewMessages.shift();
     };
 
     setInterval(checkWithBackgroundProcess, backgroundCheckInterval);
@@ -157,4 +201,17 @@ $(document).ready(function() {
       }
     }, rescanDOMInteral);
   }
+
+  function postFacebookMessage(message) {
+    document.getElementsByName('message_body')[0].value = message;
+    document.getElementById('u_0_r').click();
+  }
+  function getSender(context, activeUsername) {
+    return $(context).find('a').first().attr('href').replace('https://www.facebook.com/','') === activeUsername ? activeUsername : 'me';
+  }
+  function getActiveUsername() {
+    return $('._r7').find('a').attr('href').replace('https://www.facebook.com/','');
+  }
 });
+
+

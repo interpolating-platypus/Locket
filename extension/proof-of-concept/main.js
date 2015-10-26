@@ -3,10 +3,12 @@ console.log('main');
 
 // Receive update from background process
 chrome.runtime.onMessage.addListener(function(message) {
+  // Received a new facebook message
   if (message.event === "receivedNewFacebookMessage") {
     console.log('received new message event trigger', message);
     window.postMessage({ type: 'receivedNewFacebookMessage', text: message.data}, "*");
   }
+
   // Received facebook friends list
   if (message.event === "facebookFriendsList") {
     // Emit the facebook friends list to the extension
@@ -45,6 +47,17 @@ window.addEventListener('message', function(event) {
       data: {
         to: event.data.to,
         text: event.data.text
+      }
+    });
+  }
+  // App requesting a key exchange
+  if (event.data.type && (event.data.type === 'requestPublicKey')) {
+    console.log('main: requesting public key');
+    chrome.runtime.sendMessage({
+      event: 'requestPublicKey',
+      data: {
+        to: event.data.to,
+        publicKey: event.data.publicKey
       }
     });
   }

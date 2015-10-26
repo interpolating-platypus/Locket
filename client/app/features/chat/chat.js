@@ -78,6 +78,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         if (event.data.type && (event.data.type === 'requestPublicKey')) {
           if (publicKey) {
             window.postMessage({ type: 'sendPublicKey', text: publicKey}, '*');
+            // TODO: this will come with a PGP key of its own for a given friend. Add that
           } else {
             console.log("This statement only gets called if we have a request for a public key before it's generated. If you see this, add that capability");
           }
@@ -86,10 +87,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         console.log('FRIENDS LIST:',$scope.friends);
       });
 
+      // We are requesting an encrypted chat with somebody. Send them our public key and request their public key in return
       $scope.requestEncryptedChat = function() {
-        window.postMessage({ type: 'requestPublicKey', text: {
-          key: publicKey,
-          from: '????'
+        console.log('client: requesting encrypted chat');
+        window.postMessage({ 
+          type: 'requestPublicKey',
+          publicKey: publicKey,
+          to: $scope.activeFriend.username
         }, '*');
       };
 

@@ -25,7 +25,8 @@ var unreadMessages = []; // Messages loaded by facebook.js awaiting main.js conn
 var facebookTODO = {
   postMessages: [],
   getFriends: false,
-  scanDOM: false
+  scanDOM: false,
+  requestPublicKey: []
 };
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -42,14 +43,16 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     sendResponse({
       postMessages: facebookTODO.postMessages.slice(),
       getFriends: facebookTODO.getFriends,
-      scanDOM: facebookTODO.scanDOM
+      scanDOM: facebookTODO.scanDOM,
+      requestPublicKey: facebookTODO.requestPublicKey
     });
     // TODO: modularize this so it's a 1-line reset to defaults
     facebookTODO.postMessages = [];
     facebookTODO.getFriends = false;
+    facebookTODO.requestPublicKey = [];
   }
+  // The facebook script has read in new messages
   if (message.event === "receivedNewFacebookMessage") {
-    console.log('background: received new message', message.data);
     // if the client is already on our app, send the new messages
     if (mainTabId) {
       chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewFacebookMessage', data: message.data});
@@ -76,4 +79,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.event === 'scanFacebookDOM') {
     facebookTODO.scanDOM = true;
   }
+  // The content script is telling us to initiate a public key exchange
+  if (message.event === 'requestPublicKey') {
+    console.log('bg: requesting public key', message.data);
+    facebookTODO.requestPublicKey.push(message.data);
+  }
+  // The facebook script has sent us a PGP key
 });
