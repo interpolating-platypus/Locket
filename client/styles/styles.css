@@ -2,6 +2,10 @@
   margin-right: 40px;
 }*/
 
+html, body {
+  height: 100%;
+}
+
 .messages {
   padding-bottom: 5px;
 }
@@ -37,8 +41,9 @@
 }
 
 .chatWindow {
-  height: 700px;
-  border: 1px solid black;
+  height: 95vh;
+  padding-left: 0;
+  /*border: 1px solid black;*/
 }
 
 .friendHeaders {
@@ -47,10 +52,14 @@
 
 .friendListWindow {
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  height: 95vh;
+  border-right: 1px solid lightgray;
+  padding-right: 0;
 }
 
 .friendList {
   list-style: none;
+  padding-left: 0;
 }
 
 .friendPanel {
@@ -75,22 +84,23 @@
 }
 
 .messageList {
-  height: 620px;
-  border: 1px solid black;
+  /*height: 620px;*/
+  /*border: 1px solid black;*/
+  height: 85vh;
   overflow: auto;
 }
 
 .sendMessage {
   margin-bottom: 20px;
   position: absolute; 
-  bottom: 0;  
-  border: 1px solid black;
+  /*bottom: 0;*/
+  /*border: 1px solid black;*/
   width: 748px;
 }
 
-.sendMessageInput {
+/*.sendMessageInput {
   width: 693px;
-}
+}*/
 
 .dropdown-toggle {
   margin-right: 34px;
@@ -129,9 +139,10 @@ img {
   margin: 0 !important;
 }
 
-
-
-
+.nav-row {
+  margin-bottom: 0px;
+  height: 5vh;
+}
 
 
 
