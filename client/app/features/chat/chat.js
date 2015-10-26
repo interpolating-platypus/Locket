@@ -316,6 +316,8 @@ angular.module('Locket.chat', ['luegg.directives'])
         // newFriend.online = true;
         $scope.friends.push(newFriend);
         $scope.getFriends();
+
+        // socket.emit('sendPGP', publicKey);
       });
 
       //hoist helper functions
