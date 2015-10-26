@@ -25,12 +25,39 @@
   <div class="row">
 
     <div class="col-md-4 friendListWindow">
-      <span class="friendHeaders">Friends List</span>
+      <p class="friendHeaders">Friends List</p>
       <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
       <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
         <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
       </form>
+
+      <p class="friendHeaders">Friend Requests</p>
+      <div class="friendRequests">
+        <ul class="friendList">
+          <li ng-repeat='friend in friendRequests track by $index'>
+            <div class='panel panel-default friendPanel'>
+              <span>New friend Request from: {{friend}}</span>
+              <div class="friendRequestOptions">
+                <button ng-click='acceptFriendRequest(friend)'>Accept</button>
+                <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="acceptedfriendRequests">
+        <ul class="friendList">
+          <li ng-repeat='friend in acceptedfriendRequests track by $index'>
+            <div class='panel panel-default friendPanel'>
+              <span>{{friend}} accepted your friend request</span>
+              <button ng-click='acknowledgeFriendRequest(friend)'>Acknowledge</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
       <p class="friendHeaders">Online Friends</p>
       <ul class="friendList">
         <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
@@ -44,27 +71,6 @@
           </div>
         </li>
       </ul>
-
-      <div class="friendRequests">
-        <ul>
-          <li ng-repeat='friend in friendRequests track by $index'>
-            <span>New friend Request from: {{friend}}</span>
-            <div class="friendRequestOptions">
-              <button ng-click='acceptFriendRequest(friend)'>Accept</button>
-              <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
-            </div>
-          </li>
-        </ul>
-      </div>
-      
-      <div class="acceptedfriendRequests">
-        <ul>
-          <li ng-repeat='friend in acceptedfriendRequests track by $index'>
-            <span>{{friend}} accepted your friend request</span>
-            <button ng-click='acknowledgeFriendRequest(friend)'>Acknowledge</button>
-          </li>
-        </ul>
-      </div>
 
     </div>
 
