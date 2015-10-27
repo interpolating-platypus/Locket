@@ -1,6 +1,28 @@
-/*.currentUser {
-  margin-right: 40px;
-}*/
+html, body {
+  height: 100%;
+  font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+p {
+  margin-left: 10px;
+}
+
+ul {
+  margin: 0;
+}
+
+img {
+  width: 100%;
+}
+
+.icon {
+  max-width: 20px;
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
 
 .messages {
   padding-bottom: 5px;
@@ -15,7 +37,6 @@
 }
 
 .messageText {
-  /*border: 1px solid black;*/
   border-color: transparent;
   border-radius: 15px;
   display: inline-block;
@@ -37,33 +58,49 @@
 }
 
 .chatWindow {
-  height: 700px;
-  border: 1px solid black;
+  height: 95vh;
+  padding-left: 0;
 }
 
 .friendHeaders {
-  font-size: 16px;
+  font-size: 18px;
+  padding-top: 10px;
+}
+
+.friendRequests {
+  border-bottom: 1px solid lightgray;
+}
+
+.friendRequest {
+  border-top: 1px solid lightgray;
+  padding: 10px;
+}
+
+.friendRequestOptions {
+  display: inline;
 }
 
 .friendListWindow {
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  height: 95vh;
+  border-right: 1px solid lightgray;
+  padding-right: 0;
 }
 
 .friendList {
   list-style: none;
-  padding: 0px;
+  padding-left: 0;
 }
 
 .friendPanel {
   border-left: 0px;
   border-right: 0px;
   border-radius: 0px;
-  padding: 10px 0px 10px 0px;
+  padding: 10px 10px 10px 10px;
   margin-bottom: 0px;
 }
 
 .activeFriendPanel {
-  background-color: lightgreen;
+  background-color: #bfd4d9;
 }
 
 .friendArrow {
@@ -75,32 +112,32 @@
   margin-left: 20px;
 }
 
+.friendButton {
+  display: inline;
+  padding: 0 10px 0 10px;
+  float: right;
+}
+
 .messageList {
-  height: 620px;
-  border: 1px solid black;
+  height: 85vh;
   overflow: auto;
 }
 
-.sendMessage {
-  margin-bottom: 20px;
-  position: absolute; 
-  bottom: 0;  
-  border: 1px solid black;
-  width: 748px;
-}
-
-.sendMessageInput {
-  width: 693px;
+.friendScroll {
+  height: 70vh;
+  overflow: auto;
 }
 
 .dropdown-toggle {
   margin-right: 34px;
-  color: aquamarine !important;
+  color: #bfd4d9 !important;
 }
 
 .navbar-brand {
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-  color: deepskyblue !important;
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  color: #bfd4d9 !important;
+  text-transform: uppercase;
   margin-left: 13px !important;
   font-size: 28px;
 }
@@ -125,11 +162,69 @@ img {
   margin-left: 24px;
 }
 
+.no-padding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
 
+.nav-row {
+  margin-bottom: 0px;
+  height: 5vh;
+  background-color: #252839;
+  border-color: #252839;
+  border-radius: 0;
+}
 
+.form-control-inline {
+  min-width: 0;
+  width: auto;
+  display: inline;
+  vertical-align: middle;
+  position: relative;
+}
 
+.input-display {
+  width: 90%;
+  display: inline;
+  vertical-align: middle;
+}
 
+.button-display {
+  width: 8%;
+  display: inline;
+  vertical-align: middle;
+  text-align: center;
+  border: none;
+}
 
+.windowTitle {
+  border-bottom: 1px solid lightgray;
+  padding: 5px 0px 5px 0px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 0;
+}
 
+.btn {
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 
+.navbar-right {
+  margin-right: 0;
+}
 
+.dropdown-display {
+  margin-right: 13px;
+}
+
+.vertical-center {
+  vertical-align: middle;
+}
+
+.friendButton {
+  width: 8%;
+  float: right;
+  border: none;
+  margin-left: 10px;
+  padding-bottom: 5px;
+}

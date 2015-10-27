@@ -1,82 +1,92 @@
 <!-- contains friends lists, and chat window -->
-
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-  <a class="navbar-brand" href="#">Locket</a>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser}}</a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li role="separator" class="divider"></li>
-          <li><a href="#">Separated link</a></li>
-          <li role="separator" class="divider"></li>
-          
-          <li ng-click="logout()"><a href="#">Log Out</a></li>
+<div class="container-fluid no-padding">
+  <div class="row">
+    <div class="col-xs-12">
+      <nav class="navbar navbar-inverse nav-row">
+        <a class="navbar-brand" href="#">Locket</a>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle dropdown-display" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser}}</a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li role="separator" class="divider"></li>
+              
+              <li ng-click="logout()"><a href="#">Log Out</a></li>
+            </ul>
+          </li>
         </ul>
-      </li>
-    </ul>
+      </nav>
+    </div>
   </div>
-</nav>
 
-<div class="container">
   <div class="row">
 
-    <div class="col-md-4 friendListWindow">
-      <span class="friendHeaders">Friends List</span>
+    <div class="col-xs-4 friendListWindow">
+      <p class="windowTitle text-center">Friends List</p>
       <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
-      <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
-        <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
-        <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
+      <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
+        <div class='form-group'>
+          <input class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
+          <button class='btn btn-default button-display form-control' type='submit' ng-disabled='!addFriendForm.$valid'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+        </div>
       </form>
-      <p class="friendHeaders">Online Friends</p>
-      <ul class="friendList">
-        <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
-          <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
-            <span class='friendService'>{{friend.service}}</span>
-            <span class='friendName'>{{friend.name}}</span>
-            <span class='friendArrow'>></span>
-          </div>
-          <div class="unreadMessage" ng-if="friend.unreadMessage">
-            New message from {{friend.name}}
-          </div>
-        </li>
-      </ul>
 
+      <p class="friendHeaders">Friend Requests</p>
       <div class="friendRequests">
-        <ul>
-          <li ng-repeat='friend in friendRequests track by $index'>
-            <span>New friend Request from: {{friend}}</span>
-            <div class="friendRequestOptions">
-              <button ng-click='acceptFriendRequest(friend)'>Accept</button>
-              <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+        <ul class="friendList">
+          <li class="friendRequest" ng-repeat='friend in friendRequests track by $index'>
+            <div class='form-control-inline'>
+              <span>New friend request from: {{friend}}</span>
+              <div class="friendRequestOptions">
+                <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-ok vertical-center' aria-hidden='true' ng-click='acceptFriendRequest(friend)'></span></button>
+                <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-remove vertical-center' aria-hidden='true' ng-click='ignoreFriendRequest(friend)'></span></button>
+              </div>
             </div>
           </li>
         </ul>
+        <div class="acceptedfriendRequests">
+          <ul class="friendList">
+            <li class="friendRequest" ng-repeat='friend in acceptedfriendRequests track by $index'>
+              <span>{{friend}} accepted your friend request</span>
+              <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-ok vertical-center' aria-hidden='true' ng-click='acknowledgeFriendRequest(friend)'></span></button>
+            </li>
+          </ul>
+        </div>
       </div>
       
-      <div class="acceptedfriendRequests">
-        <ul>
-          <li ng-repeat='friend in acceptedfriendRequests track by $index'>
-            <span>{{friend}} accepted your friend request</span>
-            <button ng-click='acknowledgeFriendRequest(friend)'>Acknowledge</button>
+      
+      <p class="friendHeaders">Online Friends</p>
+      <div class="friendScroll" scroll-glue-top>
+        <ul class="friendList">
+          <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
+            <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
+              <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+              <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='icon' src='../../facebook.png'/></span>
+              <span ng-if="friend.service !== 'Locket' && friend.service !== 'Facebook'" class='friendService'>{{friend.service}}</span>
+              <span class='friendName'>{{friend.name}}</span>
+              <span class='friendArrow'><span class="glyphicon glyphicon-chevron-right vertical-center" aria-hidden="true"></span></span>
+              <div class="unreadMessage" ng-if="friend.unreadMessage">
+                New message
+              </div>
+            </div>
           </li>
         </ul>
       </div>
 
     </div>
 
-    <div class="col-md-8 chatWindow">
+    <div class="col-xs-8 chatWindow">
       <div ng-show="activeFriend">
-        <div class="activeFriendBox text-center">Chat with {{activeFriend.name}}</div>
+        <div class="windowTitle text-center">Chat with {{activeFriend.name}}</div>
         
         <div class="messageList" scroll-glue>
           <div class="messages"  
             ng-class="{ 'message-right': message.from === currentUser, 'message-left': message.from !==currentUser }" 
             ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
-            <!-- <span>{{message.from}}</span> -->
             <span 
               ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser, 'wrapMessage': message.message.length > 60}"
               ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
@@ -84,13 +94,15 @@
           </div>
         </div>
 
-        <div class="sendMessage">
-          <form ng-submit='sendMessage(messageText)' name='messageForm'>
-            <input class="sendMessageInput" type='text' name='message' ng-model='messageText' required/>
-            <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
-          </form>
-          <button ng-click='requestEncryptedChat()' type='submit' value='Chat Securely'>
-        </div>
+        <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
+          <div class='form-group'>
+            <input class="form-control input-display" type='text' name='message' ng-model='messageText' required/>
+            <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+          </div>
+        </form>
+
+        <button ng-click='requestEncryptedChat()' type='submit' value='Chat Securely'>
+        <!-- </div> -->
 
       </div>
     </div>
