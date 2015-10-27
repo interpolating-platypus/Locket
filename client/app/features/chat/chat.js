@@ -240,20 +240,20 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           return friend.username;
         });
 
-        console.log('239', friendUsernames);
-
-        if (friendUsernames.indexOf(newFriendUsername) > -1) {
+        if (newFriendUsername === $scope.currentUser) {
+          $scope.friendReqMsg = "Feeling lonely?";
+        } else if (friendUsernames.indexOf(newFriendUsername) > -1) {
           $scope.friendReqMsg = "You are already friends with " + newFriendUsername;
         } else if (friendRequestsSentTo.indexOf(newFriendUsername) > -1) {
           $scope.friendReqMsg = "Friend request already sent!";
         } else {
           socket.emit('addFriend', { to: newFriendUsername });
           $scope.friendReqMsg = "Friend request sent";
+          friendRequestsSentTo.push(newFriendUsername);
         } 
         
         $scope.sentRequest = true;
         
-        friendRequestsSentTo.push(newFriendUsername);
         
         $timeout(function() {
           $scope.sentRequest = false;
