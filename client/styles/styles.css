@@ -101,6 +101,11 @@ ul {
   overflow: auto;
 }
 
+.friendScroll {
+  height: 70vh;
+  overflow: auto;
+}
+
 .dropdown-toggle {
   margin-right: 34px;
   color: aquamarine !important;
@@ -152,16 +157,17 @@ img {
 }
 
 .input-display {
-  width: 85%;
+  width: 90%;
   display: inline;
   vertical-align: middle;
 }
 
 .button-display {
-  width: 13%;
+  width: 8%;
   display: inline;
   vertical-align: middle;
   text-align: center;
+  border: none;
 }
 
 .windowTitle {
@@ -180,5 +186,9 @@ img {
 }
 
 .dropdown-display {
-  margin-right: 0;
+  margin-right: 13px;
+}
+
+.vertical-center {
+  vertical-align: middle;
 }
