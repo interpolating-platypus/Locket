@@ -48,9 +48,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
     // If content script hasn't responded, emit disconnect
     var checkContentScriptTimeout = function() {
-      // If too much time has elapsed, we've disconnected
+      // If too much time has elapsed, we've disconnected, turn off scanning of DOM
       if (Date.now() - stillAlive > stillAliveMaximum) {
         // Add functionality here
+        facebookTODO.scanDOM = false;
       } else {
         setTimeout(checkContentScriptTimeout, stillAliveRefresh);
       }
