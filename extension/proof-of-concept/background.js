@@ -52,6 +52,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       if (Date.now() - stillAlive > stillAliveMaximum) {
         // Add functionality here
         facebookTODO.scanDOM = false;
+        document.getElementById('iframe').src = '';
       } else {
         setTimeout(checkContentScriptTimeout, stillAliveRefresh);
       }
