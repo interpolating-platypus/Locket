@@ -174,3 +174,11 @@ img {
 .btn {
   font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+.navbar-right {
+  margin-right: 0;
+}
+
+.dropdown-display {
+  margin-right: 0;
+}

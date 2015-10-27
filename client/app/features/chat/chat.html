@@ -1,24 +1,26 @@
 <!-- contains friends lists, and chat window -->
 <div class="container-fluid no-padding">
   <div class="row">
-    <nav class="navbar navbar-inverse nav-row">
-      <a class="navbar-brand" href="#">Locket</a>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser}}</a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-            <li role="separator" class="divider"></li>
-            
-            <li ng-click="logout()"><a href="#">Log Out</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+    <div class="col-xs-12">
+      <nav class="navbar navbar-inverse nav-row">
+        <a class="navbar-brand" href="#">Locket</a>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle dropdown-display" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser}}</a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li role="separator" class="divider"></li>
+              
+              <li ng-click="logout()"><a href="#">Log Out</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 
   <div class="row">
@@ -64,7 +66,7 @@
             <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
             <span ng-if="friend.service !== 'Locket'" class='friendService'>{{friend.service}}</span>
             <span class='friendName'>{{friend.name}}</span>
-            <span class='friendArrow'>></span>
+            <span class='friendArrow'><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></span>
             <div class="unreadMessage" ng-if="friend.unreadMessage">
               New message
             </div>
