@@ -15,6 +15,11 @@ img {
   width: 100%;
 }
 
+.icon {
+  max-width: 20px;
+  margin: 0;
+}
+
 .form-group {
   margin-bottom: 0;
 }
@@ -91,7 +96,7 @@ img {
 }
 
 .activeFriendPanel {
-  background-color: lightgreen;
+  background-color: #bfd4d9;
 }
 
 .friendArrow {
@@ -115,12 +120,13 @@ img {
 
 .dropdown-toggle {
   margin-right: 34px;
-  color: aquamarine !important;
+  color: #bfd4d9 !important;
 }
 
 .navbar-brand {
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-  color: deepskyblue !important;
+  color: #bfd4d9 !important;
+  /*color: #638ca6 !important;*/
   margin-left: 13px !important;
   font-size: 28px;
 }
@@ -153,6 +159,9 @@ img {
 .nav-row {
   margin-bottom: 0px;
   height: 5vh;
+  background-color: #252839;
+  border-color: #252839;
+  border-radius: 0;
 }
 
 .form-control-inline {
@@ -182,6 +191,7 @@ img {
   padding: 5px 0px 5px 0px;
   font-size: 18px;
   font-weight: bold;
+  margin-left: 0;
 }
 
 .btn {

@@ -65,7 +65,8 @@
           <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
             <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
               <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-              <span ng-if="friend.service !== 'Locket'" class='friendService'>{{friend.service}}</span>
+              <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='icon' src='../../facebook.png'/></span>
+              <span ng-if="friend.service !== 'Locket' && friend.service !== 'Facebook'" class='friendService'>{{friend.service}}</span>
               <span class='friendName'>{{friend.name}}</span>
               <span class='friendArrow'><span class="glyphicon glyphicon-chevron-right vertical-center" aria-hidden="true"></span></span>
               <div class="unreadMessage" ng-if="friend.unreadMessage">
