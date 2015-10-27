@@ -89,7 +89,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       }
                     } else {
                       // Otherwise, decrypt the message using our private key
-                      console.log('attempting to decrypt a message');
                       encryptionFactory.decryptMessage(keypair, encryptedMessage)
                       .then(function (decryptedMessage) {
                         console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
@@ -100,7 +99,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                           encryptedMessage: encryptedMessage,
                           message: decryptedMessage
                         });
-                        $scope.friends[index].unreadMessage = true;
+                        if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
+                          $scope.friends[index].unreadMessage = true;
+                        }
+                        $scope.$apply();
                       })
                       .catch(function() {
                         console.log("Failed to decrypt message");
@@ -124,7 +126,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                   });
 
                   // Notify the user of any unread messages
-                  if ($scope.activeFriend && $scope.friends[index].username !== $scope.activeFriend.username) {
+                  if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
                     $scope.friends[index].unreadMessage = true;
                   }
                 }
