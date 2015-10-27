@@ -89,8 +89,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
-          console.log($scope.activeFriend);
+          $timeout(function() {
+            angular.element(".sendMessageInput").focus();
+          }, 100);
         });
+      };
         //if $scope.friends[username] has publicPGPKey
           //update chat view with current conversation
         //else
@@ -99,7 +102,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           //else if username.service isnt us
             //allow unencrypted chat
             //show red encryption symbol/button (warning user chat is not secure)
-      };
 
       $scope.sendMessage = function(messageText){
         //reset message text
@@ -230,11 +232,31 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         }
       });
 
+      //so a user can't spam another user with friendRequests
+      var friendRequestsSentTo = []; 
+
       $scope.addFriend = function(newFriendUsername){
         $scope.newFriendUsername = '';
-        socket.emit('addFriend', { to: newFriendUsername });
+
+        var friendUsernames = $scope.friends.map(function(friend) {
+          return friend.username;
+        });
+
+        if (newFriendUsername === $scope.currentUser) {
+          $scope.friendReqMsg = "Feeling lonely?";
+        } else if (friendUsernames.indexOf(newFriendUsername) > -1) {
+          $scope.friendReqMsg = "You are already friends with " + newFriendUsername;
+        } else if (friendRequestsSentTo.indexOf(newFriendUsername) > -1) {
+          $scope.friendReqMsg = "Friend request already sent!";
+        } else {
+          socket.emit('addFriend', { to: newFriendUsername });
+          $scope.friendReqMsg = "Friend request sent";
+          friendRequestsSentTo.push(newFriendUsername);
+        } 
         
         $scope.sentRequest = true;
+        
+        
         $timeout(function() {
           $scope.sentRequest = false;
         }, 2000);

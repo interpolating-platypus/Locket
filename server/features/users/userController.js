@@ -77,7 +77,7 @@ exports.friendRequestOffline = function(user1, user2, next) {
     .then(function(user) {
       if(!user) {
         next(new Error('User does not exist'));
-      } else {
+      } else if (user.friendRequests.indexOf(user2) === -1){
         user.friendRequests.push(user2);
         user.save(function (err) {
           if(err) {
@@ -172,6 +172,10 @@ exports.addFriend = function(user1, user2) {
     .then(function(user) {
       if(!user) {
         next(new Error('User does not exist'));
+      } 
+
+      if (user.friends.indexOf(user2) > -1) {
+        console.log(user2 + " is already in friends list")
       } else {
         user.friends.push(user2);
         user.save(function (err) {

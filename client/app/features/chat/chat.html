@@ -26,7 +26,7 @@
 
     <div class="col-md-4 friendListWindow">
       <span class="friendHeaders">Friends List</span>
-      <span ng-if='sentRequest' class="friendReqSent">Friend request sent</span>
+      <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
       <form ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <input type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
         <input type='submit' ng-disabled='!addFriendForm.$valid' value='Add Friend'>
