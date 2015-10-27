@@ -20,6 +20,9 @@ chrome.webRequest.onHeadersReceived.addListener(
 
 var mainTabId;
 var unreadMessages = []; // Messages loaded by facebook.js awaiting main.js connection
+var stillAlive;
+var stillAliveRefresh = 1000;
+var stillAliveMaximum = 3000;
 
 // Store any actions that need to be taken by the facebook script
 var facebookTODO = {
@@ -30,6 +33,34 @@ var facebookTODO = {
 };
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  // This event is issued when we are to inject the facebook content script
+  if (message.event === 'injectFacebookiFrame') {
+    document.getElementById('iframe').src = 'https://facebook.com/messages/';
+    chrome.tabs.sendMessage(sender.tab.id, {event: 'stillAlive', data: ''});
+    stillAlive = Date.now();
+
+    // Emit periodic poll to content script
+    var pollContentScript = function() {
+      chrome.tabs.sendMessage(sender.tab.id, {event: 'stillAlive', data: ''});
+      setTimeout(pollContentScript, stillAliveRefresh);
+    };
+    pollContentScript();
+
+    // If content script hasn't responded, emit disconnect
+    var checkContentScriptTimeout = function() {
+      // If too much time has elapsed, we've disconnected
+      if (Date.now() - stillAlive > stillAliveMaximum) {
+        // Add functionality here
+      } else {
+        setTimeout(checkContentScriptTimeout, stillAliveRefresh);
+      }
+    };
+    checkContentScriptTimeout();
+  }
+  if (message.event === 'stillAlive') {
+    stillAlive = Date.now();
+  }
+
   // This event is issued when the main content script is launched
   if (message.event === "registerTabId") {
     mainTabId = sender.tab.id;
