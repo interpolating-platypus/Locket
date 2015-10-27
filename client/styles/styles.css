@@ -7,6 +7,10 @@ ul {
   margin: 0;
 }
 
+img {
+  width: 100%;
+}
+
 .form-group {
   margin-bottom: 0;
 }
