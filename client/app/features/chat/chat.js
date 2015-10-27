@@ -100,6 +100,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                           encryptedMessage: encryptedMessage,
                           message: decryptedMessage
                         });
+                        $scope.friends[index].unreadMessage = true;
                       })
                       .catch(function() {
                         console.log("Failed to decrypt message");
