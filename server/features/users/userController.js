@@ -77,7 +77,7 @@ exports.friendRequestOffline = function(user1, user2, next) {
     .then(function(user) {
       if(!user) {
         next(new Error('User does not exist'));
-      } else {
+      } else if (user.friendRequests.indexOf(user2) === -1){
         user.friendRequests.push(user2);
         user.save(function (err) {
           if(err) {

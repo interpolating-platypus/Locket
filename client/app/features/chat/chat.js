@@ -230,6 +230,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         }
       });
 
+      //so a user can't spam another user with friendRequests
+      var friendRequestsSentTo = []; 
+
       $scope.addFriend = function(newFriendUsername){
         $scope.newFriendUsername = '';
 
@@ -237,15 +240,21 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           return friend.username;
         });
 
-        // console.log(friendUsernames);
+        console.log('239', friendUsernames);
+
         if (friendUsernames.indexOf(newFriendUsername) > -1) {
           $scope.friendReqMsg = "You are already friends with " + newFriendUsername;
+        } else if (friendRequestsSentTo.indexOf(newFriendUsername) > -1) {
+          $scope.friendReqMsg = "Friend request already sent!";
         } else {
           socket.emit('addFriend', { to: newFriendUsername });
           $scope.friendReqMsg = "Friend request sent";
         } 
-
+        
         $scope.sentRequest = true;
+        
+        friendRequestsSentTo.push(newFriendUsername);
+        
         $timeout(function() {
           $scope.sentRequest = false;
         }, 2000);
