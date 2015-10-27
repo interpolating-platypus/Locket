@@ -89,8 +89,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
-          console.log($scope.activeFriend);
+          $timeout(function() {
+            angular.element(".sendMessageInput").focus();
+          }, 100);
         });
+      };
         //if $scope.friends[username] has publicPGPKey
           //update chat view with current conversation
         //else
@@ -99,7 +102,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           //else if username.service isnt us
             //allow unencrypted chat
             //show red encryption symbol/button (warning user chat is not secure)
-      };
 
       $scope.sendMessage = function(messageText){
         //reset message text
