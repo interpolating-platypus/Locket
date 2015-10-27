@@ -25,11 +25,9 @@
 
   <div class="row">
 
-    <div class="col-md-4 friendListWindow">
-      <p class="friendHeaders">Friends List</p>
-      <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
     <div class="col-xs-4 friendListWindow">
       <p class="windowTitle text-center">Friends List</p>
+      <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
           <input class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
