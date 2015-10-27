@@ -109,7 +109,10 @@ img {
 }
 
 .friendReqSent {
-  margin-left: 20px;
+  display: inline-block;
+  float: right;
+  font-size: 16px;
+  padding: 10px;
 }
 
 .friendButton {
