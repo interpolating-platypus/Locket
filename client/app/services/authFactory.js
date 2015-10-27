@@ -1,6 +1,6 @@
 angular.module('Locket.authFactory', [])
 
-.factory('authFactory', function($http, $state){
+.factory('authFactory', function ($http, $state) {
 
   var signedin = function() {
     
@@ -8,8 +8,10 @@ angular.module('Locket.authFactory', [])
       method: 'GET',
       url: '/api/users/signedin'
     }).then(function(resp) {
-      if(resp.data === "UNAUTHORIZED"){
+      if(resp.data.auth === "UNAUTHORIZED"){
         $state.go('login');
+      }else{
+        $stateParams.username = resp.data.username;
       }
       return resp.data;
     });
