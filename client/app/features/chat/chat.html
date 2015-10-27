@@ -27,7 +27,6 @@
 
     <div class="col-xs-4 friendListWindow">
       <p class="windowTitle text-center">Friends List</p>
-      <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
           <input class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
@@ -35,7 +34,7 @@
         </div>
       </form>
 
-      <p class="friendHeaders">Friend Requests</p>
+      <p class="friendHeaders">Friend Requests<span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span></p>
       <div class="friendRequests">
         <ul class="friendList">
           <li class="friendRequest" ng-repeat='friend in friendRequests track by $index'>
