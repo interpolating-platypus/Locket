@@ -1,6 +1,8 @@
+var keyResponseTimeout = 15000;
 angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
+  console.log('chat');
   authFactory.signedin().then(function(resp){
     if (resp === 'OK') {
       socket.connect();
@@ -55,6 +57,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         // Receive new facebook message(s)
         var halfPGPMessage = '';
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
+          console.log('received new facebook message', event.data.text);
           var username = event.data.text.with;
           var newMessages = event.data.text.text;
           findFriend(username, function(index) {
@@ -81,6 +84,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                           message.message = $scope.friends[index].unsentFBMessages[j].message;
                           $scope.friends[index].unsentFBMessages.splice(j, 1);
                           $scope.friends[index].messages.push(message);
+                          $scope.$apply();
                         }
                       }
                     } else {
@@ -89,6 +93,16 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       encryptionFactory.decryptMessage(keypair, encryptedMessage)
                       .then(function (decryptedMessage) {
                         console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
+                        $scope.friends[index].messages.push({
+                          to: $scope.currentUser,
+                          from: $scope.friends[index].username,
+                          timestamp: Date.now(),
+                          encryptedMessage: encryptedMessage,
+                          message: decryptedMessage
+                        });
+                      })
+                      .catch(function() {
+                        console.log("Failed to decrypt message");
                       });
                     }
                   });
@@ -120,19 +134,22 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
         // Receive PGP Key (over facebook)
         if (event.data.type && (event.data.type === 'receivedPGPKey')) {
+          console.log('RECEIVED PGP KEY (chat)');
           var username = event.data.text.from;
           findFriend(username, function(index) {
             // Store that friend's public key
             $scope.friends[index].key = event.data.text.publicKey;
+            console.log('Storing public key for user', $scope.friends[index].username, event.data.text.publicKey);
 
             // If we haven't already sent our public key to that user, send it now
-            if (!$scope.friends[index].sentKey) {
+            var lastSent = $scope.friends[index].sentKey;
+            if (!lastSent || (Date.now() - lastSent > keyResponseTimeout)) {
               window.postMessage({
                 type: 'sendPublicKey',
                 publicKey: publicKey,
                 to: $scope.friends[index].username
               }, '*');
-              $scope.friends[index].sentKey = true;
+              $scope.friends[index].sentKey = Date.now()
             }
           });
 
@@ -192,8 +209,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
           });
         } else if ($scope.activeFriend.service === 'Facebook') {
+          console.log('All friends: ', $scope.friends);
+          console.log('Active friends key: ', $scope.activeFriend.key);
           if ($scope.activeFriend.key) {
-            console.log('Active friends key: ', $scope.activeFriend.key);
             encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
             .then(function (encryptedMessage) {
               window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: encryptedMessage}, '*');
