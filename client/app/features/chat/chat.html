@@ -24,12 +24,10 @@
   <div class="row">
 
     <div class="col-md-4 friendListWindow">
-<<<<<<< HEAD
       <p class="friendHeaders">Friends List</p>
       <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
-=======
+    <div class="col-xs-4 friendListWindow">
       <p class="windowTitle text-center">Friends List</p>
->>>>>>> Format window titles
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
           <input class='form-control input-display-add' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
@@ -41,7 +39,7 @@
       <div class="friendRequests">
         <ul class="friendList">
           <li class="friendRequest" ng-repeat='friend in friendRequests track by $index'>
-            <span>New friend Request from: {{friend}}</span>
+            <span>New friend request from: {{friend}}</span>
             <div class="friendRequestOptions">
               <button ng-click='acceptFriendRequest(friend)'>Accept</button>
               <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
@@ -66,16 +64,16 @@
             <span class='friendService'>{{friend.service}}</span>
             <span class='friendName'>{{friend.name}}</span>
             <span class='friendArrow'>></span>
-          </div>
-          <div class="unreadMessage" ng-if="friend.unreadMessage">
-            New message from {{friend.name}}
+            <div class="unreadMessage" ng-if="friend.unreadMessage">
+              New message
+            </div>
           </div>
         </li>
       </ul>
 
     </div>
 
-    <div class="col-md-8 chatWindow">
+    <div class="col-xs-8 chatWindow">
       <div ng-show="activeFriend">
         <div class="windowTitle text-center">Chat with {{activeFriend.name}}</div>
         
