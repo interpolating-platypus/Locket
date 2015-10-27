@@ -151,26 +151,13 @@ img {
   position: relative;
 }
 
-.input-display-add {
-  width: 75%;
-  display: inline;
-  vertical-align: middle;
-}
-
-.button-display-add {
-  width: 23%;
-  display: inline;
-  vertical-align: middle;
-  text-align: center;
-}
-
-.input-display-send {
+.input-display {
   width: 85%;
   display: inline;
   vertical-align: middle;
 }
 
-.button-display-send {
+.button-display {
   width: 13%;
   display: inline;
   vertical-align: middle;

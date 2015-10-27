@@ -30,8 +30,8 @@
       <p class="windowTitle text-center">Friends List</p>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
-          <input class='form-control input-display-add' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
-          <button class='btn btn-default button-display form-control-add' type='submit' ng-disabled='!addFriendForm.$valid'>Add Friend</button>
+          <input class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
+          <button class='btn btn-default button-display form-control' type='submit' ng-disabled='!addFriendForm.$valid'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
         </div>
       </form>
 
@@ -61,7 +61,8 @@
       <ul class="friendList" scroll-glue>
         <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
           <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
-            <span class='friendService'>{{friend.service}}</span>
+            <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+            <span ng-if="friend.service !== 'Locket'" class='friendService'>{{friend.service}}</span>
             <span class='friendName'>{{friend.name}}</span>
             <span class='friendArrow'>></span>
             <div class="unreadMessage" ng-if="friend.unreadMessage">
@@ -90,8 +91,8 @@
 
         <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
           <div class='form-group'>
-            <input class="form-control input-display-send" type='text' name='message' ng-model='messageText' required/>
-            <button class="btn btn-default button-display-send form-control" ng-disabled='!messageForm.$valid' type='submit'>Send</button>
+            <input class="form-control input-display" type='text' name='message' ng-model='messageText' required/>
+            <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
           </div>
         </form>
 
