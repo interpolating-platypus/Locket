@@ -96,7 +96,7 @@
 
         <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
           <div class='form-group'>
-            <input class="form-control input-display" type='text' name='message' ng-model='messageText' required/>
+            <input class="form-control input-display sendMessageInput" type='text' name='message' ng-model='messageText' required/>
             <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
           </div>
         </form>
