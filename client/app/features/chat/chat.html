@@ -34,7 +34,8 @@
         </div>
       </form>
 
-      <p class="friendHeaders">Friend Requests<span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span></p>
+      <span ng-if='sentRequest' class="friendReqSent">{{friendReqMsg}}</span>
+      <p class="friendHeaders">Friend Requests</p>
       <div class="friendRequests">
         <ul class="friendList">
           <li class="friendRequest" ng-repeat='friend in friendRequests track by $index'>
