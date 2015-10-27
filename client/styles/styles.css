@@ -3,6 +3,10 @@ html, body {
   font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+p {
+  margin-left: 10px;
+}
+
 ul {
   margin: 0;
 }
@@ -64,8 +68,7 @@ img {
 
 .friendRequest {
   border-top: 1px solid lightgray;
-  padding-bottom: 10px;
-  padding-top: 10px;
+  padding: 10px;
 }
 
 .friendListWindow {
@@ -83,7 +86,7 @@ img {
   border-left: 0px;
   border-right: 0px;
   border-radius: 0px;
-  padding: 10px 0px 10px 0px;
+  padding: 10px 10px 10px 10px;
   margin-bottom: 0px;
 }
 
