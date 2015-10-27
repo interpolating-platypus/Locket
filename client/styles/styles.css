@@ -1,6 +1,14 @@
 html, body {
   height: 100%;
-  font: 300 16px/22px "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+ul {
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 0;
 }
 
 .messages {
@@ -42,7 +50,18 @@ html, body {
 }
 
 .friendHeaders {
-  font-size: 16px;
+  font-size: 18px;
+  padding-top: 10px;
+}
+
+.friendRequests {
+  border-bottom: 1px solid lightgray;
+}
+
+.friendRequest {
+  border-top: 1px solid lightgray;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 .friendListWindow {
@@ -161,10 +180,10 @@ img {
 .windowTitle {
   border-bottom: 1px solid lightgray;
   padding: 5px 0px 5px 0px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
 }
 
 .btn {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

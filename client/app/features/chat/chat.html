@@ -40,28 +40,24 @@
       <p class="friendHeaders">Friend Requests</p>
       <div class="friendRequests">
         <ul class="friendList">
-          <li ng-repeat='friend in friendRequests track by $index'>
-            <div class='panel panel-default friendPanel'>
-              <span>New friend Request from: {{friend}}</span>
-              <div class="friendRequestOptions">
-                <button ng-click='acceptFriendRequest(friend)'>Accept</button>
-                <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
-              </div>
+          <li class="friendRequest" ng-repeat='friend in friendRequests track by $index'>
+            <span>New friend Request from: {{friend}}</span>
+            <div class="friendRequestOptions">
+              <button ng-click='acceptFriendRequest(friend)'>Accept</button>
+              <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
             </div>
           </li>
         </ul>
-      </div>
-      
-      <div class="acceptedfriendRequests">
-        <ul class="friendList">
-          <li ng-repeat='friend in acceptedfriendRequests track by $index'>
-            <div class='panel panel-default friendPanel'>
+        <div class="acceptedfriendRequests">
+          <ul class="friendList">
+            <li class="friendRequest" ng-repeat='friend in acceptedfriendRequests track by $index'>
               <span>{{friend}} accepted your friend request</span>
               <button ng-click='acknowledgeFriendRequest(friend)'>Acknowledge</button>
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
+      
       
       <p class="friendHeaders">Online Friends</p>
       <ul class="friendList" scroll-glue>
