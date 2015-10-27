@@ -41,10 +41,12 @@
       <div class="friendRequests">
         <ul class="friendList">
           <li class="friendRequest" ng-repeat='friend in friendRequests track by $index'>
-            <span>New friend request from: {{friend}}</span>
-            <div class="friendRequestOptions">
-              <button ng-click='acceptFriendRequest(friend)'>Accept</button>
-              <button ng-click='ignoreFriendRequest(friend)'>Ignore</button>
+            <div class='form-control-inline'>
+              <span>New friend request from: {{friend}}</span>
+              <div class="friendRequestOptions">
+                <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-ok vertical-center' aria-hidden='true' ng-click='acceptFriendRequest(friend)'></span></button>
+                <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-remove vertical-center' aria-hidden='true' ng-click='ignoreFriendRequest(friend)'></span></button>
+              </div>
             </div>
           </li>
         </ul>
@@ -52,7 +54,7 @@
           <ul class="friendList">
             <li class="friendRequest" ng-repeat='friend in acceptedfriendRequests track by $index'>
               <span>{{friend}} accepted your friend request</span>
-              <button ng-click='acknowledgeFriendRequest(friend)'>Acknowledge</button>
+              <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-ok vertical-center' aria-hidden='true' ng-click='acknowledgeFriendRequest(friend)'></span></button>
             </li>
           </ul>
         </div>

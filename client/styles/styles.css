@@ -76,6 +76,10 @@ img {
   padding: 10px;
 }
 
+.friendRequestOptions {
+  display: inline;
+}
+
 .friendListWindow {
   height: 95vh;
   border-right: 1px solid lightgray;
@@ -106,6 +110,12 @@ img {
 
 .friendReqSent {
   margin-left: 20px;
+}
+
+.friendButton {
+  display: inline;
+  padding: 0 10px 0 10px;
+  float: right;
 }
 
 .messageList {
@@ -209,4 +219,12 @@ img {
 
 .vertical-center {
   vertical-align: middle;
+}
+
+.friendButton {
+  width: 8%;
+  float: right;
+  border: none;
+  margin-left: 10px;
+  padding-bottom: 5px;
 }
