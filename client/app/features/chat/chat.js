@@ -78,7 +78,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       // Make sure we add the correct message:
                       for (var j = 0; j < $scope.friends[index].unsentFBMessages.length; j++) {
                         if ($scope.friends[index].unsentFBMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
-                          console.log('hihihihihihihi');
                           message.message = $scope.friends[index].unsentFBMessages[j].message;
                           $scope.friends[index].unsentFBMessages.splice(j, 1);
                           $scope.friends[index].messages.push(message);
