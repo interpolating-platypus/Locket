@@ -31,3 +31,16 @@ document.getElementsByName('message_body')[0].value = "message goes here"
 NEXT STEP: ???
   - encryption
 
+---
+
+miscellanea:
+
+need to prevent people from chatting with user while the key req is going through (maybe)
+need to disable the encrypted chat button for our own service
+
+
+-- next up:
+  - we need to know who sent the message
+  - if we did, we can't decrypt it, so we should be storing local copy of this message. Livvie did this already
+  - change incognito mode to split so that background processes are not shared
+

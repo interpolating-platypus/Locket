@@ -89,6 +89,7 @@
             <input class="sendMessageInput" type='text' name='message' ng-model='messageText' required/>
             <input ng-disabled='!messageForm.$valid' type='submit' value='send'/>
           </form>
+          <button ng-click='requestEncryptedChat()' type='submit' value='Chat Securely'>
         </div>
 
       </div>
