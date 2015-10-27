@@ -84,9 +84,7 @@ $(document).ready(function() {
             });
           }
           // Background process wants us to begin DOM monitoring
-          if (response.scanDOM) {
-            scanDOM = true;
-          }
+          scanDOM = response.scanDOM;
         }
       );
     }

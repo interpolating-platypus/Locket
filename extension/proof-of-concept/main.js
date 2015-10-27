@@ -1,8 +1,14 @@
 // document.body.style.background = 'yellow';
 console.log('main');
 
+// User navigated to our service. Tell our app to start up the facebook background script
+chrome.runtime.sendMessage({ event: 'injectFacebookiFrame', data: '' });
+
 // Receive update from background process (Facebook wants to communicate)
 chrome.runtime.onMessage.addListener(function(message) {
+  if (message.event === 'stillAlive') {
+    chrome.runtime.sendMessage({ event: 'stillAlive', data: '' });
+  }
   // Received a new facebook message
   if (message.event === "receivedNewFacebookMessage") {
     window.postMessage({ type: 'receivedNewFacebookMessage', text: message.data}, "*");
