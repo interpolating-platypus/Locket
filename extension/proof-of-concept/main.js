@@ -55,10 +55,10 @@ window.addEventListener('message', function(event) {
     });
   }
   // App requesting a key exchange
-  if (event.data.type && (event.data.type === 'requestPublicKey')) {
+  if (event.data.type && (event.data.type === 'sendPublicKey')) {
     console.log('main: requesting public key');
     chrome.runtime.sendMessage({
-      event: 'requestPublicKey',
+      event: 'sendPublicKey',
       data: {
         to: event.data.to,
         publicKey: event.data.publicKey

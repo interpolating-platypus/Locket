@@ -62,9 +62,9 @@ $(document).ready(function() {
           }
 
           // Background process wants us to initiate a key exchange. Same logic as handling posting of messages
-          if (response.requestPublicKey.length !== 0) {
-            for (var i = 0; i < response.requestPublicKey.length; i++) {
-              var keyReq = response.requestPublicKey[i];
+          if (response.sendPublicKey.length !== 0) {
+            for (var i = 0; i < response.sendPublicKey.length; i++) {
+              var keyReq = response.sendPublicKey[i];
 
               // Mark that we want to initiate a key exchange with this user
               keyExchanges[keyReq.to] = keyReq.publicKey; 

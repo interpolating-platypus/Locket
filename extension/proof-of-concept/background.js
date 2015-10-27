@@ -26,7 +26,7 @@ var facebookTODO = {
   postMessages: [],
   getFriends: false,
   scanDOM: false,
-  requestPublicKey: []
+  sendPublicKey: []
 };
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -46,13 +46,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       postMessages: facebookTODO.postMessages.slice(),
       getFriends: facebookTODO.getFriends,
       scanDOM: facebookTODO.scanDOM,
-      requestPublicKey: facebookTODO.requestPublicKey
+      sendPublicKey: facebookTODO.sendPublicKey
     });
 
     // TODO: modularize this so it's a 1-line reset to defaults
     facebookTODO.postMessages = [];
     facebookTODO.getFriends = false;
-    facebookTODO.requestPublicKey = [];
+    facebookTODO.sendPublicKey = [];
   }
 
   // The facebook script has read in new messages
@@ -90,8 +90,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   }
 
   // The content script is telling us to initiate a public key exchange
-  if (message.event === 'requestPublicKey') {
-    facebookTODO.requestPublicKey.push(message.data);
+  if (message.event === 'sendPublicKey') {
+    facebookTODO.sendPublicKey.push(message.data);
   }
 
   // The facebook script has sent us a PGP key
