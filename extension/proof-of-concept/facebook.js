@@ -105,6 +105,7 @@ $(document).ready(function() {
           var halfpgpkey = ''; // the pgp key gets split into two messages
           var context = this;
           texts.slice(seenMessageGroup[id].length).each(function(index) {
+            console.log('TEXT', $(this).text());
             // Sometimes a new message will contain a PGP key
             if (halfpgpkey) {
               var publicKey = halfpgpkey + '\n\n'+$(this).text();
@@ -115,6 +116,7 @@ $(document).ready(function() {
               var sentBy = getSender(context, activeUsername);
 
               // Only report this PGP key to the client if we did not send it
+              console.log('received pgp key (fb) ', sentBy);
               if (sentBy !== 'me') {
                 chrome.runtime.sendMessage({
                   event: 'receivedPGPKey',
@@ -147,7 +149,8 @@ $(document).ready(function() {
       });
 
       // Send any queued messages / key exchanges for this user
-      var activeUsername = $('._r7').find('a').attr('href').replace('https://www.facebook.com/','');
+      var activeUsername = getActiveUsername();
+        //$('._r7').find('a').attr('href').replace('https://www.facebook.com/','');
 
       // Send any queued key exchanges to this user
       if (keyExchanges[activeUsername] && keyExchanges[activeUsername].length) {
@@ -158,6 +161,7 @@ $(document).ready(function() {
 
       // Send any queued messages to this user
       if (messagesToPost[activeUsername] && messagesToPost[activeUsername].length !== 0) {
+        console.log('queued message to this user');
         // In a while loop in case more messages are received while we are sending messages
         while (messagesToPost[activeUsername].length) {
           var message = messagesToPost[activeUsername].shift();
@@ -204,13 +208,14 @@ $(document).ready(function() {
 
   function postFacebookMessage(message) {
     document.getElementsByName('message_body')[0].value = message;
-    document.getElementById('u_0_r').click();
+    $('input[value="Reply"]').click();
+    //document.getElementById('u_0_r').click();
   }
   function getSender(context, activeUsername) {
     return $(context).find('a').first().attr('href').replace('https://www.facebook.com/','') === activeUsername ? activeUsername : 'me';
   }
   function getActiveUsername() {
-    return $('._r7').find('a').attr('href').replace('https://www.facebook.com/','');
+    return $('._r7').find('a').attr('href').replace('https://www.facebook.com/','').replace('profile.php?id=','');
   }
 });
 

@@ -16,6 +16,7 @@ chrome.runtime.onMessage.addListener(function(message) {
 
   // Received facebook PGP key
   if (message.event === 'receivedPGPKey') {
+    console.log('Received FB PGP Key (main)');
     window.postMessage({ type: 'receivedPGPKey', text: message.data}, "*");
   }
 });
