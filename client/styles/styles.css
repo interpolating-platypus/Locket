@@ -124,9 +124,10 @@ img {
 }
 
 .navbar-brand {
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
   color: #bfd4d9 !important;
-  /*color: #638ca6 !important;*/
+  text-transform: uppercase;
   margin-left: 13px !important;
   font-size: 28px;
 }
