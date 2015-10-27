@@ -85,6 +85,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       }
                     } else {
                       // Otherwise, decrypt the message using our private key
+                      console.log('attempting to decrypt a message');
                       encryptionFactory.decryptMessage(keypair, encryptedMessage)
                       .then(function (decryptedMessage) {
                         console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
