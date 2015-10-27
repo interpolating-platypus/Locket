@@ -4,11 +4,20 @@ angular.module('Locket.encryptionFactory', [])
 
   var generateOptions = function (n) {
     var randomIdArray = new Uint32Array(n);
-    var randomId = $window.crypto.getRandomValues(randomIdArray).join('');
+    var randomIdValues = window.crypto.getRandomValues(randomIdArray);
+    var randomId = '';
+    //safari doesnt provide any of the normal array methds on Uint32Arrays
+    for(var i = 0; i < randomIdValues.length; i++){
+      randomId += randomIdValues[i];
+    }
+
     var randomPassphraseArray = new Uint32Array(n);
-    var randomPassphrase = $window.crypto.getRandomValues(randomPassphraseArray).join('');
-    // console.log('random id', randomId);
-    // console.log('random passphrase', randomPassphrase);
+    var randomPassphraseValues = window.crypto.getRandomValues(randomPassphraseArray);
+    var randomPassphrase = '';
+    //safari doesnt provide any of the normal array methds on Uint32Arrays
+    for(var i = 0; i < randomPassphraseValues.length; i++){
+      randomPassphrase += randomPassphraseValues[i];
+    }
 
     var options = {
       numBits: 2048,
