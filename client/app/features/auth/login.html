@@ -6,8 +6,8 @@
           <a class="navbar-brand" href="#">Locket</a>
           <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form navbar-right" ng-submit='login()' name='loginForm'>
-              <input class='form-control' type='text' name='username' placeholder='username' ng-model='user.usernameLogin' ng-minlength="2" required/>
-              <input class='form-control' type='password' name='password' placeholder='password' ng-model='user.passwordLogin' ng-minlength="2" required/>
+              <input autocomplete='off' class='form-control' type='text' name='username' placeholder='username' ng-model='user.usernameLogin' ng-minlength="2" required/>
+              <input autocomplete='off' class='form-control' type='password' name='password' placeholder='password' ng-model='user.passwordLogin' ng-minlength="2" required/>
               <button class='btn btn-primary form-control' ng-disabled="!loginForm.$valid" type='submit'>Login</button>
               <div class='loginFailed' ng-show='loginFailed'>Login Failed</div>
             </form>
@@ -26,8 +26,8 @@
     <h1>SIGNUP</h1>
     <h4>Chat securely away from prying eyes</h4>
     <form ng-submit='signup()' name='signupForm'>
-      <input class='form-control' type='text' name='username' placeholder='username' ng-model='user.usernameSignup' ng-minlength="2" required/>
-      <input class='form-control' type='password' name='password' placeholder='password' ng-model='user.passwordSignup' ng-minlength="2" required/>
+      <input autocomplete='off' class='form-control' type='text' name='username' placeholder='username' ng-model='user.usernameSignup' ng-minlength="2" required/>
+      <input autocomplete='off' class='form-control' type='password' name='password' placeholder='password' ng-model='user.passwordSignup' ng-minlength="2" required/>
       <button class='btn btn-primary form-control' ng-disabled="!signupForm.$valid" type='submit'>Sign Up</button>
       <span class='error' ng-show='signupForm.username.$error.minlength'>Username is too short</span>
       <span class='error' ng-show='signupForm.password.$error.minlength'>Password is too short</span>

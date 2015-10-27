@@ -29,7 +29,7 @@
       <p class="windowTitle text-center">Friends List</p>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
-          <input class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
+          <input autocomplete='off' class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
           <button class='btn btn-default button-display form-control' type='submit' ng-disabled='!addFriendForm.$valid'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
         </div>
       </form>
@@ -96,7 +96,7 @@
 
         <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
           <div class='form-group'>
-            <input class="form-control input-display sendMessageInput" type='text' name='message' ng-model='messageText' required/>
+            <input autocomplete='off' class="form-control input-display sendMessageInput" type='text' name='message' ng-model='messageText' required/>
             <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
           </div>
         </form>
