@@ -89,11 +89,12 @@
           <div class="messages"  
             ng-class="{ 'message-right': message.from === currentUser, 'message-left': message.from !==currentUser }" 
             ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
+            <span ng-if="message.from === currentUser" ng-class="message.isEncrypted ? 'glyphicon glyphicon-lock' : ''" aria-hidden="true"></span>
             <span 
               ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser, 'wrapMessage': message.message.length > 60}"
               ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
             </span>
-            <span ng-class="message.isEncrypted ? 'glyphicon glyphicon-lock' : ''" aria-hidden="true"></span>
+            <span ng-if="message.from !== currentUser" ng-class="message.isEncrypted ? 'glyphicon glyphicon-lock' : ''" aria-hidden="true"></span>
           </div>
         </div>
 
