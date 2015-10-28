@@ -18,7 +18,7 @@ var passport = require('passport');
 require('./features/auth/passport')(passport);;
 
 var session = exports.session = require("express-session")({
-  secret: "mr meeseeks",
+  secret: process.env.EXPSECRET || "mr meeseeks",
   resave: true,
   saveUninitialized: true
 });
