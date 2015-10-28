@@ -59,10 +59,12 @@
       </div>
       
       
+      <input type="text" class="form-control friendSearch" placeholder="Search friends" ng-model="searchText"/>
       <p class="friendHeaders">Online Friends</p>
+
       <div class="friendScroll" scroll-glue-top>
         <ul class="friendList">
-          <li ng-if='friend.online' ng-repeat='friend in friends track by $index | orderBy:"name"' ng-click='startChat(friend)'>
+          <li ng-if='friend.online' ng-repeat="friend in friends | filter:searchText track by $index" ng-click='startChat(friend)'>
             <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
               <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
               <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='icon' src='../../facebook.png'/></span>
