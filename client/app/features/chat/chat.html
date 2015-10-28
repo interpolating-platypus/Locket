@@ -45,8 +45,8 @@
             <div class='form-control-inline'>
               <span>New friend request from: {{friend}}</span>
               <div class="friendRequestOptions">
-                <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-ok vertical-center' aria-hidden='true' ng-click='acceptFriendRequest(friend)'></span></button>
-                <button class='btn btn-default friendButton'><span class='glyphicon glyphicon-remove vertical-center' aria-hidden='true' ng-click='ignoreFriendRequest(friend)'></span></button>
+                <button class='btn btn-default friendButton' ng-click='acceptFriendRequest(friend)'><span class='glyphicon glyphicon-ok vertical-center' aria-hidden='true'></span></button>
+                <button class='btn btn-default friendButton' ng-click='ignoreFriendRequest(friend)'><span class='glyphicon glyphicon-remove vertical-center' aria-hidden='true'></span></button>
               </div>
             </div>
           </li>
