@@ -7,6 +7,7 @@ var messagesToPost = {};
 var keyExchanges = {};
 var usersToClick = [];
 var scanDOM = false;
+var maxFacebookFriends = 15;
 
 $(document).ready(function() {
   // Facebook has iFrames. 
@@ -28,13 +29,15 @@ $(document).ready(function() {
     var getFacebookFriends = function() {
       var friendObjs = $('._k_');
       var results = [];
-      friendObjs.each(function() {
-        var link = $(this).attr('href');
-        var span = $(this).find('._l2 ._l1');
-        results.push({
-          username: link.replace('https://www.facebook.com/messages/', ''),
-          name: span.text()
-        });
+      friendObjs.each(function(idx) {
+        if (idx < maxFacebookFriends) {
+          var link = $(this).attr('href');
+          var span = $(this).find('._l2 ._l1');
+          results.push({
+            username: link.replace('https://www.facebook.com/messages/', ''),
+            name: span.text()
+          });
+        }
       });
 
       return results;
