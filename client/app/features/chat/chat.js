@@ -19,9 +19,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.friends = [];
       $scope.sentRequest = false;
 
-      // set indicator for whether message is encrypted (see startChat for use, around line 192)
+      // set indicator for whether message is encrypted
       $scope.encrypted = true;
 
+      // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
       $scope.$watch('activeFriend.key', function (newValue, oldValue) {
         $scope.encrypted = newValue ? true : false;
       });
