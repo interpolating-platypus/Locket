@@ -1,12 +1,12 @@
-# Project Name
+# Locket
 
-> Pithy project description
+> Chat securely away from prying eyes
 
 ## Team
 
-  - __Product Owner__: teamMember
-  - __Scrum Master__: teamMember
-  - __Development Team Members__: teamMember, teamMember
+  - __Product Owner__: Michael Wetherald @computer
+  - __Scrum Master__: Livvie Lin @livvielin
+  - __Development Team Members__: Nate Willard @RandomSeeded, Yilin Xu @yx296
 
 ## Table of Contents
 
@@ -24,11 +24,9 @@
 
 ## Requirements
 
-- Node 0.10.x
-- Redis 2.6.x
-- Postgresql 9.1.x
-- etc
-- etc
+- Node 4.2.x
+- MongoDB 3.0.x
+- Locket Google Chrome Extension (optional)
 
 ## Development
 
@@ -39,12 +37,13 @@ From within the root directory:
 ```sh
 sudo npm install -g bower
 npm install
-bower install
 ```
+
+For external chat client integration, install the Locket Google Chrome Extension
 
 ### Roadmap
 
-View the project roadmap [here](LINK_TO_PROJECT_ISSUES)
+View the project roadmap [here](https://github.com/interpolating-platypus/Locket/issues)
 
 
 ## Contributing
