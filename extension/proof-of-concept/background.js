@@ -29,7 +29,8 @@ var facebookTODO = {
   postMessages: [],
   getFriends: false,
   scanDOM: false,
-  sendPublicKey: []
+  sendPublicKey: [],
+  readFacebookMessages: []
 };
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -79,13 +80,15 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       postMessages: facebookTODO.postMessages.slice(),
       getFriends: facebookTODO.getFriends,
       scanDOM: facebookTODO.scanDOM,
-      sendPublicKey: facebookTODO.sendPublicKey
+      sendPublicKey: facebookTODO.sendPublicKey,
+      readFacebookMessages: facebookTODO.readFacebookMessages
     });
 
     // TODO: modularize this so it's a 1-line reset to defaults
     facebookTODO.postMessages = [];
     facebookTODO.getFriends = false;
     facebookTODO.sendPublicKey = [];
+    facebookTODO.readFacebookMessages = [];
   }
 
   // The facebook script has read in new messages
@@ -130,5 +133,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   // The facebook script has sent us a PGP key
   if (message.event === 'receivedPGPKey') {
     chrome.tabs.sendMessage(mainTabId, {event: 'receivedPGPKey', data: message.data});
+  }
+
+  // The content script is telling us to read facebook messages for a certain user
+  if (message.event === 'readFacebookMessages') {
+    console.log('READ FACEBOOK MESSAGES (bg)');
+    facebookTODO.readFacebookMessages.push(message.data.to);
   }
 });
