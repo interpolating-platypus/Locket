@@ -234,8 +234,12 @@ img {
 
 .encryptionOn {
   color: green;
+  display: inline-block;
+  float: right;
 }
 
 .encryptionOff {
   color: red;
+  display: inline-block;
+  float: right;
 }
