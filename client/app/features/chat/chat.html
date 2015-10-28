@@ -81,7 +81,7 @@
 
     <div class="col-xs-8 chatWindow">
       <div ng-show="activeFriend">
-        <div class="windowTitle text-center">Chat with {{activeFriend.name}}<span ng-click='requestEncryptedChat()' ng-class="encrypted ? 'encryptionOn' : 'encryptionOff'">{{encrypted}}</span></div>
+        <div class="windowTitle text-center">Chat with {{activeFriend.name}}<span class="encryptionIndicator" ng-click='requestEncryptedChat()' ng-class="encrypted ? 'encryptionOn' : 'encryptionOff'">{{encrypted}}</span></div>
 
         <div class="messageList" scroll-glue>
           <div class="messages"  

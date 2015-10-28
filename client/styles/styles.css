@@ -232,15 +232,16 @@ img {
   padding-bottom: 5px;
 }
 
-.encryptionOn {
-  color: green;
+.encryptionIndicator {
   display: inline-block;
   float: right;
+  padding-right: 10px;
+}
+
+.encryptionOn {
+  color: green;
 }
 
 .encryptionOff {
   color: red;
-  display: inline-block;
-  float: right;
-  padding-right: 10px;
 }
