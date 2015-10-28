@@ -10,8 +10,6 @@ angular.module('Locket.authFactory', [])
     }).then(function(resp) {
       if(resp.data.auth === "UNAUTHORIZED"){
         $state.go('login');
-      }else{
-        $stateParams.username = resp.data.username;
       }
       return resp.data;
     });
