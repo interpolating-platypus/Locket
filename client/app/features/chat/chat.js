@@ -4,12 +4,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
   console.log('chat');
   authFactory.signedin().then(function(resp){
-    if (resp === 'OK') {
+    if (resp.auth === 'OK') {
       socket.connect();
-
-      window.onbeforeunload = function(event){
-        return "All of your messages will be lost";
-      };
 
       var keyring = encryptionFactory.generateKeyPair();
       var publicKey;
@@ -19,7 +15,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         socket.emit('sendPGP', keypair.pubkey);
       });
 
-      $scope.currentUser = $stateParams.username;
+      $scope.currentUser = $stateParams.username || resp.username;
       $scope.friends = [];
       $scope.sentRequest = false;
 

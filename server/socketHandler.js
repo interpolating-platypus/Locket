@@ -64,7 +64,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('disconnect', function () {
-    disconnect(username, expressCookie);
+    disconnect(username);
   });
 
   // Echo function, useful for debugging & testing
@@ -74,6 +74,7 @@ io.on('connection', function (socket) {
 
   socket.on('logout', function () {
     console.log(username + ' logged out');
+    delete sessionMap[expressCookie];
     socket.disconnect();
   });
 
@@ -195,14 +196,13 @@ var friendRequestAccepted = function (acceptFriendObj, username) {
   }
 };
 
-var disconnect = function (username, expressCookie) {
+var disconnect = function (username) {
   console.log(username + ' disconnected');
 
   notifyFriends('friendLoggedOut', username);
   
   // remove user from sessionMap and userMap
   delete userMap[username];
-  delete sessionMap[expressCookie];
 
   notifyFriends('friendLoggedOut', username);
   console.log('disconnect sessionmap', sessionMap);
