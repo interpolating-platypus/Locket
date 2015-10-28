@@ -4,7 +4,7 @@
 
 ## Team
 
-  - __Product Owner__: Michael Wetherald @computer
+  - __Product Owner__: Michael Wetherald @compewter
   - __Scrum Master__: Livvie Lin @livvielin
   - __Development Team Members__: Nate Willard @RandomSeeded, Yilin Xu @yx296
 
