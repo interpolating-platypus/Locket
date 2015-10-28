@@ -210,6 +210,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           $timeout(function() {
             angular.element(".sendMessageInput").focus();
           }, 100);
+          // Load messages from facebook friends
+          if ($scope.activeFriend.service === "Facebook") {
+            window.postMessage({ type: 'readFacebookMessages', to: $scope.activeFriend.username}, '*');
+          }
         });
       };
         //if $scope.friends[username] has publicPGPKey

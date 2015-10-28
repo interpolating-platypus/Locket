@@ -37,6 +37,7 @@ chrome.runtime.sendMessage({
 window.addEventListener('message', function(event) {
   if (event.source != window)
     return;
+
   // App requesting facebook friends
   if (event.data.type && (event.data.type === 'getFacebookFriends')) {
     chrome.runtime.sendMessage({
@@ -44,6 +45,7 @@ window.addEventListener('message', function(event) {
       data: ''
     });
   }
+
   // App telling us to begin the DOM scan
   if (event.data.type && (event.data.type === 'scanFacebookDOM')) {
     chrome.runtime.sendMessage({
@@ -51,6 +53,7 @@ window.addEventListener('message', function(event) {
       data: ''
     });
   }
+
   // App sending facebook message
   if (event.data.type && (event.data.type === 'sendFacebookMessage')) {
     chrome.runtime.sendMessage({
@@ -61,6 +64,7 @@ window.addEventListener('message', function(event) {
       }
     });
   }
+  
   // App requesting a key exchange
   if (event.data.type && (event.data.type === 'sendPublicKey')) {
     console.log('main: requesting public key');
@@ -69,6 +73,16 @@ window.addEventListener('message', function(event) {
       data: {
         to: event.data.to,
         publicKey: event.data.publicKey
+      }
+    });
+  }
+
+  // App requesting us to read facebook messages for clicked-on user
+  if (event.data.type && (event.data.type === 'readFacebookMessages')) {
+    chrome.runtime.sendMessage({
+      event: 'readFacebookMessages',
+      data: {
+        to: event.data.to,
       }
     });
   }
