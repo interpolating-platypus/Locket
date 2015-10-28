@@ -100,7 +100,7 @@
         <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
           <div class='form-group'>
             <input autocomplete='off' class="form-control input-display sendMessageInput" type='text' name='message' ng-model='messageText' required/>
-            <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
+            <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid || (activeFriend.service === "Locket" && !activeFriend.key)' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
           </div>
         </form>
         <!-- </div> -->
