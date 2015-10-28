@@ -81,8 +81,8 @@
 
     <div class="col-xs-8 chatWindow">
       <div ng-show="activeFriend">
-        <div class="windowTitle text-center">Chat with {{activeFriend.name}}<span ng-class="encrypted ? 'encryptionOn' : 'encryptionOff'">{{encrypted}}</span></div>
-        
+        <div class="windowTitle text-center">Chat with {{activeFriend.name}}<span ng-click='requestEncryptedChat()' ng-class="encrypted ? 'encryptionOn' : 'encryptionOff'">{{encrypted}}</span></div>
+
         <div class="messageList" scroll-glue>
           <div class="messages"  
             ng-class="{ 'message-right': message.from === currentUser, 'message-left': message.from !==currentUser }" 
@@ -100,8 +100,6 @@
             <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
           </div>
         </form>
-
-        <button ng-click='requestEncryptedChat()' type='submit' value='Chat Securely'></button>
         <!-- </div> -->
 
       </div>

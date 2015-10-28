@@ -242,4 +242,5 @@ img {
   color: red;
   display: inline-block;
   float: right;
+  padding-right: 10px;
 }
