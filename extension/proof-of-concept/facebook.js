@@ -114,6 +114,7 @@ $(document).ready(function() {
 
               // Determine who sent the PGP key. 
               var activeUsername = getActiveUsername();
+              var activeName = getActiveName();
               var sentBy = getSender(context, activeUsername);
 
               // Only report this PGP key to the client if we did not send it
@@ -123,7 +124,8 @@ $(document).ready(function() {
                   event: 'receivedPGPKey',
                   data: {
                     publicKey: publicKey,
-                    from: activeUsername
+                    from: activeUsername,
+                    name: activeName
                   }
                 });
               }
@@ -140,10 +142,11 @@ $(document).ready(function() {
           if (newTexts.length) {
             // Retrieve the facebook username
             var activeUsername = getActiveUsername();
+            var activeName = getActiveName();
             var sentBy = getSender(this, activeUsername);
 
             // handle sending of new messages to the client here
-            chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {with: activeUsername, from: sentBy, text: newTexts}});
+            chrome.runtime.sendMessage({event: 'receivedNewFacebookMessage', data: {with: activeUsername, name: activeName, from: sentBy, text: newTexts}});
           }
           seenMessageGroup[id] = texts;
         }
@@ -213,10 +216,13 @@ $(document).ready(function() {
     //document.getElementById('u_0_r').click();
   }
   function getSender(context, activeUsername) {
-    return $(context).find('a').first().attr('href').replace('https://www.facebook.com/','') === activeUsername ? activeUsername : 'me';
+    return $(context).find('a').first().attr('href').replace('https://www.facebook.com/','').replace('profile.php?id=','') === activeUsername ? activeUsername : 'me';
   }
   function getActiveUsername() {
     return $('._r7').find('a').attr('href').replace('https://www.facebook.com/','').replace('profile.php?id=','');
+  }
+  function getActiveName() {
+    return $('._r7').find('a').text();
   }
 });
 
