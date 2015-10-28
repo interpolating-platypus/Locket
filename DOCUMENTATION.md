@@ -58,35 +58,35 @@ Configures the Angular app injecting all factories and controllers. Configures t
 Main HTML container for html views. Loads all JavaScript dependencies.
 
 ## app/features/auth
-  ### login.html
-  HTML view for login and signup 
+### login.html
+HTML view for login and signup 
 
-  ### auth.js
-  authController for login.html view. Invokes login and signup methods in authFactory
+### auth.js
+authController for login.html view. Invokes login and signup methods in authFactory
 
 ### app/features/chat
-  ### chat.html
-  HTML view for main chat view. Contains html views for friends list, adding friends, current chat log, and logging out.
+### chat.html
+HTML view for main chat view. Contains html views for friends list, adding friends, current chat log, and logging out.
 
-  ### chat.js
-  chatController to handle all chat and friends activity.
+### chat.js
+chatController to handle all chat and friends activity.
 
 ## app/services
-  ### authFactory.js
-  authFactory to handle all authentication API calls
-    - api/users/login
-    - api/users/signup
-    - api/users/signedin
+### authFactory.js
+authFactory to handle all authentication API calls
+  - api/users/login
+  - api/users/signup
+  - api/users/signedin
 
-  ### encryptionFactory.js
-  encryptionFactory
-    - encryptMessage()
-    - decryptMessage()
-    - generateOptions() | generates options used for generating a public/private keypair
-    - generateKeyPair()
+### encryptionFactory.js
+encryptionFactory
+  - encryptMessage()
+  - decryptMessage()
+  - generateOptions() | generates options used for generating a public/private keypair
+  - generateKeyPair()
 
-  ### socketFactory.js
-  socketFactory returns a socket.io socket to be used to communicate with the server
+### socketFactory.js
+socketFactory returns a socket.io socket to be used to communicate with the server
 
 ## Server-Side
 - NodeJS
