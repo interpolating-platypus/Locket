@@ -59,7 +59,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         }
 
         // Receive new facebook message(s)
-        var halfPGPMessage = '';
+        var partialPGPMessage = '';
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
           console.log('received new facebook message', event.data.text);
           var username = event.data.text.with;
@@ -76,53 +76,57 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               var newMessage = '';
 
               // PGP messages are in two parts, combine into one
-              if (halfPGPMessage) {
-                var encryptedMessage = halfPGPMessage+'\n\n'+newMessages[i];
-                halfPGPMessage = '';
-                keyring.then(function(keypair) {
-                  // If we sent the message, use the local decrypted version
-                  if (event.data.text.from === 'me') { 
-                    // Create a message object
-                    var message = {
-                      encryptedMessage: encryptedMessage,
-                      timestamp: Date.now(),
-                      from: $scope.currentUser
-                    }
-                    // Make sure we add the correct message:
-                    for (var j = 0; j < $scope.friends[index].unsentFBMessages.length; j++) {
-                      if ($scope.friends[index].unsentFBMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
-                        message.message = $scope.friends[index].unsentFBMessages[j].message;
-                        message.isEncrypted = $scope.friends[index].unsentFBMessages[j].isEncrypted;
-                        $scope.friends[index].unsentFBMessages.splice(j, 1);
-                        $scope.friends[index].messages.push(message);
-                          $scope.$apply();
-                        }
+              if (partialPGPMessage) {
+                partialPGPMessage+='\n\n'+newMessages[i];
+                if (newMessages[i].slice(-25) === '-----END PGP MESSAGE-----') {
+                  var encryptedMessage = partialPGPMessage;
+                  partialPGPMessage = '';
+                  keyring.then(function(keypair) {
+                    // If we sent the message, use the local decrypted version
+                    if (event.data.text.from === 'me') { 
+                      // Create a message object
+                      var message = {
+                        encryptedMessage: encryptedMessage,
+                        timestamp: Date.now(),
+                        from: $scope.currentUser
                       }
-                    } else {
-                      // Otherwise, decrypt the message using our private key
-                      encryptionFactory.decryptMessage(keypair, encryptedMessage)
-                      .then(function (decryptedMessage) {
-                        console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
-                        decryptedMessage.isEncrypted = true;
-                        $scope.friends[index].messages.push({
-                          to: $scope.currentUser,
-                          from: $scope.friends[index].username,
-                          timestamp: Date.now(),
-                          encryptedMessage: encryptedMessage,
-                          message: decryptedMessage
-                        });
-                        if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
-                          $scope.friends[index].unreadMessage = true;
+                      // Make sure we add the correct message:
+                      for (var j = 0; j < $scope.friends[index].unsentFBMessages.length; j++) {
+                        if ($scope.friends[index].unsentFBMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
+                          message.message = $scope.friends[index].unsentFBMessages[j].message;
+                          message.isEncrypted = $scope.friends[index].unsentFBMessages[j].isEncrypted;
+                          $scope.friends[index].unsentFBMessages.splice(j, 1);
+                          $scope.friends[index].messages.push(message);
+                            $scope.$apply();
+                          }
                         }
-                      $scope.$apply();
-                    })
-                    .catch(function() {
-                      console.log("Failed to decrypt message");
-                    });
-                  }
-                });
+                      } else {
+                        // Otherwise, decrypt the message using our private key
+                        console.log('ATTEMPTING TO DECRYPT MESSAGE', encryptedMessage);
+                        encryptionFactory.decryptMessage(keypair, encryptedMessage)
+                        .then(function (decryptedMessage) {
+                          console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
+                          $scope.friends[index].messages.push({
+                            to: $scope.currentUser,
+                            from: $scope.friends[index].username,
+                            timestamp: Date.now(),
+                            encryptedMessage: encryptedMessage,
+                            message: decryptedMessage,
+                            isEncrypted: true
+                          });
+                          if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
+                            $scope.friends[index].unreadMessage = true;
+                          }
+                        $scope.$apply();
+                      })
+                      .catch(function() {
+                        console.log("Failed to decrypt message");
+                      });
+                    }
+                  });
+                }
               } else if (newMessages[i].substr(0,27) === '-----BEGIN PGP MESSAGE-----') {
-                halfPGPMessage = newMessages[i];
+                partialPGPMessage = newMessages[i];
               }
               else {
                 // Non-PGP message: doesn't need decryption

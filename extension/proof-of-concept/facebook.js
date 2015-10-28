@@ -103,14 +103,17 @@ $(document).ready(function() {
         // Handle any new messages
         if (id && seenMessageGroup[id].length !== texts.length) {
           var newTexts = [];
-          var halfpgpkey = ''; // the pgp key gets split into two messages
+          var partialPGPKey = ''; // the pgp key gets split into two messages
           var context = this;
           texts.slice(seenMessageGroup[id].length).each(function(index) {
             console.log('TEXT', $(this).text());
             // Sometimes a new message will contain a PGP key
-            if (halfpgpkey) {
-              var publicKey = halfpgpkey + '\n\n'+$(this).text();
-              halfpgpkey = '';
+            if (partialPGPKey) {
+              var text = $(this).text();
+              var publicKey = partialPGPKey + '\n\n'+text;
+              if (text.slice(text.length-34) === '-----END PGP PUBLIC KEY BLOCK-----') {
+                partialPGPKey = '';
+              }
 
               // Determine who sent the PGP key. 
               var activeUsername = getActiveUsername();
@@ -132,7 +135,7 @@ $(document).ready(function() {
             }
             // This is the pgp key header; the next text is the pgp key
             else if ($(this).text().substr(0,36) === '-----BEGIN PGP PUBLIC KEY BLOCK-----') {
-              halfpgpkey = $(this).text();
+              partialPGPKey = $(this).text();
             }
             // This is a standard message to be sent back to the client
             else {
