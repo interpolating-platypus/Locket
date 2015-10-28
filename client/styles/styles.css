@@ -1,3 +1,30 @@
+.navbar.navbar-custom {
+  padding-bottom: 0;
+  margin-bottom: 0 !important;
+  border: none;
+}
+.navbar.navbar-custom .navbar-upper {
+  position: absolute;
+  right: 0;
+}
+.navbar.navbar-custom .navbar-upper .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+.navbar.navbar-custom .navbar-upper .navbar-btn.btn-drop {
+  background: none;
+  border: none;
+  color: #bfd4d9;
+}
+.navbar.navbar-custom .navbar-brand {
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  color: #bfd4d9;
+  text-transform: uppercase;
+  font-size: 28px;
+}
+
+
 html, body {
   height: 100%;
   font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -257,3 +284,10 @@ img {
 .encryptionOff {
   color: red;
 }
+
+
+
+
+
+
+
