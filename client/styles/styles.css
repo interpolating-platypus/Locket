@@ -69,9 +69,12 @@ img {
 }
 
 .friendSearch {
-  margin-left: 40px;
-  width: 20.05vw;
-
+  width: 60%;
+  display: inline;
+  vertical-align: middle;
+  float:right;
+  margin: 8px 13px 5px 5px;
+  max-height: 26px;
 }
 
 .friendRequests {
