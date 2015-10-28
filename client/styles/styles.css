@@ -231,3 +231,11 @@ img {
   margin-left: 10px;
   padding-bottom: 5px;
 }
+
+.encryptionOn {
+  color: green;
+}
+
+.encryptionOff {
+  color: red;
+}
