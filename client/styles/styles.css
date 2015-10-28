@@ -236,6 +236,8 @@ img {
   display: inline-block;
   float: right;
   padding-right: 10px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .encryptionOn {
