@@ -66,6 +66,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           var fullname = event.data.text.name;
           var newMessages = event.data.text.text;
           findFriend(username, function(index) {
+
             if (index === -1 && username !== 'me') {
               var newFriend = createFriendObj(username, true, fullname, "Facebook");
               $scope.friends.push(newFriend);
@@ -91,26 +92,28 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                     for (var j = 0; j < $scope.friends[index].unsentFBMessages.length; j++) {
                       if ($scope.friends[index].unsentFBMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
                         message.message = $scope.friends[index].unsentFBMessages[j].message;
+                        message.isEncrypted = $scope.friends[index].unsentFBMessages[j].isEncrypted;
                         $scope.friends[index].unsentFBMessages.splice(j, 1);
                         $scope.friends[index].messages.push(message);
-                        $scope.$apply();
+                          $scope.$apply();
+                        }
                       }
-                    }
-                  } else {
-                    // Otherwise, decrypt the message using our private key
-                    encryptionFactory.decryptMessage(keypair, encryptedMessage)
-                    .then(function (decryptedMessage) {
-                      console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
-                      $scope.friends[index].messages.push({
-                        to: $scope.currentUser,
-                        from: $scope.friends[index].username,
-                        timestamp: Date.now(),
-                        encryptedMessage: encryptedMessage,
-                        message: decryptedMessage
-                      });
-                      if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
-                        $scope.friends[index].unreadMessage = true;
-                      }
+                    } else {
+                      // Otherwise, decrypt the message using our private key
+                      encryptionFactory.decryptMessage(keypair, encryptedMessage)
+                      .then(function (decryptedMessage) {
+                        console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
+                        decryptedMessage.isEncrypted = true;
+                        $scope.friends[index].messages.push({
+                          to: $scope.currentUser,
+                          from: $scope.friends[index].username,
+                          timestamp: Date.now(),
+                          encryptedMessage: encryptedMessage,
+                          message: decryptedMessage
+                        });
+                        if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
+                          $scope.friends[index].unreadMessage = true;
+                        }
                       $scope.$apply();
                     })
                     .catch(function() {
@@ -222,7 +225,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           // encrypt typed message
           encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
           .then(function (encryptedMessage) {
-            $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage});
+            $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
             socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
           });
         } else if ($scope.activeFriend.service === 'Facebook') {
@@ -234,7 +237,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: encryptedMessage}, '*');
               $scope.activeFriend.unsentFBMessages.push({
                 message: messageText,
-                encryptedMessage: encryptedMessage
+                encryptedMessage: encryptedMessage,
+                isEncrypted: true
               });
             });
           } else {
@@ -287,6 +291,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               encryptionFactory.decryptMessage(keypair, message.encryptedMessage)
               .then(function (decryptedMessage) {
                 message.message = decryptedMessage;
+                message.isEncrypted = true;
                 $scope.friends[index].messages.push(message);
                 $scope.$apply();
               });
@@ -306,6 +311,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             for (var i = 0; i < $scope.friends[index].unsentMessages.length; i++) {
               if ($scope.friends[index].unsentMessages[i].encryptedMessage === message.encryptedMessage) {
                 message.message = $scope.friends[index].unsentMessages[i].message;
+                message.isEncrypted = $scope.friends[index].unsentMessages[i].isEncrypted;
                 $scope.friends[index].unsentMessages.splice(i, 1);
                 $scope.friends[index].messages.push(message);
               }
