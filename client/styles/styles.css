@@ -231,3 +231,19 @@ img {
   margin-left: 10px;
   padding-bottom: 5px;
 }
+
+.encryptionIndicator {
+  display: inline-block;
+  float: right;
+  padding-right: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.encryptionOn {
+  color: green;
+}
+
+.encryptionOff {
+  color: red;
+}
