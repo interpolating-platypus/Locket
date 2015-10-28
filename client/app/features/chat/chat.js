@@ -83,7 +83,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                   partialPGPMessage = '';
                   keyring.then(function(keypair) {
                     // If we sent the message, use the local decrypted version
-                    if (event.data.text.from === 'me') { 
+                    if (event.data.text.from === 'me') {
                       // Create a message object
                       var message = {
                         encryptedMessage: encryptedMessage,
@@ -91,36 +91,52 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                         from: $scope.currentUser
                       }
                       // Make sure we add the correct message:
+                      var addedMessage = false;
                       for (var j = 0; j < $scope.friends[index].unsentFBMessages.length; j++) {
                         if ($scope.friends[index].unsentFBMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
                           message.message = $scope.friends[index].unsentFBMessages[j].message;
                           message.isEncrypted = $scope.friends[index].unsentFBMessages[j].isEncrypted;
                           $scope.friends[index].unsentFBMessages.splice(j, 1);
                           $scope.friends[index].messages.push(message);
-                            $scope.$apply();
-                          }
+                          addedMessage = true;
+                          $scope.$apply();
                         }
-                      } else {
-                        // Otherwise, decrypt the message using our private key
-                        console.log('ATTEMPTING TO DECRYPT MESSAGE', encryptedMessage);
-                        encryptionFactory.decryptMessage(keypair, encryptedMessage)
-                        .then(function (decryptedMessage) {
-                          console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
-                          $scope.friends[index].messages.push({
-                            to: $scope.currentUser,
-                            from: $scope.friends[index].username,
-                            timestamp: Date.now(),
-                            encryptedMessage: encryptedMessage,
-                            message: decryptedMessage,
-                            isEncrypted: true
-                          });
-                          if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
-                            $scope.friends[index].unreadMessage = true;
-                          }
+                      }
+                      if (!addedMessage) {
+                        message.message = '[Message Expired]';
+                        message.isEncrypted = true;
+                        $scope.friends[index].messages.push(message);
+                        $scope.apply();
+                      }
+                    } else {
+                      // Otherwise, decrypt the message using our private key
+                      console.log('ATTEMPTING TO DECRYPT MESSAGE', encryptedMessage);
+                      encryptionFactory.decryptMessage(keypair, encryptedMessage)
+                      .then(function (decryptedMessage) {
+                        console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
+                        $scope.friends[index].messages.push({
+                          to: $scope.currentUser,
+                          from: $scope.friends[index].username,
+                          timestamp: Date.now(),
+                          encryptedMessage: encryptedMessage,
+                          message: decryptedMessage,
+                          isEncrypted: true
+                        });
+                        if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
+                          $scope.friends[index].unreadMessage = true;
+                        }
                         $scope.$apply();
                       })
                       .catch(function() {
                         console.log("Failed to decrypt message");
+                        $scope.friends[index].messages.push({
+                          to: $scope.currentUser,
+                          from: $scope.friends[index].username,
+                          timestamp: Date.now(),
+                          encryptedMessage: encryptedMessage,
+                          message: '[Message Expired]',
+                          isEncrypted: true
+                        });
                       });
                     }
                   });
