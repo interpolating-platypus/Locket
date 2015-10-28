@@ -65,6 +65,13 @@ img {
 .friendHeaders {
   font-size: 18px;
   padding-top: 10px;
+  margin-left: 10px;
+}
+
+.friendSearch {
+  margin-left: 40px;
+  width: 20.05vw;
+
 }
 
 .friendRequests {
