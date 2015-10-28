@@ -337,7 +337,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       socket.on('friendsList', function(friends){
         for (var i = 0; i < friends.length; i++) {
           var friend = friends[i];
-          $scope.friends.push(createFriendObj(friend));
+          $scope.friends.unshift(createFriendObj(friend));
         }
       });
 
@@ -377,8 +377,19 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           if (friend === $scope.friendRequests[i]) {
             $scope.friendRequests.splice(i, 1);
             var newFriend = createFriendObj(friend);
-            $scope.friends.push(newFriend);
-            $scope.getFriends();
+            $scope.friends.unshift(newFriend);
+            //this was duplicating friends list
+            // $scope.getFriends();
+
+            //now this function just updates the online property for the new friend
+            findFriend(friend, function(index){
+              if(index >= 0){
+                console.log('389', friend);
+                $scope.friends[index].online = true;
+              } else {
+                $scope.friends.unshift(createFriendObj(friend));
+              }
+            });
           }
         }
       };
@@ -424,7 +435,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             $scope.friends[index].online = true;
           } else {
             //if user is not in friends list, add them
-            $scope.friends.push(friend);
+            $scope.friends.unshift(createFriendObj(friend));
           }
         });
       });
@@ -450,8 +461,20 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       socket.on('friendRequestAccepted', function(acceptFriendObj) {
         $scope.acceptedfriendRequests.push(acceptFriendObj.from);
         var newFriend = createFriendObj(acceptFriendObj.from);
-        $scope.friends.push(newFriend);
-        $scope.getFriends();
+        $scope.friends.unshift(newFriend);
+        //this was duplicating our friends list 
+        // $scope.getFriends();
+        // now just check if newFriend is online
+        findFriend(newFriend.username, function(index){
+          console.log('471', newFriend.username);
+          if(index >= 0){
+            console.log('success');
+            $scope.friends[index].online = true;
+          } else {
+            console.log('wtf');
+            $scope.friends.unshift(createFriendObj(friend));
+          }
+        });
 
         socket.emit('sendPGP', publicKey);
       });
