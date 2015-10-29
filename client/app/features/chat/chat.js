@@ -8,7 +8,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       var keyring = encryptionFactory.generateKeyPair();
       var publicKey;
-      // send public key to friends on login
+      // send public key to Locket friends on login
       keyring.then(function (keypair) {
         publicKey = keypair.pubkey;
         socket.emit('sendPGP', keypair.pubkey);
@@ -171,6 +171,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         if (event.data.type && (event.data.type === 'receivedPGPKey')) {
           var username = event.data.text.from;
           var fullname = event.data.text.name;
+          var friendSession = event.data.text.mySession;
+          var mySession = event.data.text.friendSession;
           findFriend(username, function(index) {
             // If this is from a facebook friend not on the list, add as new
             if (index === -1 && username !== 'me') {
@@ -178,8 +180,20 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               $scope.friends.push(newFriend);
               index = $scope.friends.length-1;
             }
-            // Store that friend's public key
-            $scope.friends[index].key = event.data.text.publicKey;
+
+            //we need to verify the pgpkey is still valid for this session
+            //verify event friendSession matches session in $scope.friends && mySession in event matches mySession
+            //if it does match
+            if (friendSession === $scope.friends[index].session && mySession === $scope.mySession){
+              //state is encrypted
+              // Store that friend's public key
+              $scope.friends[index].key = event.data.text.publicKey;
+              console.log('Storing public key for user', $scope.friends[index].username, event.data.text.publicKey);
+              
+            } else {
+              //respond with myKey, mySession, friendSession
+              console.log('Updating pgpKey for', $scope.friends[index].username)
+            }
 
             // If we haven't already sent our public key to that user, send it now
             var lastSent = $scope.friends[index].sentKey;
