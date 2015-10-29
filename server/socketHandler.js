@@ -63,6 +63,11 @@ io.on('connection', function (socket) {
     UserController.removeUnreadFriendRequest(username, ignoreFriendObj.to);
   });
 
+  socket.on('blockUser', function(blockUserObj) {
+    UserController.blockUser(username, blockUserObj.to);
+    console.log(username, blockUserObj.to);
+  });
+
   socket.on('disconnect', function () {
     disconnect(username);
   });
@@ -235,42 +240,3 @@ var notifyFriends = function(event, username){
     console.log('user does not have socket mapped');
   }
 };
-
-/*
-  module.exports.listen to server.js to set up io
-  //socket.request
-  set up all handlers (socket.on()) inside listen function
-    connection
-      respond to user with their friends list
-
-    sendMessage (handles receipt of new message from users)
-      {
-        to: ,
-        message: 
-      }
-      verify users are friends before sending message to recipient
-    
-    addFriend
-      {
-        to: 
-      }
-      notify requested friend of friend request
-    
-    sendPGP
-      {
-        key: ,
-        to: 
-      }
-      send pgp key to recipient 
-        socket.emit('keyReceived') {key, from}
-    
-    requestKey
-      {
-        to
-      }
-      request PGP key from 'to'
-        socket.emit('keyRequested' {from}) 
-    disconnect
-      notify all friends that this user has signed off
-
-*/

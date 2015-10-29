@@ -24,7 +24,8 @@ exports.login = function(req, res, next) {
               res.status(200).send(
                 {username: username, 
                  friendRequests: user.friendRequests, 
-                 acceptedfriendRequests: user.acceptedfriendRequests});
+                 acceptedfriendRequests: user.acceptedfriendRequests,
+                 blockedUsers: user.blockedUsers});
             } else {
               return next(new Error('No User'));
             }
@@ -71,12 +72,15 @@ exports.signup = function(req, res, next) {
 };
 
 exports.friendRequestOffline = function(user1, user2, next) {
+  console.log("frOffline", user1, user2);
   var findUser = Q.nbind(User.findOne, User);
 
   findUser({username: user1})
     .then(function(user) {
       if(!user) {
         next(new Error('User does not exist'));
+      } else if (user.blockedUsers.indexOf(user2) > -1) {
+        console.log('blocked');
       } else if (user.friendRequests.indexOf(user2) === -1){
         user.friendRequests.push(user2);
         user.save(function (err) {
@@ -117,6 +121,28 @@ exports.removeUnreadFriendRequest = function(user1, user2) {
       next(error);
     }); 
 };
+
+exports.blockUser = function(user1, user2) {
+  var findUser = Q.nbind(User.findOne, User);
+
+  findUser({username: user1})
+    .then(function(user) {
+      if(!user) {
+        next(new Error('User does not exist'));
+      } else {
+        user.blockedUsers.push(user2);
+        user.save(function (err) {
+          if(err) {
+            console.error('ERROR!');
+          }
+        });
+      }
+    })
+    .fail(function(error) {
+      next(error);
+    }); 
+};
+
 
 exports.notifyFriendRequestAccepted = function(user1, user2) {
   var findUser = Q.nbind(User.findOne, User);
