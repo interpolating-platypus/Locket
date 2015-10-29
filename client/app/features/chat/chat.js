@@ -171,6 +171,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         if (event.data.type && (event.data.type === 'receivedPGPKey')) {
           var username = event.data.text.from;
           var fullname = event.data.text.name;
+          var friendKey = event.data.text.publicKey;
           var myKey = event.data.text.friendKey;
 
           findFriend(username, function(index) {
@@ -185,9 +186,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
             //we need to verify the pgpkey is still valid for this session
             keyring.then(function(keypair){
-
+              console.log(friendKey.substring(0,125), $scope.friends[index].key.substring(0,125));
+              console.log(myKey.substring(0,125), publicKey.substring(0,125));
               //verify event has this user's public key, and the friends public key already stored
-              if (event.data.text.publicKey === $scope.friends[index].key && myKey === publicKey){
+              if (friendKey === $scope.friends[index].key && myKey === publicKey){
                 //state is encrypted
                 
               } else {
@@ -228,13 +230,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       // We are requesting an encrypted chat with somebody. Send them our public key and request their public key in return
       $scope.requestEncryptedChat = function() {
-        window.postMessage({
-          type: 'sendPublicKey',
-          publicKey: publicKey,
-          to: $scope.activeFriend.username
-        }, '*');
         findFriend($scope.activeFriend.username, function(index) {
           $scope.friends[index].sentKey = true;
+          window.postMessage({
+            type: 'sendPublicKey',
+            publicKey: publicKey,
+            friendKey: $scope.friends[index].key,
+            to: $scope.activeFriend.username
+          }, '*');
         });
       };
 
