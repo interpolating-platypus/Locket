@@ -122,7 +122,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                           message: decryptedMessage,
                           isEncrypted: true
                         });
-                        if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
+                        if (!$scope.activeFriend) {
+                          $scope.activeFriend = $scope.friends[index];
+                        }
+                        else if ($scope.friends[index].username !== $scope.activeFriend.username) {
                           $scope.friends[index].unreadMessage = true;
                         }
                         $scope.$apply();
@@ -158,7 +161,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 });
 
                 // Notify the user of any unread messages
-                if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
+                if (!$scope.activeFriend) {
+                  $scope.activeFriend = $scope.friends[index];
+                }
+                else if (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
                   $scope.friends[index].unreadMessage = true;
                 }
               }
