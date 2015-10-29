@@ -2,7 +2,6 @@ var keyResponseTimeout = 15000;
 angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
-  console.log('chat');
   authFactory.signedin().then(function(resp){
     if (resp.auth === 'OK') {
       socket.connect();
@@ -61,7 +60,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         // Receive new facebook message(s)
         var partialPGPMessage = '';
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
-          console.log('received new facebook message', event.data.text);
           var username = event.data.text.with;
           var fullname = event.data.text.name;
           var newMessages = event.data.text.text;
@@ -110,10 +108,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       }
                     } else {
                       // Otherwise, decrypt the message using our private key
-                      console.log('ATTEMPTING TO DECRYPT MESSAGE', encryptedMessage);
                       encryptionFactory.decryptMessage(keypair, encryptedMessage)
                       .then(function (decryptedMessage) {
-                        console.log('DECRYPTED PGP MESSAGE', decryptedMessage);
                         $scope.friends[index].messages.push({
                           to: $scope.currentUser,
                           from: $scope.friends[index].username,
@@ -131,7 +127,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                         $scope.$apply();
                       })
                       .catch(function() {
-                        console.log("Failed to decrypt message");
                         $scope.friends[index].messages.push({
                           to: $scope.currentUser,
                           from: $scope.friends[index].username,
@@ -185,7 +180,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             }
             // Store that friend's public key
             $scope.friends[index].key = event.data.text.publicKey;
-            console.log('Storing public key for user', $scope.friends[index].username, event.data.text.publicKey);
 
             // If we haven't already sent our public key to that user, send it now
             var lastSent = $scope.friends[index].sentKey;
@@ -215,7 +209,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       };
 
-
       $scope.friendRequests = [];
       $scope.acceptedfriendRequests = [];
 
@@ -238,14 +231,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           }
         });
       };
-        //if $scope.friends[username] has publicPGPKey
-          //update chat view with current conversation
-        //else
-          //if $scope.friends[username].service is us
-            //render messages in chat view
-          //else if username.service isnt us
-            //allow unencrypted chat
-            //show red encryption symbol/button (warning user chat is not secure)
 
       $scope.sendMessage = function(messageText){
         //reset message text
@@ -259,8 +244,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
           });
         } else if ($scope.activeFriend.service === 'Facebook') {
-          console.log('All friends: ', $scope.friends);
-          console.log('Active friends key: ', $scope.activeFriend.key);
           if ($scope.activeFriend.key) {
             encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
             .then(function (encryptedMessage) {
@@ -275,17 +258,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, '*');
           }
         }
-
-        //if service is us
-          //if we have recipients pgp key
-            //encrypt and send message
-          //else
-            //notify user you are requesting recipient's pgp key
-            //socket.emit('requestKey', {to: recipient})
-        //else
-          //request other user's public key and save message contents to be encrypted on receipt of user's key 
-            //user would like to have an encrypted conversation with you:
-            //user's public key
       };
 
       $scope.revokeMessage = function(message) {
@@ -307,7 +279,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         findFriend(keyObj.friend, function (index) {
           if (index !== -1) {
             $scope.friends[index].key = keyObj.key;
-            console.log('key exchange complete');
           }
         });
       });
@@ -315,7 +286,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       socket.on('newMessage', function(message){
         findFriend(message.from, function(index){
           if (index !== -1) {
-            // newMessageFrom = $scope.friends[index];
             // decrypt message
             keyring.then(function (keypair) {
               encryptionFactory.decryptMessage(keypair, message.encryptedMessage)
@@ -336,7 +306,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       socket.on('messageSent', function (message) {
         findFriend(message.to, function (index) {
           if (index !== -1) {
-            // $scope.friends[index].messages.push(message);
             // iterate through unsent messages to find the message
             for (var i = 0; i < $scope.friends[index].unsentMessages.length; i++) {
               if ($scope.friends[index].unsentMessages[i].encryptedMessage === message.encryptedMessage) {
@@ -375,7 +344,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           }
         });
       });
-
 
       //Get friends through our socket
       $scope.getFriends = function(){
@@ -428,13 +396,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             $scope.friendRequests.splice(i, 1);
             var newFriend = createFriendObj(friend);
             $scope.friends.unshift(newFriend);
-            //this was duplicating friends list
-            // $scope.getFriends();
-
             //now this function just updates the online property for the new friend
             findFriend(friend, function(index){
               if(index >= 0){
-                console.log('389', friend);
                 $scope.friends[index].online = true;
               } else {
                 $scope.friends.unshift(createFriendObj(friend));
@@ -469,7 +433,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.fetchUnreadAcknowledgements = function () {
         $scope.acceptedfriendRequests = $stateParams.acceptedfriendRequests;
       };
-
 
       //login/logout
       $scope.logout = function() {
@@ -512,16 +475,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         $scope.acceptedfriendRequests.push(acceptFriendObj.from);
         var newFriend = createFriendObj(acceptFriendObj.from);
         $scope.friends.unshift(newFriend);
-        //this was duplicating our friends list 
-        // $scope.getFriends();
         // now just check if newFriend is online
         findFriend(newFriend.username, function(index){
-          console.log('471', newFriend.username);
           if(index >= 0){
-            console.log('success');
             $scope.friends[index].online = true;
           } else {
-            console.log('wtf');
             $scope.friends.unshift(createFriendObj(friend));
           }
         });
@@ -547,85 +505,3 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
     }//end if resp === 'ok'      
   });
 });
-
-
-
-/*
-
-  angular controller
-    initialize socket connection
-
-    $scope.friends = [{
-      service: (facebook, google, us, etc.),
-      username: , (username is always hidden)
-      name: , (for our service, this is the username)
-      publicPGPKey: ,
-      newMessage: boolean (for updating the friends list view)
-      messages: [{
-        to: ,
-        from: ,
-        message: ,
-        timestamp: 
-      }],
-      unsentMessages: [{
-        to: ,
-        from: ,
-        message: ,
-        timestamp: 
-      }]
-    }]
-    
-    //invoked by clicking on user in friends list    
-    $scope.startChat = function(username){
-      //if $scope.friends[username] has publicPGPKey
-        //update chat view with current conversation
-      //else
-        //if $scope.friends[username].service is us
-          //render messages in chat view
-        //else if username.service isnt us
-          //allow unencrypted chat
-          //show red encryption symbol/button (warning user chat is not secure)
-    }
-
-    //invoked by user clicking red encryption button (send user your public pgp key)
-    $scope.sendPGP = function(){
-      
-      //if service is us
-        //socket.emit('sendPGP', {key: userKey, to: recipient})
-        //socket.emit('requestKey', {to: recipient})
-      //else
-        //send public key through extension via service
-        //user is requesting your key message (install our extension!)
-    }
-
-    $scope.sendMessage = function(){
-      //if service is us
-        //if we have recipients pgp key
-          //encrypt and send message
-        //else
-          //notify user you are requesting recipient's pgp key
-          //socket.emit('requestKey', {to: recipient})
-      //else
-        //request other user's public key and save message contents to be encrypted on receipt of user's key 
-          //user would like to have an encrypted conversation with you:
-          //user's public key
-    }
-
-    //messaging
-    socket.on('newMessage') render message contents in view
-    emit new messages socket.emit('sendMessage', {to: , message: })
-    socket.on('keyReceived') {key, from} 
-      encrypt all messages for 'from' in unsentMessages and send to recipient
-      store user's key in $scope.friends
-    socket.on('keyRequested') {from}
-      socket.emit('sendPGP') {key: pgpKey, to: from}
-    
-    //friends
-    socket.on('refreshFriends') update friends list when user comes online or goes offline
-    emit new friends socket.emit('addFriend', {to: })  
-    
-    intervalled (it's a word now) requests to content script for new messages and friends
-      update $scope variables appropriately
-      if pgp key was received 
-        store user's pgp key in $scope.friends
-*/
