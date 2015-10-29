@@ -72,7 +72,8 @@ window.addEventListener('message', function(event) {
       event: 'sendPublicKey',
       data: {
         to: event.data.to,
-        publicKey: event.data.publicKey
+        publicKey: event.data.publicKey,
+        friendKey: event.data.friendKey
       }
     });
   }

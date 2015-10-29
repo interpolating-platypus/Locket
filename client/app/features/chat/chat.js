@@ -171,8 +171,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         if (event.data.type && (event.data.type === 'receivedPGPKey')) {
           var username = event.data.text.from;
           var fullname = event.data.text.name;
-          var friendSession = event.data.text.mySession;
-          var mySession = event.data.text.friendSession;
+          var myKey = event.data.text.friendKey;
+
           findFriend(username, function(index) {
             // If this is from a facebook friend not on the list, add as new
             if (index === -1 && username !== 'me') {
@@ -181,30 +181,45 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               index = $scope.friends.length-1;
             }
 
+            
+
             //we need to verify the pgpkey is still valid for this session
-            //verify event friendSession matches session in $scope.friends && mySession in event matches mySession
-            //if it does match
-            if (friendSession === $scope.friends[index].session && mySession === $scope.mySession){
-              //state is encrypted
-              // Store that friend's public key
-              $scope.friends[index].key = event.data.text.publicKey;
-              console.log('Storing public key for user', $scope.friends[index].username, event.data.text.publicKey);
-              
-            } else {
-              //respond with myKey, mySession, friendSession
-              console.log('Updating pgpKey for', $scope.friends[index].username)
-            }
+            keyring.then(function(keypair){
+
+              //verify event has this user's public key, and the friends public key already stored
+              if (event.data.text.publicKey === $scope.friends[index].key && myKey === publicKey){
+                //state is encrypted
+                
+              } else {
+                //respond with myKey, mySession, friendSession
+                console.log('Updating pgpKey for', $scope.friends[index].username);
+                // Store that friend's public key
+                $scope.friends[index].key = event.data.text.publicKey;
+                console.log('Storing public key for user', $scope.friends[index].username, event.data.text.publicKey);
+                window.postMessage({
+                  type: 'sendPublicKey',
+                  publicKey: publicKey,
+                  friendKey: event.data.text.publicKey,
+                  to: $scope.friends[index].username
+                }, '*');
+                $scope.friends[index].sentKey = Date.now();
+              }
+
+            });
+
+
+
 
             // If we haven't already sent our public key to that user, send it now
-            var lastSent = $scope.friends[index].sentKey;
-            if (!lastSent || (Date.now() - lastSent > keyResponseTimeout)) {
-              window.postMessage({
-                type: 'sendPublicKey',
-                publicKey: publicKey,
-                to: $scope.friends[index].username
-              }, '*');
-              $scope.friends[index].sentKey = Date.now();
-            }
+            // var lastSent = $scope.friends[index].sentKey;
+            // if (!lastSent || (Date.now() - lastSent > keyResponseTimeout)) {
+            //   window.postMessage({
+            //     type: 'sendPublicKey',
+            //     publicKey: publicKey,
+            //     to: $scope.friends[index].username
+            //   }, '*');
+            //   $scope.friends[index].sentKey = Date.now();
+            // }
           });
 
         }
