@@ -33,7 +33,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           name: name || (username + ' daawwggg'),
           unreadMessage: false,
           online: online || false,
-          key: null,
+          key: '',
           messages: [],
           unsentMessages: [], // added this in for revoke and show decrypted message for sender
           unsentFBMessages: [], // Follows same convention. Will not work for messages from prev session
@@ -174,39 +174,38 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           var friendKey = event.data.text.publicKey;
           var myKey = event.data.text.friendKey;
 
-          findFriend(username, function(index) {
-            // If this is from a facebook friend not on the list, add as new
-            if (index === -1 && username !== 'me') {
-              var newFriend = createFriendObj(username, true, fullname, "Facebook");
-              $scope.friends.push(newFriend);
-              index = $scope.friends.length-1;
-            }
+          //we need to verify the pgpkey is still valid for this session
+          keyring.then(function(keypair){
 
-            
+            findFriend(username, function(index) {
+              // If this is from a facebook friend not on the list, add as new
+              if (index === -1 && username !== 'me') {
+                var newFriend = createFriendObj(username, true, fullname, "Facebook");
+                $scope.friends.push(newFriend);
+                index = $scope.friends.length-1;
+              }
 
-            //we need to verify the pgpkey is still valid for this session
-            keyring.then(function(keypair){
-              console.log(friendKey.substring(0,125), $scope.friends[index].key.substring(0,125));
-              console.log(myKey.substring(0,125), publicKey.substring(0,125));
               //verify event has this user's public key, and the friends public key already stored
-              if (friendKey === $scope.friends[index].key && myKey === publicKey){
+              if (friendKey.replace(/[^a-z0-9]/gmi, '') === $scope.friends[index].key.replace(/[^a-z0-9]/gmi, '') && myKey.replace(/[^a-z0-9]/gmi, '') === publicKey.replace(/[^a-z0-9]/gmi, '')){
                 //state is encrypted
-                
+                console.log("we are encrypted!");
               } else {
+
                 //respond with myKey, mySession, friendSession
                 console.log('Updating pgpKey for', $scope.friends[index].username);
                 // Store that friend's public key
-                $scope.friends[index].key = event.data.text.publicKey;
-                console.log('Storing public key for user', $scope.friends[index].username, event.data.text.publicKey);
+                $scope.friends[index].key = friendKey;
+                console.log('Storing public key for user', $scope.friends[index].username);
                 window.postMessage({
                   type: 'sendPublicKey',
                   publicKey: publicKey,
-                  friendKey: event.data.text.publicKey,
+                  friendKey: friendKey,
                   to: $scope.friends[index].username
                 }, '*');
                 $scope.friends[index].sentKey = Date.now();
               }
 
+              $scope.$apply();
             });
 
 
