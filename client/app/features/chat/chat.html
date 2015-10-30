@@ -104,7 +104,7 @@
 
         <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
           <div class='form-group'>
-            <input autocomplete='off' class="form-control input-display sendMessageInput" type='text' name='message' ng-model='messageText'/>
+            <input autocomplete='off' class="form-control input-display" ng-class="showPhoto ? 'sendMessageInput' : 'sendMessageInputFull'" type='text' name='message' ng-model='messageText'/>
             <input type="file" name="photoUpload" ng-model="photoUpload" id="photoUpload"/>
             <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid || (activeFriend.service === "Locket" && !activeFriend.key)' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
           </div>

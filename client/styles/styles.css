@@ -232,10 +232,18 @@ img {
 }
 
 .sendMessageInput {
-  width: 77%;
+  width: 74%;
   display: inline;
   vertical-align: middle;
 }
+
+.sendMessageInputFull {
+  width: 90%;
+  display: inline;
+  vertical-align: middle;  
+}
+
+
 
 
 
