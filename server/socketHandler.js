@@ -166,6 +166,7 @@ var sendPhoto = function(obj, username) {
 
       if (recipientSocket) {
         io.to(recipientSocket).emit('newPhoto', photo);
+        io.to(userMap[username]).emit('photoSent', photo);
         console.log('sending out photo', photo);
       } else {
         // Send error message to the client

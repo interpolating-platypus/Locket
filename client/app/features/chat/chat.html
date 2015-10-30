@@ -97,14 +97,14 @@
             <span ng-if="!(message.type === 'jpg')" ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser, 'wrapMessage': message.message.length > 60}"
               ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
             </span>
-            <img ng-if="(message.type === 'jpg')" ng-src="{{message.source}}"/>
+            <img class="messagePhoto" ng-if="(message.type === 'jpg')" ng-src="{{message.source}}"/>
             <span ng-if="message.from !== currentUser" ng-class="message.isEncrypted ? 'glyphicon glyphicon-lock' : ''" aria-hidden="true"></span>
           </div>
         </div>
 
         <form class="form-control-inline" ng-submit='sendMessage(messageText)' name='messageForm'>
           <div class='form-group'>
-            <input autocomplete='off' class="form-control input-display sendMessageInput" type='text' name='message' ng-model='messageText' required/>
+            <input autocomplete='off' class="form-control input-display sendMessageInput" type='text' name='message' ng-model='messageText'/>
             <input type="file" name="photoUpload" ng-model="photoUpload" id="photoUpload"/>
             <button class="btn btn-default button-display form-control" ng-disabled='!messageForm.$valid || (activeFriend.service === "Locket" && !activeFriend.key)' type='submit'><span class="glyphicon glyphicon-send" aria-hidden="true"></span></button>
           </div>

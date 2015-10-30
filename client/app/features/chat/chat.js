@@ -40,6 +40,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           messages: [],
           unsentMessages: [], // added this in for revoke and show decrypted message for sender
           unsentFBMessages: [], // Follows same convention. Will not work for messages from prev session
+          unsentPhotos: [],
           sentKey: false
         };
       }
@@ -280,8 +281,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           // encrypt typed message
           encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
           .then(function (encryptedMessage) {
-            $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
-            socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+            if (messageText) {
+              $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
+              socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+            }
 
             // Encrypt and send the photo stream (if it exists)
             var f = document.getElementById('photoUpload').files[0];
@@ -295,8 +298,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 socket.emit('sendPhoto', {
                   to: $scope.activeFriend.username, 
                   photo: encryptedPhoto
-                  //photo: data.toString('base64')
                 });
+                $scope.activeFriend.unsentPhotos.push({photo: data.toString('base64'), encryptedPhoto: encryptedPhoto, isEncrypted: true});
               });
             };
             // Read the file
@@ -393,6 +396,24 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 message.isEncrypted = $scope.friends[index].unsentMessages[i].isEncrypted;
                 $scope.friends[index].unsentMessages.splice(i, 1);
                 $scope.friends[index].messages.push(message);
+              }
+            }
+          }
+        });
+      });
+
+      socket.on('photoSent', function (photo) {
+        findFriend(photo.to, function (index) {
+          if (index !== -1) {
+            // iterate through unsent Photos to find the photo
+            for (var i = 0; i < $scope.friends[index].unsentPhotos.length; i++) {
+              if ($scope.friends[index].unsentPhotos[i].encryptedPhoto === photo.encryptedPhoto) {
+                photo.source = $scope.friends[index].unsentPhotos[i].photo;
+                photo.type = "jpg";
+                photo.isEncrypted = $scope.friends[index].unsentPhotos[i].isEncrypted;
+                $scope.friends[index].unsentPhotos.splice(i, 1);
+                console.log('photo obj', photo);
+                $scope.friends[index].messages.push(photo);
               }
             }
           }
@@ -554,7 +575,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       });
 
       socket.on('friendRequest', function (friendRequest) {
-        
         if (blockedUsers.indexOf(friendRequest.from) === -1) {
           $scope.friendRequests.push(friendRequest.from);
         } 

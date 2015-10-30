@@ -287,7 +287,11 @@ img {
   color: red;
 }
 
-
+.messagePhoto {
+  max-height: 100px;
+  width: auto;
+  max-width: 600px;
+}
 
 
 
