@@ -23,7 +23,9 @@ var UserSchema = new mongoose.Schema({
 
   friendRequests: [],
   
-  acceptedfriendRequests: []
+  acceptedfriendRequests: [],
+
+  blockedUsers: []
 });
 
 

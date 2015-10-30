@@ -11,7 +11,7 @@ angular.module('Locket', [
 
   $stateProvider
     .state('chat', {
-      params: {username: null, friendRequests: [], acceptedfriendRequests: []},
+      params: {username: null, friendRequests: [], acceptedfriendRequests: [], blockedUsers: []},
       url: '/',
       templateUrl: 'app/features/chat/chat.html',
       controller: 'chatController'

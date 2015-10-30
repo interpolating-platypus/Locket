@@ -16,6 +16,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       $scope.currentUser = $stateParams.username || resp.username;
       $scope.friends = [];
+
+      var blockedUsers = $stateParams.blockedUsers;
+      
       $scope.sentRequest = false;
 
       // set indicator for whether message is encrypted
@@ -426,6 +429,12 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         socket.emit('acknowledgeFriendRequest', {from: $scope.currentUser, to: friend});
       };
 
+      $scope.blockUser = function (user) {
+        socket.emit('blockUser', {from: $scope.currentUser, to: user});
+        blockedUsers.push(user);        
+        $scope.ignoreFriendRequest(user);
+      };
+
       $scope.fetchUnreadFriendRequests = function () {
         $scope.friendRequests = $stateParams.friendRequests;
       };
@@ -468,7 +477,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       });
 
       socket.on('friendRequest', function (friendRequest) {
-        $scope.friendRequests.push(friendRequest.from);
+        
+        if (blockedUsers.indexOf(friendRequest.from) === -1) {
+          $scope.friendRequests.push(friendRequest.from);
+        } 
       });
 
       socket.on('friendRequestAccepted', function(acceptFriendObj) {

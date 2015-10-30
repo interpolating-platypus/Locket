@@ -152,6 +152,14 @@ img {
   float: right;
 }
 
+.blockButton {
+  display: inline;
+  padding: 0 10px 0 10px;
+  float: right;
+}
+
+
+
 .messageList {
   height: 82.5vh;
   overflow: auto;
