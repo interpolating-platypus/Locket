@@ -363,13 +363,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       });
 
       socket.on('newPhoto', function(photo) {
-        //var testImage = document.getElementById('testImage');
         findFriend(photo.from, function(index) {
           if (index !== -1) {
             keyring.then(function(keypair) {
               encryptionFactory.decryptMessage(keypair, photo.encryptedPhoto)
               .then(function (decryptedPhoto) {
-                //testImage.src=decryptedPhoto;
                 $scope.friends[index].messages.push({
                   type: 'jpg',
                   timestamp: Date.now(),
