@@ -363,12 +363,25 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       });
 
       socket.on('newPhoto', function(photo) {
-        var testImage = document.getElementById('testImage');
-        keyring.then(function(keypair) {
-          encryptionFactory.decryptMessage(keypair, photo.encryptedPhoto)
-          .then(function (decryptedPhoto) {
-            testImage.src=decryptedPhoto;
-          });
+        //var testImage = document.getElementById('testImage');
+        findFriend(photo.from, function(index) {
+          if (index !== -1) {
+            keyring.then(function(keypair) {
+              encryptionFactory.decryptMessage(keypair, photo.encryptedPhoto)
+              .then(function (decryptedPhoto) {
+                //testImage.src=decryptedPhoto;
+                $scope.friends[index].messages.push({
+                  type: 'jpg',
+                  timestamp: Date.now(),
+                  isEncrypted: 'true',
+                  source: decryptedPhoto
+                });
+              });
+            });
+            if ($scope.activeFriend === null || $scope.friends[index].username !== $scope.activeFriend.username) {
+              $scope.friends[index].unreadMessage = true;
+            }
+          }
         });
       });
 
