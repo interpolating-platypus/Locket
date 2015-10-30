@@ -372,7 +372,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               encryptionFactory.decryptMessage(keypair, photo.encryptedPhoto)
               .then(function (decryptedPhoto) {
                 $scope.friends[index].messages.push({
-                  type: 'jpg',
+                  type: 'image',
                   timestamp: Date.now(),
                   isEncrypted: 'true',
                   source: decryptedPhoto
@@ -409,7 +409,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             for (var i = 0; i < $scope.friends[index].unsentPhotos.length; i++) {
               if ($scope.friends[index].unsentPhotos[i].encryptedPhoto === photo.encryptedPhoto) {
                 photo.source = $scope.friends[index].unsentPhotos[i].photo;
-                photo.type = "jpg";
+                photo.type = "image";
                 photo.isEncrypted = $scope.friends[index].unsentPhotos[i].isEncrypted;
                 $scope.friends[index].unsentPhotos.splice(i, 1);
                 console.log('photo obj', photo);
