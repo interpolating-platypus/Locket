@@ -40,9 +40,19 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           messages: [],
           unsentMessages: [], // added this in for revoke and show decrypted message for sender
           unsentFBMessages: [], // Follows same convention. Will not work for messages from prev session
-          unsentPhotos: [],
+          //unsentPhotos: [],
           sentKey: false
         };
+      }
+
+      var messageDefaults = {
+        to: null,
+        from: null,
+        message: null,
+        type: 'text',
+        isEncrypted: false,
+        encryptedMessage: null,
+        timestamp: Date.now()
       }
 
       // Listen for events from our extension
@@ -89,9 +99,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       // Create a message object
                       var message = {
                         encryptedMessage: encryptedMessage,
-                        timestamp: Date.now(),
                         from: $scope.currentUser
                       }
+                      _.defaults(message, messageDefaults);
                       // Make sure we add the correct message:
                       var addedMessage = false;
                       for (var j = 0; j < $scope.friends[index].unsentFBMessages.length; j++) {
@@ -114,14 +124,15 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       // Otherwise, decrypt the message using our private key
                       encryptionFactory.decryptMessage(keypair, encryptedMessage)
                       .then(function (decryptedMessage) {
-                        $scope.friends[index].messages.push({
+                        var message = {
                           to: $scope.currentUser,
                           from: $scope.friends[index].username,
-                          timestamp: Date.now(),
                           encryptedMessage: encryptedMessage,
                           message: decryptedMessage,
                           isEncrypted: true
-                        });
+                        }
+                        _.defaults(message, messageDefaults);
+                        $scope.friends[index].messages.push(message);
                         if (!$scope.activeFriend) {
                           $scope.activeFriend = $scope.friends[index];
                         }
@@ -131,14 +142,15 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                         $scope.$apply();
                       })
                       .catch(function() {
-                        $scope.friends[index].messages.push({
+                        var message = {
                           to: $scope.currentUser,
                           from: $scope.friends[index].username,
-                          timestamp: Date.now(),
                           encryptedMessage: encryptedMessage,
                           message: '[Message Expired]',
                           isEncrypted: true
-                        });
+                        }
+                        _.defaults(message, messageDefaults);
+                        $scope.friends[index].messages.push(message);
                       });
                     }
                   });
@@ -152,12 +164,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               }
               // Inject the message if it exists (dont display encrypted ones from prev session)
               if (newMessage) {
-                $scope.friends[index].messages.push({
+                var message = {
                   to: (event.data.text.from === 'me') ? event.data.text.with : $scope.currentUser,
                   from: (event.data.text.from === 'me') ? $scope.currentUser : event.data.text.with,
-                  timestamp: Date.now(),
                   message: newMessage
-                });
+                }
+                _.defaults(message, messageDefaults);
+                $scope.friends[index].messages.push(message);
 
                 // Notify the user of any unread messages
                 if (!$scope.activeFriend) {
@@ -216,22 +229,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
               $scope.$apply();
             });
-
-
-
-
-            // If we haven't already sent our public key to that user, send it now
-            // var lastSent = $scope.friends[index].sentKey;
-            // if (!lastSent || (Date.now() - lastSent > keyResponseTimeout)) {
-            //   window.postMessage({
-            //     type: 'sendPublicKey',
-            //     publicKey: publicKey,
-            //     to: $scope.friends[index].username
-            //   }, '*');
-            //   $scope.friends[index].sentKey = Date.now();
-            // }
           });
-
         }
         $scope.$apply();
       });
@@ -278,35 +276,44 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         //reset message text
         $scope.messageText = '';
 
-
         if ($scope.activeFriend.service === 'Locket') {
           // encrypt typed message
-          encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
-          .then(function (encryptedMessage) {
-            if (messageText) {
-              $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
-              socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
-            }
+          if (messageText) {
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+            .then(function (encryptedMessage) {
+              if (messageText) {
+                $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
+                socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+              }
+            });
+          }
 
-            // Encrypt and send the photo stream (if it exists)
-            var f = document.getElementById('photoUpload').files[0];
-            var r = new FileReader();
-            r.onloadend = function(e) {
-              var data = e.target.result;
-              // Encrypt the photo
-              encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, data.toString('base64'))
-              .then(function(encryptedPhoto) {
-                // Send the photo
-                socket.emit('sendPhoto', {
-                  to: $scope.activeFriend.username, 
-                  photo: encryptedPhoto
-                });
-                $scope.activeFriend.unsentPhotos.push({photo: data.toString('base64'), encryptedPhoto: encryptedPhoto, isEncrypted: true});
+          // Encrypt and send the photo stream (if it exists)
+          var f = document.getElementById('photoUpload').files[0];
+          var r = new FileReader();
+          r.onloadend = function(e) {
+            var data = e.target.result;
+            // Encrypt the photo
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, data.toString('base64'))
+            .then(function(encryptedPhoto) {
+              // Send the photo
+              socket.emit('sendMessage', {
+                to: $scope.activeFriend.username, 
+                message: encryptedPhoto,
+                type: 'image'
               });
-            };
-            // Read the file
-            if (f) { r.readAsDataURL(f); }
-          });
+              var message = {
+                message: data.toString('base64'),
+                encryptedMessage: encryptedPhoto,
+                isEncrypted: true
+              }
+              _.defaults(message, messageDefaults);
+              $scope.activeFriend.unsentMessages.push(message);
+              $("#photoUpload").filestyle('clear');
+            });
+          };
+          // Read the file
+          if (f) { r.readAsDataURL(f); }
         } else if ($scope.activeFriend.service === 'Facebook') {
           if ($scope.activeFriend.key) {
             encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
@@ -371,7 +378,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         findFriend(photo.from, function(index) {
           if (index !== -1) {
             keyring.then(function(keypair) {
-              encryptionFactory.decryptMessage(keypair, photo.encryptedPhoto)
+              encryptionFactory.decryptMessage(keypair, photo.encryptedMessage)
               .then(function (decryptedPhoto) {
                 $scope.friends[index].messages.push({
                   type: 'image',
@@ -398,24 +405,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 message.isEncrypted = $scope.friends[index].unsentMessages[i].isEncrypted;
                 $scope.friends[index].unsentMessages.splice(i, 1);
                 $scope.friends[index].messages.push(message);
-              }
-            }
-          }
-        });
-      });
-
-      socket.on('photoSent', function (photo) {
-        findFriend(photo.to, function (index) {
-          if (index !== -1) {
-            // iterate through unsent Photos to find the photo
-            for (var i = 0; i < $scope.friends[index].unsentPhotos.length; i++) {
-              if ($scope.friends[index].unsentPhotos[i].encryptedPhoto === photo.encryptedPhoto) {
-                photo.source = $scope.friends[index].unsentPhotos[i].photo;
-                photo.type = "image";
-                photo.isEncrypted = $scope.friends[index].unsentPhotos[i].isEncrypted;
-                $scope.friends[index].unsentPhotos.splice(i, 1);
-                console.log('photo obj', photo);
-                $scope.friends[index].messages.push(photo);
               }
             }
           }
