@@ -226,7 +226,7 @@ img {
 }
 
 .input-display {
-  width: 90%;
+  width: 80%;
   display: inline;
   vertical-align: middle;
 }
@@ -287,7 +287,11 @@ img {
   color: red;
 }
 
-
+.messagePhoto {
+  max-height: 100px;
+  width: auto;
+  max-width: 600px;
+}
 
 
 

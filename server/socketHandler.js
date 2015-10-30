@@ -39,6 +39,10 @@ io.on('connection', function (socket) {
     sendMessage(msg, username);
   });
 
+  socket.on('sendPhoto', function(photo) {
+    sendPhoto(photo, username);
+  });
+
   socket.on('revokeMessage', function (msg) {
     revokeMessage(msg, username);
   });
@@ -135,6 +139,35 @@ var sendMessage = function (msg, username) {
         io.to(recipientSocket).emit('newMessage', message);
         io.to(userMap[username]).emit('messageSent', message);
         console.log('sending out message', message);
+      } else {
+        // Send error message to the client
+      }
+
+    }
+  });
+};
+
+var sendPhoto = function(obj, username) {
+  UserModel.findOne({username: username}, function (err, user) {
+    if(err){
+      throw err;
+    }
+    //verify user is friends with the recipient
+    if(~user.friends.indexOf(obj.to)){
+
+      var recipientSocket = userMap[obj.to];
+      
+      var photo = {
+        to: obj.to,
+        from: username,
+        encryptedPhoto: obj.photo,
+        timestamp: new Date()
+      };
+
+      if (recipientSocket) {
+        io.to(recipientSocket).emit('newPhoto', photo);
+        io.to(userMap[username]).emit('photoSent', photo);
+        console.log('sending out photo', photo);
       } else {
         // Send error message to the client
       }
