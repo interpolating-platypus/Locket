@@ -2,7 +2,7 @@ var keyResponseTimeout = 15000;
 angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
-  $("#photoUpload").filestyle({input:false, buttonText: "Send Photo"});
+  $("#photoUpload").filestyle({input:false, buttonText: "Upload Photo"});
   authFactory.signedin().then(function(resp){
     if (resp.auth === 'OK') {
       socket.connect();
@@ -259,6 +259,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
+          var showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
+          $(".bootstrap-filestyle").toggle(showPhoto);
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
