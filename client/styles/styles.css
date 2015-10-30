@@ -231,6 +231,14 @@ img {
   vertical-align: middle;
 }
 
+.sendMessageInput {
+  width: 77%;
+  display: inline;
+  vertical-align: middle;
+}
+
+
+
 .button-display {
   width: 8%;
   display: inline;
@@ -293,3 +301,6 @@ img {
   max-width: 600px;
 }
 
+.bootstrap-filestyle {
+  display: inline-block;
+}
