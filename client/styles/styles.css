@@ -226,7 +226,7 @@ img {
 }
 
 .input-display {
-  width: 80%;
+  width: 90%;
   display: inline;
   vertical-align: middle;
 }
@@ -292,8 +292,4 @@ img {
   width: auto;
   max-width: 600px;
 }
-
-
-
-
 
