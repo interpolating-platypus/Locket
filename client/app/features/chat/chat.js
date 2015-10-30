@@ -18,7 +18,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.friends = [];
       $scope.sentRequest = false;
 
-      // set indicator for whether message is encrypted
       $scope.encrypted = true;
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
@@ -188,14 +187,19 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               //verify event has this user's public key, and the friends public key already stored
               if (friendKey.replace(/[^a-z0-9]/gmi, '') === $scope.friends[index].key.replace(/[^a-z0-9]/gmi, '') && myKey.replace(/[^a-z0-9]/gmi, '') === publicKey.replace(/[^a-z0-9]/gmi, '')){
                 //state is encrypted
-                console.log("we are encrypted!");
+                // set indicator for whether message is encrypted
+                $scope.encrypted = true;
               } else {
+                
 
                 //respond with myKey, mySession, friendSession
                 console.log('Updating pgpKey for', $scope.friends[index].username);
+                
+                console.log('Storing public key for user', $scope.friends[index].username);
                 // Store that friend's public key
                 $scope.friends[index].key = friendKey;
-                console.log('Storing public key for user', $scope.friends[index].username);
+                $scope.encrypted = false; //the key is set, but it may not be the right key
+                
                 window.postMessage({
                   type: 'sendPublicKey',
                   publicKey: publicKey,
