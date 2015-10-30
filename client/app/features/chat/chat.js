@@ -276,44 +276,44 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         //reset message text
         $scope.messageText = '';
 
-
         if ($scope.activeFriend.service === 'Locket') {
           // encrypt typed message
-          encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
-          .then(function (encryptedMessage) {
-            if (messageText) {
-              $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
-              socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
-            }
+          if (messageText) {
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+            .then(function (encryptedMessage) {
+              if (messageText) {
+                $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
+                socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+              }
+            });
+          }
 
-            // Encrypt and send the photo stream (if it exists)
-            var f = document.getElementById('photoUpload').files[0];
-            var r = new FileReader();
-            r.onloadend = function(e) {
-              var data = e.target.result;
-              // Encrypt the photo
-              encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, data.toString('base64'))
-              .then(function(encryptedPhoto) {
-                // Send the photo
-                socket.emit('sendMessage', {
-                  to: $scope.activeFriend.username, 
-                  message: encryptedPhoto,
-                  type: 'image'
-                });
-                var message = {
-                  message: data.toString('base64'),
-                  encryptedMessage: encryptedPhoto,
-                  isEncrypted: true
-                }
-                _.defaults(message, messageDefaults);
-                $scope.activeFriend.unsentMessages.push(message);
-                console.log('pushing unsent message: ',message);
-                //$scope.activeFriend.unsentPhotos.push({photo: data.toString('base64'), encryptedPhoto: encryptedPhoto, isEncrypted: true});
+          // Encrypt and send the photo stream (if it exists)
+          var f = document.getElementById('photoUpload').files[0];
+          var r = new FileReader();
+          r.onloadend = function(e) {
+            var data = e.target.result;
+            // Encrypt the photo
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, data.toString('base64'))
+            .then(function(encryptedPhoto) {
+              // Send the photo
+              socket.emit('sendMessage', {
+                to: $scope.activeFriend.username, 
+                message: encryptedPhoto,
+                type: 'image'
               });
-            };
-            // Read the file
-            if (f) { r.readAsDataURL(f); }
-          });
+              var message = {
+                message: data.toString('base64'),
+                encryptedMessage: encryptedPhoto,
+                isEncrypted: true
+              }
+              _.defaults(message, messageDefaults);
+              $scope.activeFriend.unsentMessages.push(message);
+              $("#photoUpload").filestyle('clear');
+            });
+          };
+          // Read the file
+          if (f) { r.readAsDataURL(f); }
         } else if ($scope.activeFriend.service === 'Facebook') {
           if ($scope.activeFriend.key) {
             encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
