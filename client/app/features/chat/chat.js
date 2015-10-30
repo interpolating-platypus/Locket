@@ -2,6 +2,7 @@ var keyResponseTimeout = 15000;
 angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
+  $("#photoUpload").filestyle({input:false, buttonText: "Send Photo"});
   authFactory.signedin().then(function(resp){
     if (resp.auth === 'OK') {
       socket.connect();
@@ -274,12 +275,32 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         //reset message text
         $scope.messageText = '';
 
+
         if ($scope.activeFriend.service === 'Locket') {
           // encrypt typed message
           encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
           .then(function (encryptedMessage) {
             $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
             socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+
+            // Encrypt and send the photo stream (if it exists)
+            var f = document.getElementById('photoUpload').files[0];
+            var r = new FileReader();
+            r.onloadend = function(e) {
+              var data = e.target.result;
+              // Encrypt the photo
+              encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, data.toString('base64'))
+              .then(function(encryptedPhoto) {
+                // Send the photo
+                socket.emit('sendPhoto', {
+                  to: $scope.activeFriend.username, 
+                  photo: encryptedPhoto
+                  //photo: data.toString('base64')
+                });
+              });
+            };
+            // Read the file
+            if (f) { r.readAsDataURL(f); }
           });
         } else if ($scope.activeFriend.service === 'Facebook') {
           if ($scope.activeFriend.key) {
@@ -338,6 +359,16 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               $scope.friends[index].unreadMessage = true;
             }
           }
+        });
+      });
+
+      socket.on('newPhoto', function(photo) {
+        var testImage = document.getElementById('testImage');
+        keyring.then(function(keypair) {
+          encryptionFactory.decryptMessage(keypair, photo.encryptedPhoto)
+          .then(function (decryptedPhoto) {
+            testImage.src=decryptedPhoto;
+          });
         });
       });
 
