@@ -8,7 +8,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       var keyring = encryptionFactory.generateKeyPair();
       var publicKey;
-      // send public key to friends on login
+      // send public key to Locket friends on login
       keyring.then(function (keypair) {
         publicKey = keypair.pubkey;
         socket.emit('sendPGP', keypair.pubkey);
@@ -21,7 +21,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       
       $scope.sentRequest = false;
 
-      // set indicator for whether message is encrypted
       $scope.encrypted = true;
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
@@ -36,7 +35,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           name: name || (username + ' daawwggg'),
           unreadMessage: false,
           online: online || false,
-          key: null,
+          key: '',
           messages: [],
           unsentMessages: [], // added this in for revoke and show decrypted message for sender
           unsentFBMessages: [], // Follows same convention. Will not work for messages from prev session
@@ -174,26 +173,61 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         if (event.data.type && (event.data.type === 'receivedPGPKey')) {
           var username = event.data.text.from;
           var fullname = event.data.text.name;
-          findFriend(username, function(index) {
-            // If this is from a facebook friend not on the list, add as new
-            if (index === -1 && username !== 'me') {
-              var newFriend = createFriendObj(username, true, fullname, "Facebook");
-              $scope.friends.push(newFriend);
-              index = $scope.friends.length-1;
-            }
-            // Store that friend's public key
-            $scope.friends[index].key = event.data.text.publicKey;
+          var friendKey = event.data.text.publicKey;
+          var myKey = event.data.text.friendKey;
+
+          //we need to verify the pgpkey is still valid for this session
+          keyring.then(function(keypair){
+
+            findFriend(username, function(index) {
+              // If this is from a facebook friend not on the list, add as new
+              if (index === -1 && username !== 'me') {
+                var newFriend = createFriendObj(username, true, fullname, "Facebook");
+                $scope.friends.push(newFriend);
+                index = $scope.friends.length-1;
+              }
+
+              //verify event has this user's public key, and the friends public key already stored
+              if (friendKey.replace(/[^a-z0-9]/gmi, '') === $scope.friends[index].key.replace(/[^a-z0-9]/gmi, '') && myKey.replace(/[^a-z0-9]/gmi, '') === publicKey.replace(/[^a-z0-9]/gmi, '')){
+                //state is encrypted
+                // set indicator for whether message is encrypted
+                $scope.encrypted = true;
+              } else {
+                
+
+                //respond with myKey, mySession, friendSession
+                console.log('Updating pgpKey for', $scope.friends[index].username);
+                
+                console.log('Storing public key for user', $scope.friends[index].username);
+                // Store that friend's public key
+                $scope.friends[index].key = friendKey;
+                $scope.encrypted = false; //the key is set, but it may not be the right key
+                
+                window.postMessage({
+                  type: 'sendPublicKey',
+                  publicKey: publicKey,
+                  friendKey: friendKey,
+                  to: $scope.friends[index].username
+                }, '*');
+                $scope.friends[index].sentKey = Date.now();
+              }
+
+              $scope.$apply();
+            });
+
+
+
 
             // If we haven't already sent our public key to that user, send it now
-            var lastSent = $scope.friends[index].sentKey;
-            if (!lastSent || (Date.now() - lastSent > keyResponseTimeout)) {
-              window.postMessage({
-                type: 'sendPublicKey',
-                publicKey: publicKey,
-                to: $scope.friends[index].username
-              }, '*');
-              $scope.friends[index].sentKey = Date.now();
-            }
+            // var lastSent = $scope.friends[index].sentKey;
+            // if (!lastSent || (Date.now() - lastSent > keyResponseTimeout)) {
+            //   window.postMessage({
+            //     type: 'sendPublicKey',
+            //     publicKey: publicKey,
+            //     to: $scope.friends[index].username
+            //   }, '*');
+            //   $scope.friends[index].sentKey = Date.now();
+            // }
           });
 
         }
@@ -202,13 +236,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       // We are requesting an encrypted chat with somebody. Send them our public key and request their public key in return
       $scope.requestEncryptedChat = function() {
-        window.postMessage({
-          type: 'sendPublicKey',
-          publicKey: publicKey,
-          to: $scope.activeFriend.username
-        }, '*');
         findFriend($scope.activeFriend.username, function(index) {
           $scope.friends[index].sentKey = true;
+          window.postMessage({
+            type: 'sendPublicKey',
+            publicKey: publicKey,
+            friendKey: $scope.friends[index].key,
+            to: $scope.activeFriend.username
+          }, '*');
         });
       };
 

@@ -69,7 +69,7 @@ $(document).ready(function() {
               var keyReq = response.sendPublicKey[i];
 
               // Mark that we want to initiate a key exchange with this user
-              keyExchanges[keyReq.to] = keyReq.publicKey; 
+              keyExchanges[keyReq.to] = keyReq.publicKey + "*****Your Key Below******" + keyReq.friendKey + "END KEYSHARE";//keyReq.friendKey is what the sending user thinks the recipient's key is
               if (usersToClick.indexOf(keyReq.to) === -1) {
                 usersToClick.push(keyReq.to);
               }
@@ -117,29 +117,32 @@ $(document).ready(function() {
             // Sometimes a new message will contain a PGP key
             if (partialPGPKey) {
               var text = $(this).text();
-              var publicKey = partialPGPKey + '\n\n'+text;
-              if (text.slice(text.length-34) === '-----END PGP PUBLIC KEY BLOCK-----') {
+              partialPGPKey += '\n\n' + text;
+              if (text.slice(text.length-12) === 'END KEYSHARE') {
+              
+                var pgpKeys = partialPGPKey.split('*****Your Key Below******');//index 0 = sender's key, index 1 = what the sender has stored as recipient's key
+                var friendKey = pgpKeys[1].substring(0, pgpKeys[1].length-12);
+                var activeUsername = getActiveUsername();
+                var activeName = getActiveName();
+                var sentBy = getSender(context, activeUsername);
+
+                if(sentBy !== 'me'){
+                  chrome.runtime.sendMessage({
+                    event: 'receivedPGPKey',
+                    data: {
+                      publicKey: pgpKeys[0],
+                      friendKey: friendKey,//this is what the friend thinks this user's current key is
+                      from: activeUsername,
+                      name: activeName
+                    }
+                  });
+                }
+
                 partialPGPKey = '';
               }
 
-              // Determine who sent the PGP key. 
-              var activeUsername = getActiveUsername();
-              var activeName = getActiveName();
-              var sentBy = getSender(context, activeUsername);
-
-              // Only report this PGP key to the client if we did not send it
-              if (sentBy !== 'me') {
-                chrome.runtime.sendMessage({
-                  event: 'receivedPGPKey',
-                  data: {
-                    publicKey: publicKey,
-                    from: activeUsername,
-                    name: activeName
-                  }
-                });
-              }
             }
-            // This is the pgp key header; the next text is the pgp key
+            // This is the pgp key header; the next text is a continuation of the pgp key
             else if ($(this).text().substr(0,36) === '-----BEGIN PGP PUBLIC KEY BLOCK-----') {
               partialPGPKey = $(this).text();
             }
@@ -148,6 +151,7 @@ $(document).ready(function() {
               newTexts.push($(this).text());
             }
           });
+
           if (newTexts.length) {
             // Retrieve the facebook username
             var activeUsername = getActiveUsername();
