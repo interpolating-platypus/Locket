@@ -254,11 +254,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.activeFriend = null;
 
       //messaging
+      $scope.showPhoto;
+
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
-          var showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
-          $(".bootstrap-filestyle").toggle(showPhoto)
+          $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
+          $(".bootstrap-filestyle").toggle($scope.showPhoto)
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
