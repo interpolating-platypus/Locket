@@ -29,6 +29,16 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         $scope.encrypted = newValue ? true : false;
       });
 
+      $scope.$watch('encrypted', function (newValue, oldValue) {
+        $('#enabled').toggleClass('checked', newValue);
+      });
+
+      $('#enabled').on('click', function (event) {
+        setTimeout(function () {
+          $('#enabled').toggleClass('checked', $scope.encrypted);
+        }, 10);
+      });
+
       function createFriendObj(username, online, name, service) {
         return {
           service: service || 'Locket',
@@ -260,7 +270,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
           $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
-          $(".bootstrap-filestyle").toggle($scope.showPhoto)
+          $(".bootstrap-filestyle").toggle($scope.showPhoto);
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
