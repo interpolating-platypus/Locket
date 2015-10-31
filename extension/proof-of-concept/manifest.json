@@ -24,7 +24,8 @@
     {
       "matches": [
         "*://localhost/*",
-        "https://quiet-shelf-3419.herokuapp.com/*"
+        "https://quiet-shelf-3419.herokuapp.com/*",
+        "*://*.locketchat.com/*"
       ],
       "js": ["bower_components/jquery/dist/jquery.js","main.js"],
       "run_at": "document_end"
