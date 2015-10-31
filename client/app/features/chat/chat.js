@@ -24,7 +24,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       $scope.encrypted = true;
       //spinner initially set to false
-      $scope.loading = true;
+      $scope.loading = false;
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
       $scope.$watch('activeFriend.key', function (newValue, oldValue) {
