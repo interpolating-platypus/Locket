@@ -30,13 +30,20 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
       $scope.$watch('activeFriend.key', function (newValue, oldValue) {
         $scope.encrypted = newValue ? true : false;
-        if ($scope.activeFriend && $scope.activeFriend.service === 'Facebook' && $scope.activeFriend.key) {
-          FBexchangeComplete = true;
+        if ($scope.activeFriend) {
+          if ($scope.activeFriend.service === 'Facebook' && $scope.activeFriend.key) {
+            FBexchangeComplete = true;
+          }
         }
       });
 
       $scope.$watch('encrypted', function (newValue, oldValue) {
         $('#enabled').toggleClass('checked', newValue);
+        if ($scope.activeFriend) {
+          if (!$scope.encrypted && $scope.activeFriend.service === 'Facebook') {
+            $scope.activeFriend.key = '';
+          }
+        }
       });
 
       $('#enabled').on('click', function (event) {
@@ -282,8 +289,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           FBexchangeComplete = false;
           $scope.requestEncryptedChat();
           setTimeout(function () {
+            console.log('checking');
             // if facebook key exchange incomplete, empty key so no longer encrypted if still on same friend
             if (!FBexchangeComplete && currentFriendUsername === $scope.activeFriend.username) {
+              console.log('changing key');
               $scope.activeFriend.key = '';
             }
           }, 3000);
