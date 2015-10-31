@@ -34,7 +34,7 @@
       "matches": [
         "https://hangouts.google.com/*"
       ],
-      "js": ["bower_components/jquery/dist/jquery.js","hangouts.js"],
+      "js": ["bower_components/jquery/dist/jquery.js","bower_components/D.js/lib/D.min.js","hangouts.js"],
       "run_at": "document_end",
       "all_frames": true
     }

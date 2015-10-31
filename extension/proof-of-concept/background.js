@@ -154,4 +154,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     console.log('READ FACEBOOK MESSAGES (bg)');
     facebookTODO.readFacebookMessages.push(message.data.to);
   }
+
+
+  //BEGIN HANGOUTS LOGIC
+  //received hangouts friends list from hangouts iframe
+  if (message.event === "hangoutsFriendsList") {
+    // Send the friendslist back to the content script (for relay to the app)
+    chrome.tabs.sendMessage(mainTabId, {event: 'hangoutsFriendsList', data: message.data});
+  }
+
 });

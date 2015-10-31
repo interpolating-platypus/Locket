@@ -29,6 +29,14 @@ chrome.runtime.onMessage.addListener(function(message) {
     console.log('Received FB PGP Key (main)');
     window.postMessage({ type: 'receivedPGPKey', text: message.data}, "*");
   }
+
+  //BEGIN HANGOUTS LOGIC
+
+  // Received hangouts friends list
+  if (message.event === "hangoutsFriendsList") {
+    // Emit the hangouts friends list to the extension
+    window.postMessage({ type: 'hangoutsFriendsList', text: message.data}, "*");
+  }
 });
 
 // Register the tabid with the background process

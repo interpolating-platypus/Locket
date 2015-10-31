@@ -292,6 +292,19 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             });
           });
         }
+
+        //BEGIN HANGOUTS LOGIC
+        // Recieve a hangouts friends list
+        if (event.data.type && (event.data.type === 'hangoutsFriendsList')) {
+          for (var i = 0; i < event.data.text.length; i++) {
+            var friend = event.data.text[i];
+            var friendObj = createFriendObj(friend.username, true, friend.name, "Hangouts");
+            $scope.friends.push(friendObj);
+          }
+          // // After receiving a facebook friends list, begin monitoring the facebook DOM
+          // window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
+        }
+
         $scope.$apply();
       });
 
