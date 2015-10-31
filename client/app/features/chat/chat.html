@@ -71,7 +71,7 @@
           <li ng-if='friend.online' ng-repeat="friend in friends | filter:searchText track by $index" ng-click='startChat(friend)'>
             <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
               <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-              <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='icon' src='../../facebook.png'/></span>
+              <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='facebookIcon' src='../../facebook.png'/></span>
               <span ng-if="friend.service !== 'Locket' && friend.service !== 'Facebook'" class='friendService'>{{friend.service}}</span>
               <span class='friendName'>{{friend.name}}</span>
               <span class='friendArrow'><span class="glyphicon glyphicon-chevron-right vertical-center" aria-hidden="true"></span></span>
@@ -89,7 +89,9 @@
       <div ng-show="activeFriend">
 
 
-        <div class="windowTitle text-center">Chat with {{activeFriend.name}}
+        <div class="windowTitle text-center">
+          <img ng-show="loading" class="spinner" src="../../spinner.gif"/>
+          <span class="activeFriend">Chat with {{activeFriend.name}}</span>
           <span class="encryptionIndicator" ng-class="encrypted ? 'encryptionOn' : 'encryptionOff'">
             Encryption {{encrypted ? 'On' : 'Off'}} 
             <span class="encryptionIndicator switchButton">
