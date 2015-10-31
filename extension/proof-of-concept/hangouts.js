@@ -1,6 +1,19 @@
 var rescanDOMInteral = 1500;
 var userToButtonMap = {};
 
+var elementIdentifiers = {
+  //iframe id containing friends list
+  friendsListIframeId: '#gtn-roster-iframe-id-b',
+  //class for button in friends list. Clicking invokes chat window
+  friendsListIframeButton: '.Bb',
+  //usernames in friends list are in this type
+  friendsListUsernameType: 'span',
+  //ignore headers in friends list of this type
+  friendsListUsernameIgnoreClass: 'sV',
+  //username that appears at top of chat
+  chatWindowRecipient: '.Ob2Lud'
+}
+
 $(document).ready(function(){
   
   var getFrameDepth = function(winToID) {
@@ -29,12 +42,12 @@ $(document).ready(function(){
 var getHangoutsFriends = function() {
 
   //friends list is stored in an iframe
-  var friendObjs = $('#gtn-roster-iframe-id-b').contents().find('.Bb');
+  var friendObjs = $(elementIdentifiers.friendsListIframeId).contents().find(elementIdentifiers.friendsListIframeButton);
   var friends = [];
 
   friendObjs.each(function(){
-    var headers = $(this).find('span');
-    if(!$(headers[0]).hasClass('sV')){
+    var headers = $(this).find(elementIdentifiers.friendsListUsernameType);
+    if(!$(headers[0]).hasClass(elementIdentifiers.friendsListUsernameIgnoreClass)){
       var name = $(headers[0]).text();
       friends.push({
         username: name,
@@ -55,9 +68,9 @@ var getHangoutsFriends = function() {
 var findFriendChat = function(name){
   // console.log(userToButtonMap[name].button);
   $('.talk_chat_widget').each(function(){
-    var recipient = $(this).find('iframe').contents().find('.Ob2Lud').text();
+    var recipient = $(this).find('iframe').contents().find(elementIdentifiers.chatWindowRecipient).text();
     if (recipient) {
-      console.log(recipient)
+      console.log(recipient);
     }
   });
 };
