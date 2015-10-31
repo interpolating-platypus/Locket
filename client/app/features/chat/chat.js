@@ -7,10 +7,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
     if (resp.auth === 'OK') {
       socket.connect();
 
-      $scope.test = function () {
-        console.log('testing button');
-      };
-
       var keyring = encryptionFactory.generateKeyPair();
       var publicKey;
       // send public key to Locket friends on login
