@@ -23,6 +23,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.sentRequest = false;
 
       $scope.encrypted = true;
+      //spinner initially set to false
+      $scope.loading = true;
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
       $scope.$watch('activeFriend.key', function (newValue, oldValue) {
@@ -285,6 +287,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       };
 
       $scope.sendMessage = function(messageText){
+        //start spinner
+        $scope.loading = true;
+
         //reset message text
         $scope.messageText = '';
 
@@ -296,6 +301,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               if (messageText) {
                 $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
                 socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+                $scope.loading = false;
               }
             });
           }
@@ -322,6 +328,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               _.defaults(message, messageDefaults);
               $scope.activeFriend.unsentMessages.push(message);
               $("#photoUpload").filestyle('clear');
+              $scope.loading = false;
             });
           };
           // Read the file
@@ -336,6 +343,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 encryptedMessage: encryptedMessage,
                 isEncrypted: true
               });
+              $scope.loading = false;
             });
           } else {
             window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, '*');

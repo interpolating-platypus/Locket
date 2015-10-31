@@ -36,10 +36,10 @@ img {
   width: 100%;
 }
 
-.icon {
+/*.icon {
   max-width: 20px;
   margin: 0;
-}
+}*/
 
 .form-group {
   margin-bottom: 0;
@@ -134,6 +134,10 @@ img {
   background-color: #bfd4d9;
 }
 
+.activeFriend {
+  margin-left: 80px;
+}
+
 .friendArrow {
   float: right;
   color: #ddd;
@@ -199,9 +203,9 @@ img {
   margin-right: 8px;
 }
 
-img {
-  margin-top: 30px;
-  margin-left: 24px;
+.facebookIcon {
+  max-width: 20px;
+  margin-bottom: 2px;
 }
 
 .no-padding {
@@ -325,4 +329,13 @@ img {
 .switchButton {
   padding-left: 10px;
   padding-right: 0;
+}
+
+.spinner {
+  position: absolute;
+  left: 10px;
+  float: left;
+  height: 20px;
+  width: 20px;
+  margin-top: 1px;
 }
