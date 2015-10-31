@@ -278,7 +278,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       // when active friend is from FB and supposed to be encrypted, recheck for proper keys
       setInterval(function () {
         if ($scope.activeFriend.service === 'Facebook' && $scope.encrypted) {
-          console.log('checking');
           var currentFriendUsername = $scope.activeFriend.username;
           FBexchangeComplete = false;
           $scope.requestEncryptedChat();
@@ -287,7 +286,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             if (!FBexchangeComplete && currentFriendUsername === $scope.activeFriend.username) {
               $scope.activeFriend.key = '';
             }
-            else console.log('still online');
           }, 3000);
         }
       }, 10000);
