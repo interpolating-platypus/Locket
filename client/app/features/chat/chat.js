@@ -123,6 +123,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                           $scope.friends[index].unsentFBMessages.splice(j, 1);
                           $scope.friends[index].messages.push(message);
                           addedMessage = true;
+                          $scope.loading = false;
                           $scope.$apply();
                         }
                       }
@@ -343,7 +344,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 encryptedMessage: encryptedMessage,
                 isEncrypted: true
               });
-              $scope.loading = false;
             });
           } else {
             window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, '*');
