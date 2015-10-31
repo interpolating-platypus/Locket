@@ -281,6 +281,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.showPhoto;
 
       var FBexchangeComplete = false;
+      var keyChangeTimeout = 3000;
+      var checkActive = 10000;
 
       // when active friend is from FB and supposed to be encrypted, recheck for proper keys
       setInterval(function () {
@@ -295,9 +297,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               console.log('changing key');
               $scope.activeFriend.key = '';
             }
-          }, 3000);
+          }, keyChangeTimeout);
         }
-      }, 10000);
+      }, checkActive);
 
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
