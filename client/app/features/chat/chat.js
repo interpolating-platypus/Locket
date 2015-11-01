@@ -231,6 +231,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 //state is encrypted
                 // set indicator for whether message is encrypted
                 $scope.encrypted = true;
+                FBexchangeComplete = true;
               } else {
                 
 
@@ -260,6 +261,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       // We are requesting an encrypted chat with somebody. Send them our public key and request their public key in return
       $scope.requestEncryptedChat = function() {
+        console.log('sending key through FB');
         findFriend($scope.activeFriend.username, function(index) {
           $scope.friends[index].sentKey = true;
           window.postMessage({
@@ -281,11 +283,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.showPhoto;
 
       var FBexchangeComplete = false;
-      var keyChangeTimeout = 3000;
-      var checkActive = 10000;
+      var keyChangeTimeout = 5000;
+      var checkActiveInterval = 15000;
 
-      // when active friend is from FB and supposed to be encrypted, recheck for proper keys
-      setInterval(function () {
+      var checkActive = function () {
         if ($scope.activeFriend.service === 'Facebook' && $scope.encrypted) {
           var currentFriendUsername = $scope.activeFriend.username;
           FBexchangeComplete = false;
@@ -293,17 +294,24 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           setTimeout(function () {
             console.log('checking');
             // if facebook key exchange incomplete, empty key so no longer encrypted if still on same friend
-            if (!FBexchangeComplete && currentFriendUsername === $scope.activeFriend.username) {
+            if (!FBexchangeComplete && (currentFriendUsername === $scope.activeFriend.username)) {
               console.log('changing key');
               $scope.activeFriend.key = '';
+              $scope.$apply();
             }
           }, keyChangeTimeout);
         }
-      }, checkActive);
+      };
+
+      // when active friend is from FB and supposed to be encrypted, recheck for proper keys
+      setInterval(function () {
+        checkActive();
+      }, checkActiveInterval);
 
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
+          checkActive();
           $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
           $(".bootstrap-filestyle").toggle($scope.showPhoto);
           if ($scope.friends[index].unreadMessage) {
