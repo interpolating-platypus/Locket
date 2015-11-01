@@ -1,4 +1,4 @@
-var rescanDOMInteral = 1500;
+var rescanDOMInteral = 2500;
 var userToButtonMap = {};
 var seenMessageGroup = {};
 var friendsWithNewMessages = {};
@@ -57,7 +57,7 @@ $(document).ready(function () {
       });
 
 
-      // findFriendMessages("Jose Barrientos").then(function(messages){
+      // findFriendNewMessages("Jose Barrientos").then(function(messages){
       //   console.log(messages);
       // });
       // sendFriendMessage("Jose Barrientos", "This is a test!");
@@ -69,8 +69,30 @@ $(document).ready(function () {
 
 function onIntervals ( ){
   getHangoutsFriends(0)
-    .then(function (friends) {
+    .then(function () {
       console.log(friendsWithNewMessages);
+      //at this point we have updated friendsWithNewMessages
+      for(var friend in friendsWithNewMessages){
+        findFriendNewMessages(friend)
+          .then(function (newMessages) {
+            for (var i = 0; i < newMessages.length; i++){
+              console.log(newMessages[i].from, newMessages[i].messages);
+              //send the new messages to the web app
+              chrome.runtime.sendMessage({
+                event: 'receivedNewHangoutsMessage', 
+                data: {
+                  with: friend, 
+                  name: friend, 
+                  from: newMessages[i].from, 
+                  text: newMessages[i].messages
+                }
+              });
+              
+            }
+          });
+        delete friendsWithNewMessages[friend];
+      }
+
     },function (err) {
       console.log(err);
     });
@@ -127,7 +149,8 @@ function getHangoutsFriends (attempts) {  //friends list is stored in an iframe
   return deferred.promise;
 };
 
-function findFriendChatWindow (name) {  var friendChatWindow = null;
+function findFriendChatWindow (name) {  
+  var friendChatWindow = null;
   var deferred = D();
 
   //iterate through all of the chat windows
@@ -137,6 +160,7 @@ function findFriendChatWindow (name) {  var friendChatWindow = null;
     var recipient = chatWindow.contents().find(elementIdentifiers.chatWindowRecipient).text();
 
     if (recipient === name) {
+      friendChatWindow = chatWindow;
       deferred.resolve(chatWindow);
     }
   });
@@ -153,7 +177,7 @@ function findFriendChatWindow (name) {  var friendChatWindow = null;
   return deferred.promise;
 };
 
-function findFriendMessages (name) {
+function findFriendNewMessages (name) {
   var deferred = D();
   findFriendChatWindow(name)
     .then(function(chatWindow){
@@ -204,6 +228,3 @@ function sendFriendMessage (name, message){
   });
 };
 
-function findUnreadMessages (){
-
-};

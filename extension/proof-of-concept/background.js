@@ -163,4 +163,16 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     chrome.tabs.sendMessage(mainTabId, {event: 'hangoutsFriendsList', data: message.data});
   }
 
+  //hangouts.js has read new messages and would like to send them to the client
+  if (message.event === "receivedNewHangoutsMessage") {
+    // if the client is already on our app, send the new messages
+    if (mainTabId) {
+      chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewHangoutsMessage', data: message.data});
+    }
+
+    // Otherwise, store the new messages for the future
+    else {
+      unreadMessages = unreadMessages.concat(message.data);
+    }
+  }
 });

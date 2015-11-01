@@ -37,6 +37,11 @@ chrome.runtime.onMessage.addListener(function(message) {
     // Emit the hangouts friends list to the extension
     window.postMessage({ type: 'hangoutsFriendsList', text: message.data}, "*");
   }
+
+  // Received a new hangouts message
+  if (message.event === "receivedNewHangoutsMessage") {
+    window.postMessage({ type: 'receivedNewHangoutsMessage', text: message.data}, "*");
+  }
 });
 
 // Register the tabid with the background process
