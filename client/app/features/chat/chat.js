@@ -97,6 +97,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         // Receive new facebook message(s)
         var partialPGPMessage = '';
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
+          $scope.loading = false;
           var username = event.data.text.with;
           var fullname = event.data.text.name;
           var newMessages = event.data.text.text;
@@ -134,7 +135,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                           $scope.friends[index].unsentFBMessages.splice(j, 1);
                           $scope.friends[index].messages.push(message);
                           addedMessage = true;
-                          $scope.loading = false;
                           $scope.$apply();
                         }
                       }
@@ -334,7 +334,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               if (messageText) {
                 $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
                 socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
-                $scope.loading = false;
               }
             });
           }
@@ -361,7 +360,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               _.defaults(message, messageDefaults);
               $scope.activeFriend.unsentMessages.push(message);
               $("#photoUpload").filestyle('clear');
-              $scope.loading = false;
             });
           };
           // Read the file
@@ -457,6 +455,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 message.isEncrypted = $scope.friends[index].unsentMessages[i].isEncrypted;
                 $scope.friends[index].unsentMessages.splice(i, 1);
                 $scope.friends[index].messages.push(message);
+                $scope.loading = false;
               }
             }
           }
