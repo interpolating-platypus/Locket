@@ -25,6 +25,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.encrypted = false;
       //spinner initially set to false
       $scope.loading = false;
+      $scope.friendsLoading = false;
 
       //messaging
       $scope.showPhoto = false;
@@ -93,6 +94,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           }
           // After receiving a facebook friends list, begin monitoring the facebook DOM
           window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
+          $scope.friendsLoading = false;
         }
 
         // Receive new facebook message(s)
@@ -474,6 +476,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.getFriends = function(){
         socket.emit('getFriends', {});
         // Get friends through facebook
+        $scope.friendsLoading = true;
         window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
       };
 
