@@ -25,7 +25,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.encrypted = false;
       //spinner initially set to false
       $scope.loading = false;
-      $scope.friendsLoading = false;
+      // $scope.friendsLoading = true;
 
       //messaging
       $scope.showPhoto = false;
@@ -472,13 +472,23 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       });
 
-      //Get friends through our socket
-      $scope.getFriends = function(){
+
+      function getLocketFriends() {
         socket.emit('getFriends', {});
-        // Get friends through facebook
-        $scope.friendsLoading = true;
+        // only if extension exists call getExtensionFriends
+        getExtensionFriends();
+      }
+      //Get friends through our socket
+
+      function getExtensionFriends() {
         window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
-      };
+        // window.postMessage({ type: 'getHangoutFriends', text: ''}, '*');
+        // $scope.friendsLoading = true;
+      }
+      // Get Facebook and Google Hangout Friends
+
+
+
 
       socket.on('friendsList', function(friends){
         for (var i = 0; i < friends.length; i++) {
@@ -635,7 +645,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         cb(-1);
       }
       //get friends when we have verified the user is signed in
-      $scope.getFriends();
+      $scope.getLocketFriends();
       $scope.fetchUnreadFriendRequests();
       $scope.fetchUnreadAcknowledgements();
     }//end if resp === 'ok'      
