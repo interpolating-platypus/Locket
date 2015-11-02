@@ -32,7 +32,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       $scope.$watch('activeFriend', function() {
         $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : false;
-        $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
+        $scope.showPhoto = ($scope.activeFriend && $scope.activeFriend.service === 'Locket') ? true: false;
         $(".bootstrap-filestyle").toggle($scope.showPhoto);
       });
 
