@@ -25,7 +25,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.encrypted = false;
       //spinner initially set to false
       $scope.loading = false;
-      // $scope.friendsLoading = true;
 
       //messaging
       $scope.showPhoto = false;
@@ -95,6 +94,15 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           // After receiving a facebook friends list, begin monitoring the facebook DOM
           window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
           $scope.friendsLoading = false;
+        }
+
+
+        // facebook and google hangOut Friends will only be fetched if user has extension
+        if (event.data.type && (event.data.type === 'extensionExists')) {
+          window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
+          // for eventual googleHangout integration
+          // window.postMessage({ type: 'getHangoutFriends', text: ''}, '*');
+          $scope.friendsLoading = true;
         }
 
         // Receive new facebook message(s)
@@ -472,20 +480,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       });
 
+     
 
       function getLocketFriends() {
         socket.emit('getFriends', {});
-        // only if extension exists call getExtensionFriends
-        getExtensionFriends();
       }
       //Get friends through our socket
 
-      function getExtensionFriends() {
-        window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
-        // window.postMessage({ type: 'getHangoutFriends', text: ''}, '*');
-        // $scope.friendsLoading = true;
-      }
-      // Get Facebook and Google Hangout Friends
 
 
 
@@ -644,8 +645,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         //if friend not in list
         cb(-1);
       }
-      //get friends when we have verified the user is signed in
-      $scope.getLocketFriends();
+
+      function checkUserHasExtension() {
+        window.postMessage({ type: 'checkExtension', text: ''}, '*');
+      }
+
+      checkUserHasExtension();
+      getLocketFriends();
       $scope.fetchUnreadFriendRequests();
       $scope.fetchUnreadAcknowledgements();
     }//end if resp === 'ok'      

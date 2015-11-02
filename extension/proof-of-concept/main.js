@@ -38,6 +38,11 @@ window.addEventListener('message', function(event) {
   if (event.source != window)
     return;
 
+  //Checking if user has extension
+  if (event.data.type && (event.data.type === 'checkExtension')) {
+    window.postMessage({ type: 'extensionExists', text: ''}, "*");
+  }
+
   // App requesting facebook friends
   if (event.data.type && (event.data.type === 'getFacebookFriends')) {
     chrome.runtime.sendMessage({
