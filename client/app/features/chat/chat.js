@@ -26,8 +26,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       //spinner initially set to false
       $scope.loading = false;
 
+      //messaging
+      $scope.showPhoto = false;
+
+
       $scope.$watch('activeFriend', function() {
         $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : false;
+        $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
+        $(".bootstrap-filestyle").toggle($scope.showPhoto);
       });
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
@@ -278,14 +284,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       //represents the user selected in the friends list
       $scope.activeFriend = null;
 
-      //messaging
-      $scope.showPhoto;
-
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
-          $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
-          $(".bootstrap-filestyle").toggle($scope.showPhoto);
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
