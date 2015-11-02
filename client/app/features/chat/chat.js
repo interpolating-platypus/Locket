@@ -1,4 +1,3 @@
-var keyResponseTimeout = 15000;
 angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
@@ -22,17 +21,28 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       
       $scope.sentRequest = false;
 
-      $scope.encrypted = true;
       //spinner initially set to false
       $scope.loading = false;
+
+      $scope.encrypted = false;
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
       $scope.$watch('activeFriend.key', function (newValue, oldValue) {
         $scope.encrypted = newValue ? true : false;
+        if ($scope.activeFriend) {
+          if ($scope.activeFriend.service === 'Facebook' && $scope.activeFriend.key) {
+            FBexchangeComplete = true;
+          }
+        }
       });
 
       $scope.$watch('encrypted', function (newValue, oldValue) {
         $('#enabled').toggleClass('checked', newValue);
+        if ($scope.activeFriend) {
+          if (!$scope.encrypted && $scope.activeFriend.service === 'Facebook') {
+            $scope.activeFriend.key = '';
+          }
+        }
       });
 
       $('#enabled').on('click', function (event) {
@@ -86,6 +96,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         // Receive new facebook message(s)
         var partialPGPMessage = '';
         if (event.data.type && (event.data.type === 'receivedNewFacebookMessage')) {
+          $scope.loading = false;
           var username = event.data.text.with;
           var fullname = event.data.text.name;
           var newMessages = event.data.text.text;
@@ -123,7 +134,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                           $scope.friends[index].unsentFBMessages.splice(j, 1);
                           $scope.friends[index].messages.push(message);
                           addedMessage = true;
-                          $scope.loading = false;
                           $scope.$apply();
                         }
                       }
@@ -220,6 +230,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 //state is encrypted
                 // set indicator for whether message is encrypted
                 $scope.encrypted = true;
+                FBexchangeComplete = true;
               } else {
                 
 
@@ -249,6 +260,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       // We are requesting an encrypted chat with somebody. Send them our public key and request their public key in return
       $scope.requestEncryptedChat = function() {
+        console.log('sending key through FB');
         findFriend($scope.activeFriend.username, function(index) {
           $scope.friends[index].sentKey = true;
           window.postMessage({
@@ -269,9 +281,36 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       //messaging
       $scope.showPhoto;
 
+      var FBexchangeComplete = false;
+      var keyChangeTimeout = 10000;
+      var checkActiveInterval = 20000;
+
+      var checkActive = function () {
+        if ($scope.activeFriend.service === 'Facebook' && $scope.encrypted) {
+          var currentFriendUsername = $scope.activeFriend.username;
+          FBexchangeComplete = false;
+          $scope.requestEncryptedChat();
+          setTimeout(function () {
+            console.log('checking');
+            // if facebook key exchange incomplete, empty key so no longer encrypted if still on same friend
+            if (!FBexchangeComplete && (currentFriendUsername === $scope.activeFriend.username)) {
+              console.log('changing key');
+              $scope.activeFriend.key = '';
+              $scope.$apply();
+            }
+          }, keyChangeTimeout);
+        }
+      };
+
+      // when active friend is from FB and supposed to be encrypted, recheck for proper keys
+      setInterval(function () {
+        checkActive();
+      }, checkActiveInterval);
+
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
+          checkActive();
           $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
           $(".bootstrap-filestyle").toggle($scope.showPhoto);
           if ($scope.friends[index].unreadMessage) {
@@ -302,7 +341,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               if (messageText) {
                 $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
                 socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
-                $scope.loading = false;
               }
             });
           }
@@ -329,7 +367,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               _.defaults(message, messageDefaults);
               $scope.activeFriend.unsentMessages.push(message);
               $("#photoUpload").filestyle('clear');
-              $scope.loading = false;
             });
           };
           // Read the file
@@ -425,6 +462,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 message.isEncrypted = $scope.friends[index].unsentMessages[i].isEncrypted;
                 $scope.friends[index].unsentMessages.splice(i, 1);
                 $scope.friends[index].messages.push(message);
+                $scope.loading = false;
               }
             }
           }
