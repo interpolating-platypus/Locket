@@ -26,8 +26,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       //spinner initially set to false
       $scope.loading = false;
 
+      //messaging
+      $scope.showPhoto = false;
+
+
       $scope.$watch('activeFriend', function() {
         $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : false;
+        $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
+        $(".bootstrap-filestyle").toggle($scope.showPhoto);
       });
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
@@ -141,8 +147,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       }
                     } else {
                       // Otherwise, decrypt the message using our private key
-                      console.log('KEYPAIR', keypair);
-                      console.log('enc msg', encryptedMessage);
                       encryptionFactory.decryptMessage(keypair, encryptedMessage)
                       .then(function (decryptedMessage) {
                         var message = {
@@ -163,7 +167,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                         $scope.$apply();
                       })
                       .catch(function() {
-                        console.log('EXPIRED MSG FROM NON-ME');
                         var message = {
                           to: $scope.currentUser,
                           from: $scope.friends[index].username,
@@ -215,6 +218,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
           //we need to verify the pgpkey is still valid for this session
           keyring.then(function(keypair){
+            publicKey = keypair.pubkey;
 
             findFriend(username, function(index) {
               // If this is from a facebook friend not on the list, add as new
@@ -228,14 +232,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               if (friendKey.replace(/[^a-z0-9]/gmi, '') === $scope.friends[index].key.replace(/[^a-z0-9]/gmi, '') && myKey.replace(/[^a-z0-9]/gmi, '') === publicKey.replace(/[^a-z0-9]/gmi, '')){
                 //state is encrypted
                 // set indicator for whether message is encrypted
-                console.log('keys match stored values');
-                //$scope.encrypted = true;
                 $scope.friends[index].userIsEncrypted = true;
 
                 // 
                 //window.postMessage({ type: 'bounce', text: }, '*');
               } else {
-                console.log('keys do not match stored values');
 
                 //respond with myKey, mySession, friendSession
                 console.log('Updating pgpKey for', $scope.friends[index].username);
@@ -243,7 +244,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 console.log('Storing public key for user', $scope.friends[index].username);
                 // Store that friend's public key
                 $scope.friends[index].key = friendKey;
-                //$scope.encrypted = false; //the key is set, but it may not be the right key
                 $scope.friends[index].userIsEncrypted = false;
                 
                 window.postMessage({
@@ -284,14 +284,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       //represents the user selected in the friends list
       $scope.activeFriend = null;
 
-      //messaging
-      $scope.showPhoto;
-
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
-          $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
-          $(".bootstrap-filestyle").toggle($scope.showPhoto);
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
