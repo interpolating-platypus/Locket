@@ -1,4 +1,3 @@
-var keyResponseTimeout = 15000;
 angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
 .controller('chatController', function ($scope, authFactory, $stateParams, socket, encryptionFactory, $timeout) {
@@ -283,8 +282,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.showPhoto;
 
       var FBexchangeComplete = false;
-      var keyChangeTimeout = 5000;
-      var checkActiveInterval = 15000;
+      var keyChangeTimeout = 10000;
+      var checkActiveInterval = 20000;
 
       var checkActive = function () {
         if ($scope.activeFriend.service === 'Facebook' && $scope.encrypted) {
