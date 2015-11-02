@@ -215,6 +215,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
           //we need to verify the pgpkey is still valid for this session
           keyring.then(function(keypair){
+            publicKey = keypair.pubkey;
 
             findFriend(username, function(index) {
               // If this is from a facebook friend not on the list, add as new
