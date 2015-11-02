@@ -35,6 +35,12 @@ var facebookTODO = {
   emitDisconnect: []
 };
 
+var hangoutsTODO = {
+  getFriends: false,
+  getMessagesFor: [],
+  postMessages: []
+}
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   // This event is issued when we are to inject the facebook content script
   if (message.event === 'injectFacebookiFrame') {
@@ -151,7 +157,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
   // The content script is telling us to read facebook messages for a certain user
   if (message.event === 'readFacebookMessages') {
-    console.log('READ FACEBOOK MESSAGES (bg)');
     facebookTODO.readFacebookMessages.push(message.data.to);
   }
 
@@ -174,5 +179,33 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     else {
       unreadMessages = unreadMessages.concat(message.data);
     }
+  }
+
+  // The hangouts content script is requesting instructions
+  if (message.event === "getHangoutsInstructions") {
+    sendResponse({
+      getFriends: hangoutsTODO.getFriends,
+      getMessagesFor: hangoutsTODO.getMessagesFor,
+      postMessages: hangoutsTODO.postMessages
+    });
+
+    hangoutsTODO.getFriends = false;
+    hangoutsTODO.getMessagesFor = [];
+    hangoutsTODO.postMessages = [];
+  }
+
+  // The web app is telling us to read hangouts messages for a certain user
+  if (message.event === 'readHangoutsMessages') {
+    hangoutsTODO.getMessagesFor.push(message.data.to);
+  }
+
+  // The web app is asking for facebook friends
+  if (message.event === "getHangoutsFriends") {
+    hangoutsTODO.getFriends = true;
+  }
+
+  // The web app is giving us a message to send over hangouts
+  if (message.event === "sendHangoutsMessage") {
+    hangoutsTODO.postMessages.push(message.data);
   }
 });

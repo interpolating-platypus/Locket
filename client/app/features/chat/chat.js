@@ -64,8 +64,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           messages: [],
           unsentMessages: [], // added this in for revoke and show decrypted message for sender
           unsentFBMessages: [], // Follows same convention. Will not work for messages from prev session
-          sentKey: false,
-          userIsEncrypted: false
+          unsentHangoutsMessages: [], // Follows same convention. Will not work for messages from prev session
+          userIsEncrypted: false,
+          sentKey: false
         };
       }
 
@@ -130,7 +131,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           var username = event.data.text.with;
           var fullname = event.data.text.name;
           var newMessages = event.data.text.text;
-          var service = 'unknown';
+          var service;
           if(event.data.type === 'receivedNewFacebookMessage'){
             service = 'Facebook';
           }else if(event.data.type === 'receivedNewHangoutsMessage'){
@@ -347,6 +348,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           // Load messages from facebook friends
           if ($scope.activeFriend.service === "Facebook") {
             window.postMessage({ type: 'readFacebookMessages', to: $scope.activeFriend.username}, '*');
+          }else if($scope.activeFriend.service === "Hangouts"){
+            window.postMessage({ type: 'readHangoutsMessages', to: $scope.activeFriend.username}, '*');
           }
         });
       };
@@ -412,7 +415,21 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: messageText}, '*');
           }
         }else if ($scope.activeFriend.service === 'Hangouts'){
-          console.log('send hangouts message');
+
+          if ($scope.activeFriend.key) {
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+            .then(function (encryptedMessage) {
+              window.postMessage({ type: 'sendHangoutsMessage', to: $scope.activeFriend.username, text: encryptedMessage}, '*');
+              $scope.activeFriend.unsentHangoutsMessages.push({
+                message: messageText,
+                encryptedMessage: encryptedMessage,
+                isEncrypted: true
+              });
+            });
+          }else { 
+            window.postMessage({ type: 'sendHangoutsMessage', to: $scope.activeFriend.username, text: messageText}, '*');
+          }
+
         }
       };
 
@@ -528,12 +545,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       function getLocketFriends() {
         socket.emit('getFriends', {});
-      }
-      //Get friends through our socket
-
-
-
-
+        // Get friends through facebook
+        window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
+        //get friends from hangouts
+        window.postMessage({ type: 'getHangoutsFriends', text: ''}, '*');
+      };
 
       socket.on('friendsList', function(friends){
         for (var i = 0; i < friends.length; i++) {

@@ -48,54 +48,36 @@ $(document).ready(function () {
     onIntervals();
   }, rescanDOMInteral);
 
-  getHangoutsFriends(0)
-    .then(function (friends) {
-
-      chrome.runtime.sendMessage({
-        event: 'hangoutsFriendsList',
-        data: friends
-      });
-
-
-      // findFriendNewMessages("Jose Barrientos").then(function(messages){
-      //   console.log(messages);
-      // });
-      // sendFriendMessage("Jose Barrientos", "This is a test!");
-    },function (err) {
-      console.log(err);
-    });
-
 });
 
 function onIntervals ( ){
-  getHangoutsFriends(0)
-    .then(function () {
-      console.log(friendsWithNewMessages);
-      //at this point we have updated friendsWithNewMessages
-      for(var friend in friendsWithNewMessages){
-        findFriendNewMessages(friend)
-          .then(function (newMessages) {
-            for (var i = 0; i < newMessages.length; i++){
-              console.log(newMessages[i].from, newMessages[i].messages);
-              //send the new messages to the web app
-              chrome.runtime.sendMessage({
-                event: 'receivedNewHangoutsMessage', 
-                data: {
-                  with: friend, 
-                  name: friend, 
-                  from: newMessages[i].from, 
-                  text: newMessages[i].messages
-                }
-              });
-              
-            }
-          });
-        delete friendsWithNewMessages[friend];
+  //poll extension for instructions from web app
+  chrome.runtime.sendMessage({event: 'getHangoutsInstructions' }, 
+    function(response) {
+      // Background process wants to get hangouts friends
+      if (response.getFriends) {
+        console.log("web app requesting friends");
+        // Retrieve friends from hangouts DOM
+        findAndSendHangoutsFriends();
       }
 
-    },function (err) {
-      console.log(err);
-    });
+      // Background process wants us to read messages for specific hangouts user
+      if (response.getMessagesFor.length > 0) {
+        for (var i = 0; i < response.getMessagesFor.length; i++) {
+          friendsWithNewMessages[response.getMessagesFor[i]] = true;
+        }
+      }
+
+      //Background process wants us to send the following messages
+      if (response.postMessages.length > 0){
+        for (var i = 0; i < response.postMessages.length; i++) {
+          sendFriendMessage(response.postMessages[i].to, response.postMessages[i].text);
+        };
+      }
+
+      findAndSendUnreadMessages();
+    }
+  );
 };
 
 //helper functions
@@ -228,3 +210,47 @@ function sendFriendMessage (name, message){
   });
 };
 
+function findAndSendUnreadMessages () {
+  getHangoutsFriends(0)
+    .then(function () {
+      console.log(friendsWithNewMessages);
+      //at this point we have updated friendsWithNewMessages
+      for(var friend in friendsWithNewMessages){
+        findFriendNewMessages(friend)
+          .then(function (newMessages) {
+            for (var i = 0; i < newMessages.length; i++){
+              console.log(newMessages[i].from, newMessages[i].messages);
+              //send the new messages to the web app
+              chrome.runtime.sendMessage({
+                event: 'receivedNewHangoutsMessage', 
+                data: {
+                  with: friend, 
+                  name: friend, 
+                  from: newMessages[i].from, 
+                  text: newMessages[i].messages
+                }
+              });
+              
+            }
+          });
+        delete friendsWithNewMessages[friend];
+      }
+
+    },function (err) {
+      console.log(err);
+    });
+};
+
+function findAndSendHangoutsFriends () {
+  getHangoutsFriends(0)
+    .then(function (friends) {
+
+      chrome.runtime.sendMessage({
+        event: 'hangoutsFriendsList',
+        data: friends
+      });
+
+    },function (err) {
+      console.log(err);
+    });
+};
