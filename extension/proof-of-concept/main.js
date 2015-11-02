@@ -103,7 +103,8 @@ window.addEventListener('message', function(event) {
       data: {
         to: event.data.to,
         publicKey: event.data.publicKey,
-        friendKey: event.data.friendKey
+        friendKey: event.data.friendKey,
+        service: event.data.service
       }
     });
   }

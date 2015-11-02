@@ -165,11 +165,20 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       _.defaults(message, messageDefaults);
                       // Make sure we add the correct message:
                       var addedMessage = false;
-                      for (var j = 0; j < $scope.friends[index].unsentFBMessages.length; j++) {
-                        if ($scope.friends[index].unsentFBMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
-                          message.message = $scope.friends[index].unsentFBMessages[j].message;
-                          message.isEncrypted = $scope.friends[index].unsentFBMessages[j].isEncrypted;
-                          $scope.friends[index].unsentFBMessages.splice(j, 1);
+
+                      var unsentMessages;
+
+                      if(service === "Facebook"){
+                        unsentMessages = $scope.friends[index].unsentFBMessages;
+                      }else if(service === "Hangouts"){
+                        unsentMessages = $scope.friends[index].unsentHangoutsMessages;
+                      }
+
+                      for (var j = 0; j < unsentMessages.length; j++) {
+                        if (unsentMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
+                          message.message = unsentMessages[j].message;
+                          message.isEncrypted = unsentMessages[j].isEncrypted;
+                          unsentMessages.splice(j, 1);
                           $scope.friends[index].messages.push(message);
                           addedMessage = true;
                           $scope.loading = false;
@@ -288,7 +297,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                   type: 'sendPublicKey',
                   publicKey: publicKey,
                   friendKey: friendKey,
-                  to: $scope.friends[index].username
+                  to: $scope.friends[index].username,
+                  service: $scope.activeFriend.service
                 }, '*');
                 $scope.friends[index].sentKey = Date.now();
               }
@@ -324,7 +334,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             type: 'sendPublicKey',
             publicKey: publicKey,
             friendKey: $scope.friends[index].key,
-            to: $scope.activeFriend.username
+            to: $scope.activeFriend.username,
+            service: $scope.activeFriend.service
           }, '*');
         });
       };

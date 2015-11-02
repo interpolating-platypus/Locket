@@ -38,7 +38,8 @@ var facebookTODO = {
 var hangoutsTODO = {
   getFriends: false,
   getMessagesFor: [],
-  postMessages: []
+  postMessages: [],
+  sendPublicKey: []
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -147,7 +148,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
   // The content script is telling us to initiate a public key exchange
   if (message.event === 'sendPublicKey') {
-    facebookTODO.sendPublicKey.push(message.data);
+    if(message.data.service === "Facebook"){
+      facebookTODO.sendPublicKey.push(message.data);
+    }else if (message.data.service === "Hangouts"){
+      hangoutsTODO.sendPublicKey.push(message.data);
+    }
   }
 
   // The facebook script has sent us a PGP key
@@ -186,12 +191,14 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     sendResponse({
       getFriends: hangoutsTODO.getFriends,
       getMessagesFor: hangoutsTODO.getMessagesFor,
-      postMessages: hangoutsTODO.postMessages
+      postMessages: hangoutsTODO.postMessages,
+      sendPublicKey: hangoutsTODO.sendPublicKey
     });
 
     hangoutsTODO.getFriends = false;
     hangoutsTODO.getMessagesFor = [];
     hangoutsTODO.postMessages = [];
+    hangoutsTODO.sendPublicKey = [];
   }
 
   // The web app is telling us to read hangouts messages for a certain user

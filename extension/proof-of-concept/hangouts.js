@@ -50,7 +50,7 @@ $(document).ready(function () {
 
 });
 
-function onIntervals ( ){
+function onIntervals ( ) {
   //poll extension for instructions from web app
   chrome.runtime.sendMessage({event: 'getHangoutsInstructions' }, 
     function(response) {
@@ -73,6 +73,16 @@ function onIntervals ( ){
         for (var i = 0; i < response.postMessages.length; i++) {
           sendFriendMessage(response.postMessages[i].to, response.postMessages[i].text);
         };
+      }
+
+      if(response.sendPublicKey.length > 0){
+        for (var i = 0; i < response.sendPublicKey.length; i++) {
+          var keyReq = response.sendPublicKey[i];
+
+          // Mark that we want to initiate a key exchange with this user
+          var keys = keyReq.publicKey + "*****Your Key Below******" + keyReq.friendKey + "END KEYSHARE";//keyReq.friendKey is what the sending user thinks the recipient's key is
+          sendFriendMessage(keyReq.to, keys);
+        }
       }
 
       findAndSendUnreadMessages();
