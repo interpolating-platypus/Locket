@@ -27,7 +27,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.loading = false;
 
       $scope.$watch('activeFriend', function() {
-        $scope.encrypted = $scope.activeFriend.userIsEncrypted;
+        $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : false;
       });
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
@@ -141,6 +141,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                       }
                     } else {
                       // Otherwise, decrypt the message using our private key
+                      console.log('KEYPAIR', keypair);
+                      console.log('enc msg', encryptedMessage);
                       encryptionFactory.decryptMessage(keypair, encryptedMessage)
                       .then(function (decryptedMessage) {
                         var message = {
@@ -161,6 +163,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                         $scope.$apply();
                       })
                       .catch(function() {
+                        console.log('EXPIRED MSG FROM NON-ME');
                         var message = {
                           to: $scope.currentUser,
                           from: $scope.friends[index].username,
@@ -228,6 +231,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 console.log('keys match stored values');
                 //$scope.encrypted = true;
                 $scope.friends[index].userIsEncrypted = true;
+
+                // 
+                //window.postMessage({ type: 'bounce', text: }, '*');
               } else {
                 console.log('keys do not match stored values');
 
@@ -248,7 +254,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 }, '*');
                 $scope.friends[index].sentKey = Date.now();
               }
-              if ($scope.friends[index].username === $scope.activeFriend.username) {
+              if ($scope.activeFriend && $scope.friends[index].username === $scope.activeFriend.username) {
                 $scope.encrypted = $scope.friends[index].userIsEncrypted;
               }
 
