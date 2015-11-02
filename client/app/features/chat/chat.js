@@ -93,6 +93,16 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           }
           // After receiving a facebook friends list, begin monitoring the facebook DOM
           window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
+          $scope.friendsLoading = false;
+        }
+
+
+        // facebook and google hangOut Friends will only be fetched if user has extension
+        if (event.data.type && (event.data.type === 'extensionExists')) {
+          window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
+          // for eventual googleHangout integration
+          // window.postMessage({ type: 'getHangoutFriends', text: ''}, '*');
+          $scope.friendsLoading = true;
         }
 
         // Receive new facebook message(s)
@@ -470,12 +480,16 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       });
 
-      //Get friends through our socket
-      $scope.getFriends = function(){
+     
+
+      function getLocketFriends() {
         socket.emit('getFriends', {});
-        // Get friends through facebook
-        window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
-      };
+      }
+      //Get friends through our socket
+
+
+
+
 
       socket.on('friendsList', function(friends){
         for (var i = 0; i < friends.length; i++) {
@@ -631,8 +645,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         //if friend not in list
         cb(-1);
       }
-      //get friends when we have verified the user is signed in
-      $scope.getFriends();
+
+      function checkUserHasExtension() {
+        window.postMessage({ type: 'checkExtension', text: ''}, '*');
+      }
+
+      checkUserHasExtension();
+      getLocketFriends();
       $scope.fetchUnreadFriendRequests();
       $scope.fetchUnreadAcknowledgements();
     }//end if resp === 'ok'      

@@ -29,6 +29,7 @@
   <div class="row">
 
     <div class="col-xs-4 friendListWindow">
+      <img ng-show="friendsLoading" class="friendSpinner" src="../../spinner.gif"/>
       <p class="windowTitle text-center">Friends List</p>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
