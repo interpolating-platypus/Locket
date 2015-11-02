@@ -196,6 +196,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               else {
                 // Non-PGP message: doesn't need decryption
                 newMessage = newMessages[i];
+                $scope.loading = false;
               }
               // Inject the message if it exists (dont display encrypted ones from prev session)
               if (newMessage) {
