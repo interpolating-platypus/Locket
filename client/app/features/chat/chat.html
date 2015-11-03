@@ -33,7 +33,7 @@
       <p class="windowTitle text-center">Friends List</p>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
-          <input autocomplete='off' class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
+          <input autocomplete='off' placeholder="Add a friend" class='form-control input-display' type='text' name='newFriendUsername' ng-model='newFriendUsername' required/>
           <button class='btn btn-default button-display form-control' type='submit' ng-disabled='!addFriendForm.$valid'><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
         </div>
       </form>
