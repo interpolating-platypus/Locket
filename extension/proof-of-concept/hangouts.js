@@ -1,4 +1,4 @@
-var rescanDOMInteral = 2500;
+var rescanDOMInteral = 500;
 var userToButtonMap = {};
 var seenMessageGroup = {};
 var friendsWithNewMessages = {};
@@ -56,14 +56,12 @@ function onIntervals ( ) {
     function(response) {
       // Background process wants to get hangouts friends
       if (response.getFriends) {
-        console.log("web app requesting friends");
         // Retrieve friends from hangouts DOM
         findAndSendHangoutsFriends();
       }
 
       // Background process wants us to read messages for specific hangouts user
       if (response.getMessagesFor.length > 0) {
-        console.log("get messages for",response.getMessagesFor);
         for (var i = 0; i < response.getMessagesFor.length; i++) {
           friendsWithNewMessages[response.getMessagesFor[i]] = true;
         }
@@ -239,6 +237,7 @@ function sendFriendMessage (name, message){
   findFriendChatWindow(name).then(function(chatWindow){
     chatWindow.contents().find(elementIdentifiers.chatWindowTextarea).text(message);
     chatWindow.contents().find(elementIdentifiers.chatWindowSubmitButton).click();
+    friendsWithNewMessages[name] = true;
   });
 };
 
@@ -250,9 +249,7 @@ function findAndSendUnreadMessages () {
       for(var friend in friendsWithNewMessages){
         findFriendNewMessages(friend)
           .then(function (newMessages) {
-            console.log("findAndSend", newMessages);
             for (var i = 0; i < newMessages.length; i++){
-              console.log(newMessages[i].from, newMessages[i].messages);
               //send the new messages to the web app
               chrome.runtime.sendMessage({
                 event: 'receivedNewHangoutsMessage', 
