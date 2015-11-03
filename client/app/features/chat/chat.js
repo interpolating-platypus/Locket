@@ -102,6 +102,19 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           $scope.friendsLoading = false;
         }
 
+        // Receive a request for the active encrypted facebook sessions
+        if (event.data.type && (event.data.type === 'getEncryptedFacebookFriends')) {
+          // Get list of encrypted facebook friends
+          var results = [];
+          for (var i = 0; i < $scope.friends.length; i++) {
+            if ($scope.friends[i].service === "Facebook" && $scope.friends[i].userIsEncrypted) {
+              results.push($scope.friends[i].username);
+            }
+          }
+          // send back the results
+          window.postMessage({ type: 'encryptedFacebookFriends', text: results}, "*");
+        }
+
 
         // facebook and google hangOut Friends will only be fetched if user has extension
         if (event.data.type && (event.data.type === 'extensionExists')) {
@@ -198,6 +211,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 }
               } else if (newMessages[i].substr(0,27) === '-----BEGIN PGP MESSAGE-----') {
                 partialPGPMessage = newMessages[i];
+              } else if (newMessages[i] === '*****USER DISCONNECT*****') {
+                $scope.friends[index].userIsEncrypted = false;
               }
               else {
                 // Non-PGP message: doesn't need decryption

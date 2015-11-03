@@ -7,8 +7,12 @@ chrome.runtime.sendMessage({ event: 'injectFacebookiFrame', data: '' });
 // Receive update from background process (Facebook wants to communicate)
 chrome.runtime.onMessage.addListener(function(message) {
   if (message.event === 'stillAlive') {
+    // Change the above to instead talk to the app requesting the active fb enc chats
+    // Then listen to the response from the app, and send that response to the background
     chrome.runtime.sendMessage({ event: 'stillAlive', data: '' });
+    window.postMessage({ type: 'getEncryptedFacebookFriends'}, "*");
   }
+
   // Received a new facebook message
   if (message.event === "receivedNewFacebookMessage") {
     window.postMessage({ type: 'receivedNewFacebookMessage', text: message.data}, "*");
@@ -37,6 +41,14 @@ chrome.runtime.sendMessage({
 window.addEventListener('message', function(event) {
   if (event.source != window)
     return;
+
+  // Listening for a list of active encrypted Facebook sessions
+  if (event.data.type && (event.data.type === 'encryptedFacebookFriends')) {
+    chrome.runtime.sendMessage({
+      event: 'encryptedFacebookFriends',
+      data: event.data.text
+    });
+  }
 
   //Checking if user has extension
   if (event.data.type && (event.data.type === 'checkExtension')) {
