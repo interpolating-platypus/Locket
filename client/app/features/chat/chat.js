@@ -37,9 +37,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       });
 
       // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
-      $scope.$watch('activeFriend.key', function (newValue, oldValue) {
-        $scope.encrypted = newValue ? true : false;
-        console.log('active friend key is now ',$scope.activeFriend, newValue);
+      $scope.$watch('activeFriend.userIsEncrypted', function () {
+        $scope.encrypted = $scope.activeFriend.userIsEncrypted;
+        console.log('active friend key is now ',$scope.activeFriend);
       });
 
       $scope.$watch('encrypted', function (newValue, oldValue) {
@@ -89,7 +89,13 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           for (var i = 0; i < event.data.text.length; i++) {
             var friend = event.data.text[i];
             var friendObj = createFriendObj(friend.username, true, friend.name, "Facebook");
-            $scope.friends.push(friendObj);
+            var dontAdd = false;
+            for (var j = 0; j < $scope.friends.length; j++) {
+              if ($scope.friends[j].service !== "Locket" && $scope.friends[j].username === friend.username) {
+                dontAdd = true;
+              }
+            }
+            if (!dontAdd) { $scope.friends.push(friendObj); }
           }
           // After receiving a facebook friends list, begin monitoring the facebook DOM
           window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
@@ -241,12 +247,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
               //verify event has this user's public key, and the friends public key already stored
               if (friendKey.replace(/[^a-z0-9]/gmi, '') === $scope.friends[index].key.replace(/[^a-z0-9]/gmi, '') && myKey.replace(/[^a-z0-9]/gmi, '') === publicKey.replace(/[^a-z0-9]/gmi, '')){
-                //state is encrypted
-                // set indicator for whether message is encrypted
                 $scope.friends[index].userIsEncrypted = true;
 
-                // 
-                //window.postMessage({ type: 'bounce', text: }, '*');
               } else {
 
                 //respond with myKey, mySession, friendSession
@@ -255,7 +257,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 console.log('Storing public key for user', $scope.friends[index].username);
                 // Store that friend's public key
                 $scope.friends[index].key = friendKey;
-                $scope.friends[index].userIsEncrypted = false;
+                // If they sent us a key for them, AND the key for us is correct, set them to encrypted
+                if (friendKey && myKey.replace(/[^a-z0-9]/gmi, '') === publicKey.replace(/[^a-z0-9]/gmi, '')) { $scope.friends[index].userIsEncrypted = true; }
+                else { $scope.friends[index].userIsEncrypted = false; }
                 
                 window.postMessage({
                   type: 'sendPublicKey',
@@ -359,7 +363,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           // Read the file
           if (f) { r.readAsDataURL(f); }
         } else if ($scope.activeFriend.service === 'Facebook') {
-          if ($scope.activeFriend.key) {
+          if ($scope.activeFriend.userIsEncrypted) {
             encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
             .then(function (encryptedMessage) {
               window.postMessage({ type: 'sendFacebookMessage', to: $scope.activeFriend.username, text: encryptedMessage}, '*');
@@ -385,6 +389,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         findFriend(keyObj.friend, function (index) {
           if (index !== -1) {
             $scope.friends[index].key = keyObj.key;
+            $scope.friends[index].userIsEncrypted = true;
             socket.emit('returnPGP', {friend: keyObj.friend, key: publicKey});
           }
         });
@@ -394,6 +399,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         findFriend(keyObj.friend, function (index) {
           if (index !== -1) {
             $scope.friends[index].key = keyObj.key;
+            $scope.friends[index].userIsEncrypted = true;
           }
         });
       });
