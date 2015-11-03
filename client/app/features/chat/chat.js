@@ -211,6 +211,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 }
               } else if (newMessages[i].substr(0,27) === '-----BEGIN PGP MESSAGE-----') {
                 partialPGPMessage = newMessages[i];
+              } else if (newMessages[i] === '*****USER DISCONNECT*****') {
+                $scope.friends[index].userIsEncrypted = false;
               }
               else {
                 // Non-PGP message: doesn't need decryption
