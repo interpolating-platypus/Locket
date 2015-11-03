@@ -1,5 +1,8 @@
 /*navbar css for the chat page*/
 
+.navbar {
+  box-shadow: 0 8px 6px -6px #999;
+}
 .navbar.navbar-custom {
   padding-bottom: 0;
   margin-bottom: 0 !important;
