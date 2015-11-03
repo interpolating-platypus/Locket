@@ -305,8 +305,9 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
-          $timeout(function() {
-            angular.element(".sendMessageInput").focus();
+          $timeout(function() { 
+            $(".sendMessageInput").focus();
+            $(".sendMessageInputFull").focus();
           }, 100);
           // Load messages from facebook friends
           if ($scope.activeFriend.service === "Facebook") {
