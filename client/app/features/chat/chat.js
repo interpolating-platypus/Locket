@@ -151,80 +151,12 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               // PGP messages are in two parts, combine into one
               if (partialPGPMessage) {
                 partialPGPMessage+='\n\n'+newMessages[i];
-                if (newMessages[i].slice(-25) === '-----END PGP MESSAGE-----') {
-                  var encryptedMessage = partialPGPMessage;
-                  partialPGPMessage = '';
-                  keyring.then(function(keypair) {
-                    // If we sent the message, use the local decrypted version
-                    if (event.data.text.from === 'me') {
-                      // Create a message object
-                      var message = {
-                        encryptedMessage: encryptedMessage,
-                        from: $scope.currentUser
-                      }
-                      _.defaults(message, messageDefaults);
-                      // Make sure we add the correct message:
-                      var addedMessage = false;
-
-                      var unsentMessages;
-
-                      if(service === "Facebook"){
-                        unsentMessages = $scope.friends[index].unsentFBMessages;
-                      }else if(service === "Hangouts"){
-                        unsentMessages = $scope.friends[index].unsentHangoutsMessages;
-                      }
-
-                      for (var j = 0; j < unsentMessages.length; j++) {
-                        if (unsentMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
-                          message.message = unsentMessages[j].message;
-                          message.isEncrypted = unsentMessages[j].isEncrypted;
-                          unsentMessages.splice(j, 1);
-                          $scope.friends[index].messages.push(message);
-                          addedMessage = true;
-                          $scope.loading = false;
-                          $scope.$apply();
-                        }
-                      }
-                      if (!addedMessage) {
-                        message.message = '[Message Expired]';
-                        message.isEncrypted = true;
-                        $scope.friends[index].messages.push(message);
-                        $scope.$apply();
-                      }
-                    } else {
-                      // Otherwise, decrypt the message using our private key
-                      encryptionFactory.decryptMessage(keypair, encryptedMessage)
-                      .then(function (decryptedMessage) {
-                        var message = {
-                          to: $scope.currentUser,
-                          from: $scope.friends[index].username,
-                          encryptedMessage: encryptedMessage,
-                          message: decryptedMessage,
-                          isEncrypted: true
-                        }
-                        _.defaults(message, messageDefaults);
-                        $scope.friends[index].messages.push(message);
-                        if (!$scope.activeFriend) {
-                          $scope.activeFriend = $scope.friends[index];
-                        }
-                        else if ($scope.friends[index].username !== $scope.activeFriend.username) {
-                          $scope.friends[index].unreadMessage = true;
-                        }
-                        $scope.$apply();
-                      })
-                      .catch(function() {
-                        var message = {
-                          to: $scope.currentUser,
-                          from: $scope.friends[index].username,
-                          encryptedMessage: encryptedMessage,
-                          message: '[Message Expired]',
-                          isEncrypted: true
-                        }
-                        _.defaults(message, messageDefaults);
-                        $scope.friends[index].messages.push(message);
-                      });
-                    }
-                  });
+                if (newMessages[i].slice(-26) === '-----END PGP MESSAGE-----') {
+                  console.log("full message");
+                  decryptMessage(newMessages[i], index);
+                }else{
+                  console.log("partial pgp");
+                  partialPGPMessage = newMessages[i];
                 }
               } else if (newMessages[i].substr(0,27) === '-----BEGIN PGP MESSAGE-----') {
                 partialPGPMessage = newMessages[i];
@@ -719,6 +651,85 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       function checkUserHasExtension() {
         window.postMessage({ type: 'checkExtension', text: ''}, '*');
+      }
+
+      function decryptMessage(encryptedMessage, index){
+        console.log("received encrypted message");
+        keyring.then(function(keypair) {
+          console.log('inside keyring');
+          // If we sent the message, use the local decrypted version
+          if (event.data.text.from === 'me') {
+            // Create a message object
+            var message = {
+              encryptedMessage: encryptedMessage,
+              from: $scope.currentUser
+            }
+            _.defaults(message, messageDefaults);
+            // Make sure we add the correct message:
+            var addedMessage = false;
+
+            var unsentMessages;
+
+            if(service === "Facebook"){
+              unsentMessages = $scope.friends[index].unsentFBMessages;
+            }else if(service === "Hangouts"){
+              unsentMessages = $scope.friends[index].unsentHangoutsMessages;
+            }
+
+            for (var j = 0; j < unsentMessages.length; j++) {
+              if (unsentMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
+                message.message = unsentMessages[j].message;
+                message.isEncrypted = unsentMessages[j].isEncrypted;
+                unsentMessages.splice(j, 1);
+                $scope.friends[index].messages.push(message);
+                addedMessage = true;
+                $scope.loading = false;
+                $scope.$apply();
+              }
+            }
+            if (!addedMessage) {
+              message.message = '[Message Expired]';
+              message.isEncrypted = true;
+              $scope.friends[index].messages.push(message);
+              $scope.$apply();
+            }
+          } else {
+            // Otherwise, decrypt the message using our private key
+            console.log('KEYPAIR', keypair);
+            console.log('enc msg', encryptedMessage);
+            encryptionFactory.decryptMessage(keypair, encryptedMessage)
+            .then(function (decryptedMessage) {
+              var message = {
+                to: $scope.currentUser,
+                from: $scope.friends[index].username,
+                encryptedMessage: encryptedMessage,
+                message: decryptedMessage,
+                isEncrypted: true
+              }
+              _.defaults(message, messageDefaults);
+              $scope.friends[index].messages.push(message);
+              if (!$scope.activeFriend) {
+                $scope.activeFriend = $scope.friends[index];
+              }
+              else if ($scope.friends[index].username !== $scope.activeFriend.username) {
+                $scope.friends[index].unreadMessage = true;
+              }
+              $scope.$apply();
+            })
+            .catch(function() {
+              console.log('EXPIRED MSG FROM NON-ME');
+              var message = {
+                to: $scope.currentUser,
+                from: $scope.friends[index].username,
+                encryptedMessage: encryptedMessage,
+                message: '[Message Expired]',
+                isEncrypted: true
+              }
+              _.defaults(message, messageDefaults);
+              $scope.friends[index].messages.push(message);
+            });
+          }
+        });
       }
 
       checkUserHasExtension();
