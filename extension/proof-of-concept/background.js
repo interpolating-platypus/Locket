@@ -148,6 +148,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
   // The content script is telling us to initiate a public key exchange
   if (message.event === 'sendPublicKey') {
+    console.log("sending " + message.data.service + " public key");
     if(message.data.service === "Facebook"){
       facebookTODO.sendPublicKey.push(message.data);
     }else if (message.data.service === "Hangouts"){
@@ -203,6 +204,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
   // The web app is telling us to read hangouts messages for a certain user
   if (message.event === 'readHangoutsMessages') {
+    console.log("getting hangouts messages");
     hangoutsTODO.getMessagesFor.push(message.data.to);
   }
 

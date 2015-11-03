@@ -63,6 +63,7 @@ function onIntervals ( ) {
 
       // Background process wants us to read messages for specific hangouts user
       if (response.getMessagesFor.length > 0) {
+        console.log("get messages for",response.getMessagesFor);
         for (var i = 0; i < response.getMessagesFor.length; i++) {
           friendsWithNewMessages[response.getMessagesFor[i]] = true;
         }
@@ -179,20 +180,41 @@ function findFriendNewMessages (name) {
       chatWindow.contents().find(elementIdentifiers.chatWindowChatBlockClass).each(function(){
         var id = $(this).attr('id');
         var from = $(this).find(elementIdentifiers.chatBlockFromClass).text();
+
         if(!from){
           //from is empty when you sent the message
           from = "me";
         }
         
         var chatBlockMessages = $(this).find(elementIdentifiers.chatBlockMessageClass);
-
         //if we havent seen this chat block id, or the length of messages within this block has increased we know we have new messages
         if (!seenMessageGroup[id] || seenMessageGroup[id] !== chatBlockMessages.length) {
           var newMessagesContent = [];
 
           //we can slice from the previous length to only get new messages
           chatBlockMessages.slice(seenMessageGroup[id]).each(function(){
-            newMessagesContent.push($(this).text());
+            var message = $(this).text();
+
+            if(message.substring().substr(0,36) === '-----BEGIN PGP PUBLIC KEY BLOCK-----'){
+              var pgpKeys = message.split('*****Your Key Below******');
+              var friendKey = pgpKeys[1].substring(0, pgpKeys[1].length-12);
+
+              if(from !== 'me'){
+                chrome.runtime.sendMessage({
+                  event: 'receivedPGPKey',
+                  data: {
+                    publicKey: pgpKeys[0],
+                    friendKey: friendKey,//this is what the friend thinks this user's current key is
+                    from: name,
+                    name: name 
+                  }
+                });
+              }
+
+            }else{
+              newMessagesContent.push(message);
+            }
+
           });
 
           //push messages to the array this function returns
@@ -223,11 +245,12 @@ function sendFriendMessage (name, message){
 function findAndSendUnreadMessages () {
   getHangoutsFriends(0)
     .then(function () {
-      console.log(friendsWithNewMessages);
+
       //at this point we have updated friendsWithNewMessages
       for(var friend in friendsWithNewMessages){
         findFriendNewMessages(friend)
           .then(function (newMessages) {
+            console.log("findAndSend", newMessages);
             for (var i = 0; i < newMessages.length; i++){
               console.log(newMessages[i].from, newMessages[i].messages);
               //send the new messages to the web app

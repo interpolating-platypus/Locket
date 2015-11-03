@@ -258,7 +258,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           });
         };
 
-        // Receive PGP Key (over facebook)
+        // Receive PGP Key (over facebook or hangouts)
         if (event.data.type && (event.data.type === 'receivedPGPKey')) {
           var username = event.data.text.from;
           var fullname = event.data.text.name;
@@ -298,7 +298,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                   publicKey: publicKey,
                   friendKey: friendKey,
                   to: $scope.friends[index].username,
-                  service: $scope.activeFriend.service
+                  service: $scope.friends[index].service
                 }, '*');
                 $scope.friends[index].sentKey = Date.now();
               }
@@ -335,7 +335,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             publicKey: publicKey,
             friendKey: $scope.friends[index].key,
             to: $scope.activeFriend.username,
-            service: $scope.activeFriend.service
+            service: $scope.friends[index].service
           }, '*');
         });
       };
