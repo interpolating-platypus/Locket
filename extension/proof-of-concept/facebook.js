@@ -6,7 +6,7 @@ var usersWithNewMessages = [];
 var messagesToPost = {};
 var keyExchanges = {};
 var usersToClick = [];
-var scanDOM = false;
+var scanDOM = true;
 var maxFacebookFriends = 15;
 
 $(document).ready(function() {
@@ -94,7 +94,18 @@ $(document).ready(function() {
             }
           }
 
-          // Background process wants us to begin DOM monitoring
+          // Background process wants us emit a disconnect message to our encrypted facebook friends
+          if (response.emitDisconnect.length !== 0) {
+            for (var i = 0; i < response.emitDisconnect.length; i++) {
+              var username = response.emitDisconnect[i];
+              usersToClick.push(username);
+              messagesToPost[username] = messagesToPost[username] || [];
+              messagesToPost[username].push("*****USER DISCONNECT*****");
+            }
+            console.log('emitting disconnect messages', usersToClick, messagesToPost);
+          }
+
+          // Background process wants us to change status of DOM monitoring
           scanDOM = response.scanDOM;
         }
       );
@@ -216,8 +227,10 @@ $(document).ready(function() {
 
     setInterval(checkWithBackgroundProcess, backgroundCheckInterval);
     setInterval(function() {
-      if (scanDOM) {
+      if (scanDOM || usersToClick.length || messagesToPost.length) {
         rescanFacebookDom();
+      } else {
+        chrome.runtime.sendMessage({event: 'turnOff' });
       }
     }, rescanDOMInteral);
   }

@@ -22,15 +22,17 @@ var mainTabId;
 var unreadMessages = []; // Messages loaded by facebook.js awaiting main.js connection
 var stillAlive;
 var stillAliveRefresh = 1000;
-var stillAliveMaximum = 3000;
+var stillAliveMaximum = 7000;
 
 // Store any actions that need to be taken by the facebook script
+var encryptedFacebookFriends = [];
 var facebookTODO = {
   postMessages: [],
   getFriends: false,
   scanDOM: false,
   sendPublicKey: [],
-  readFacebookMessages: []
+  readFacebookMessages: [],
+  emitDisconnect: []
 };
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -52,16 +54,22 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       // If too much time has elapsed, we've disconnected, turn off scanning of DOM
       if (Date.now() - stillAlive > stillAliveMaximum) {
         // Add functionality here
+        console.log("Disconnected! Sending messages to ",encryptedFacebookFriends);
         facebookTODO.scanDOM = false;
-        document.getElementById('iframe').src = '';
+        facebookTODO.emitDisconnect = encryptedFacebookFriends;
       } else {
         setTimeout(checkContentScriptTimeout, stillAliveRefresh);
       }
     };
     checkContentScriptTimeout();
   }
+
   if (message.event === 'stillAlive') {
     stillAlive = Date.now();
+  }
+  if (message.event === 'encryptedFacebookFriends') {
+    stillAlive = Date.now();
+    encryptedFacebookFriends = message.data;
   }
 
   // This event is issued when the main content script is launched
@@ -74,6 +82,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     }
   }
 
+  // Turn off the iFrame when all disconnect messages have been sent
+  if (message.event === "turnOff" && Date.now() - stillAlive > stillAliveMaximum) {
+    document.getElementById('iframe').src = '';
+  }
   // The facebook content script is requesting any new actions to be taken
   if (message.event === "updateStatus") {
     sendResponse({
@@ -81,7 +93,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       getFriends: facebookTODO.getFriends,
       scanDOM: facebookTODO.scanDOM,
       sendPublicKey: facebookTODO.sendPublicKey,
-      readFacebookMessages: facebookTODO.readFacebookMessages
+      readFacebookMessages: facebookTODO.readFacebookMessages,
+      emitDisconnect: facebookTODO.emitDisconnect
     });
 
     // TODO: modularize this so it's a 1-line reset to defaults
@@ -89,6 +102,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     facebookTODO.getFriends = false;
     facebookTODO.sendPublicKey = [];
     facebookTODO.readFacebookMessages = [];
+    facebookTODO.emitDisconnect = [];
   }
 
   // The facebook script has read in new messages
