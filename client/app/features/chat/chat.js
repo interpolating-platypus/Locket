@@ -32,7 +32,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
 
       $scope.$watch('activeFriend', function() {
         $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : false;
-        $scope.showPhoto = ($scope.activeFriend.service === 'Locket') ? true: false;
+        $scope.showPhoto = ($scope.activeFriend && $scope.activeFriend.service === 'Locket') ? true: false;
         $(".bootstrap-filestyle").toggle($scope.showPhoto);
       });
 
@@ -196,6 +196,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               else {
                 // Non-PGP message: doesn't need decryption
                 newMessage = newMessages[i];
+                $scope.loading = false;
               }
               // Inject the message if it exists (dont display encrypted ones from prev session)
               if (newMessage) {
