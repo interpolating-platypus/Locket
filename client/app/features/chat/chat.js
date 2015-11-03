@@ -57,7 +57,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         return {
           service: service || 'Locket',
           username: username,
-          name: name || (username + ' daawwggg'),
+          name: name || username,
           unreadMessage: false,
           online: online || false,
           key: '',
