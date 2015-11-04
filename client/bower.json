@@ -20,6 +20,8 @@
   "dependencies": {
     "angular": "~1.4.7",
     "angular-animate": "~1.4.7",
+    "angular-emoji": "angular-emoji-filter#~0.0.2",
+    "angular-sanitize": "~1.4.7",
     "angular-scroll-glue": "~2.0.6",
     "angular-ui-router": "~0.2.15",
     "angular-ui-switch": "~0.1.1",
