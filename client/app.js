@@ -7,7 +7,9 @@ angular.module('Locket', [
   'Locket.encryptionFactory',
   'luegg.directives',
   'uiSwitch',
-  'validation.match'
+  'validation.match',
+  'emoji',
+  'ngSanitize'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 

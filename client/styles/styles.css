@@ -371,3 +371,7 @@ img {
   color: red;
   display: block;
 }
+
+.emoji {
+  font-size: 0px;
+}
