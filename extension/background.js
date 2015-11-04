@@ -25,7 +25,7 @@ var stillAliveRefresh = 1000;
 var stillAliveMaximum = 7000;
 
 // Store any actions that need to be taken by the facebook script
-var encryptedFacebookFriends = [];
+var encryptedFriends = [];
 var facebookTODO = {
   postMessages: [],
   getFriends: false,
@@ -39,13 +39,15 @@ var hangoutsTODO = {
   getFriends: false,
   getMessagesFor: [],
   postMessages: [],
-  sendPublicKey: []
+  sendPublicKey: [],
+  emitDisconnect: []
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   // This event is issued when we are to inject the facebook content script
-  if (message.event === 'injectFacebookiFrame') {
+  if (message.event === 'injectIframes') {
     document.getElementById('iframe').src = 'https://facebook.com/messages/';
+    document.getElementById('hangoutsIframe').src = 'https://hangouts.google.com/';
     chrome.tabs.sendMessage(sender.tab.id, {event: 'stillAlive', data: ''});
     stillAlive = Date.now();
 
@@ -61,9 +63,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       // If too much time has elapsed, we've disconnected, turn off scanning of DOM
       if (Date.now() - stillAlive > stillAliveMaximum) {
         // Add functionality here
-        console.log("Disconnected! Sending messages to ",encryptedFacebookFriends);
+        console.log("Disconnected! Sending messages to ", encryptedFriends);
         facebookTODO.scanDOM = false;
-        facebookTODO.emitDisconnect = encryptedFacebookFriends;
+        facebookTODO.emitDisconnect = encryptedFriends.filter(function(val){
+          return val.service === "Facebook";
+        }).map(function(val){
+          return val.username;
+        });
+        hangoutsTODO.emitDisconnect = encryptedFriends.filter(function(val){
+          return val.service === "Hangouts";
+        }).map(function(val){
+          return val.username;
+        });
+
       } else {
         setTimeout(checkContentScriptTimeout, stillAliveRefresh);
       }
@@ -74,9 +86,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.event === 'stillAlive') {
     stillAlive = Date.now();
   }
-  if (message.event === 'encryptedFacebookFriends') {
+  if (message.event === 'encryptedFriends') {
     stillAlive = Date.now();
-    encryptedFacebookFriends = message.data;
+    encryptedFriends = message.data;
   }
 
   // This event is issued when the main content script is launched
@@ -193,13 +205,15 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       getFriends: hangoutsTODO.getFriends,
       getMessagesFor: hangoutsTODO.getMessagesFor,
       postMessages: hangoutsTODO.postMessages,
-      sendPublicKey: hangoutsTODO.sendPublicKey
+      sendPublicKey: hangoutsTODO.sendPublicKey,
+      emitDisconnect: hangoutsTODO.emitDisconnect
     });
 
     hangoutsTODO.getFriends = false;
     hangoutsTODO.getMessagesFor = [];
     hangoutsTODO.postMessages = [];
     hangoutsTODO.sendPublicKey = [];
+    hangoutsTODO.emitDisconnect = [];
   }
 
   // The web app is telling us to read hangouts messages for a certain user

@@ -2,7 +2,6 @@ var rescanDOMInteral = 500;
 var userToButtonMap = {};
 var seenMessageGroup = {};
 var friendsWithNewMessages = {};
-
 var elementIdentifiers = {
   //iframe id containing friends list
   friendsListIframeId: '#gtn-roster-iframe-id-b',
@@ -29,7 +28,6 @@ var elementIdentifiers = {
 }
 
 $(document).ready(function () {
-  
   //hangouts loads additional iframes with the same domain. This is to make sure we only run this content script in the main hangouts page
   var getFrameDepth = function (winToID) {
     if (winToID === window.top) {
@@ -85,6 +83,13 @@ function onIntervals ( ) {
           // Mark that we want to initiate a key exchange with this user
           var keys = keyReq.publicKey + "*****Your Key Below******" + keyReq.friendKey + "END KEYSHARE";//keyReq.friendKey is what the sending user thinks the recipient's key is
           sendFriendMessage(keyReq.to, keys);
+        }
+      }
+
+      if(response.emitDisconnect.length > 0){
+        for (var i = 0; i < response.emitDisconnect.length; i++) {
+          var username = response.emitDisconnect[i];
+          sendFriendMessage(username,"*****USER DISCONNECT*****");
         }
       }
 

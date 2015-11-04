@@ -2,7 +2,7 @@
 console.log('main');
 
 // User navigated to our service. Tell our app to start up the facebook background script
-chrome.runtime.sendMessage({ event: 'injectFacebookiFrame', data: '' });
+chrome.runtime.sendMessage({ event: 'injectIframes', data: '' });
 
 // Receive update from background processes
 chrome.runtime.onMessage.addListener(function(message) {
@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(function(message) {
     // Change the above to instead talk to the app requesting the active fb enc chats
     // Then listen to the response from the app, and send that response to the background
     chrome.runtime.sendMessage({ event: 'stillAlive', data: '' });
-    window.postMessage({ type: 'getEncryptedFacebookFriends'}, "*");
+    window.postMessage({ type: 'getEncryptedFriends'}, "*");
   }
 
   // Received a new facebook message
@@ -56,9 +56,9 @@ window.addEventListener('message', function(event) {
     return;
 
   // Listening for a list of active encrypted Facebook sessions
-  if (event.data.type && (event.data.type === 'encryptedFacebookFriends')) {
+  if (event.data.type && (event.data.type === 'encryptedFriends')) {
     chrome.runtime.sendMessage({
-      event: 'encryptedFacebookFriends',
+      event: 'encryptedFriends',
       data: event.data.text
     });
   }
