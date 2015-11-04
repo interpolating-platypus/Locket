@@ -45,11 +45,6 @@ img {
   width: 100%;
 }
 
-/*.icon {
-  max-width: 20px;
-  margin: 0;
-}*/
-
 .form-group {
   margin-bottom: 0;
 }
@@ -212,7 +207,7 @@ img {
   margin-right: 8px;
 }
 
-.facebookIcon {
+.icon {
   max-width: 20px;
   margin-bottom: 2px;
 }
