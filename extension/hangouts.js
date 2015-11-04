@@ -39,7 +39,7 @@ $(document).ready(function () {
     }
     return 1 + getFrameDepth (winToID.parent);
   }
-  if (getFrameDepth(window.self) !== 0/*change back to 1 after testing*/) {
+  if (getFrameDepth(window.self) !== 1) {
     //we are in a nested iframe and don't want to run this content script
     return;
   }
