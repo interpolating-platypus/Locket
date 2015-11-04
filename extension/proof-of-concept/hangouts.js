@@ -44,9 +44,13 @@ $(document).ready(function () {
     return;
   }
 
-  setInterval(function () {
-    onIntervals();
-  }, rescanDOMInteral);
+  getHangoutsFriends(-5)
+    .then(function(friends){
+      openAllChatWindows();
+      setInterval(function () {
+        onIntervals();
+      }, rescanDOMInteral);
+    });
 
 });
 
@@ -130,6 +134,7 @@ function getHangoutsFriends (attempts) {  //friends list is stored in an iframe
       //while we scan the friends list we can see if there are new messages from anyone
       if($(this).hasClass(elementIdentifiers.friendsListUnreadMessagesClass)){
         friendsWithNewMessages[name] = true;
+        userToButtonMap[name].button.click();
       }
     });
 
@@ -162,7 +167,7 @@ function findFriendChatWindow (name) {
 
     setTimeout(function(){
       deferred.resolve(findFriendChatWindow(name));
-    }, 2000);
+    }, 200);
   }
 
   return deferred.promise;
@@ -176,6 +181,7 @@ function findFriendNewMessages (name) {
       var newMessages = [];
 
       chatWindow.contents().find(elementIdentifiers.chatWindowChatBlockClass).each(function(){
+
         var id = $(this).attr('id');
         var from = $(this).find(elementIdentifiers.chatBlockFromClass).text();
 
@@ -196,7 +202,6 @@ function findFriendNewMessages (name) {
             if(message.substring().substr(0,36) === '-----BEGIN PGP PUBLIC KEY BLOCK-----'){
               var pgpKeys = message.split('*****Your Key Below******');
               var friendKey = pgpKeys[1].substring(0, pgpKeys[1].length-12);
-
               if(from !== 'me'){
                 chrome.runtime.sendMessage({
                   event: 'receivedPGPKey',
@@ -221,9 +226,9 @@ function findFriendNewMessages (name) {
             messages: newMessagesContent
           });
 
-          //update the number of messages we have seen in this block
-          seenMessageGroup[id] = chatBlockMessages.length;
         }
+        //update the number of messages we have seen in this block
+        seenMessageGroup[id] = chatBlockMessages.length;
 
       });
 
@@ -284,3 +289,10 @@ function findAndSendHangoutsFriends () {
       console.log(err);
     });
 };
+
+//things get pretty crazy with timing if you are talking to multiple people and the windows aren't already open
+function openAllChatWindows () {
+  for(var friend in userToButtonMap){
+    userToButtonMap[friend].button.click();
+  }
+}

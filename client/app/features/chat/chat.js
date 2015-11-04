@@ -215,7 +215,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               //verify event has this user's public key, and the friends public key already stored
               if (friendKey.replace(/[^a-z0-9]/gmi, '') === $scope.friends[index].key.replace(/[^a-z0-9]/gmi, '') && myKey.replace(/[^a-z0-9]/gmi, '') === publicKey.replace(/[^a-z0-9]/gmi, '')){
                 $scope.friends[index].userIsEncrypted = true;
-
               } else {
 
                 //respond with myKey, mySession, friendSession
