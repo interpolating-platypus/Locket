@@ -366,3 +366,8 @@ img {
   margin-top: 30px;
   margin-left: 24px;
 }
+
+.error {
+  color: red;
+  display: block;
+}
