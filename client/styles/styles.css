@@ -1,5 +1,14 @@
 /*navbar css for the chat page*/
 
+.navbar {
+  box-shadow: 0 8px 6px -6px #999;
+}
+.navbar-collapse {
+  background-color: #000026;
+}
+.navbar-inverse {
+  background-color: #000026;
+}
 .navbar.navbar-custom {
   padding-bottom: 0;
   margin-bottom: 0 !important;
@@ -35,11 +44,6 @@ ul {
 img {
   width: 100%;
 }
-
-/*.icon {
-  max-width: 20px;
-  margin: 0;
-}*/
 
 .form-group {
   margin-bottom: 0;
@@ -131,7 +135,7 @@ img {
 }
 
 .activeFriendPanel {
-  background-color: #bfd4d9;
+  background-color: #EAEAEA;
 }
 
 .activeFriend {
@@ -176,14 +180,14 @@ img {
 
 .dropdown-toggle {
   margin-right: 34px;
-  color: #bfd4d9 !important;
+  color: #b0c4de !important;
 }
 
 .navbar-brand {
-  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Play", "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
-  color: #bfd4d9 !important;
-  text-transform: uppercase;
+  color: #F5F5F5 !important;
+  /*text-transform: uppercase;*/
   margin-left: 13px !important;
   font-size: 28px;
 }
@@ -203,7 +207,7 @@ img {
   margin-right: 8px;
 }
 
-.facebookIcon {
+.icon {
   max-width: 20px;
   margin-bottom: 2px;
 }
