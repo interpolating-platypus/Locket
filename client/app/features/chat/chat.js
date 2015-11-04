@@ -103,16 +103,19 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         }
 
         // Receive a request for the active encrypted facebook sessions
-        if (event.data.type && (event.data.type === 'getEncryptedFacebookFriends')) {
+        if (event.data.type && (event.data.type === 'getEncryptedFriends')) {
           // Get list of encrypted facebook friends
           var results = [];
           for (var i = 0; i < $scope.friends.length; i++) {
-            if ($scope.friends[i].service === "Facebook" && $scope.friends[i].userIsEncrypted) {
-              results.push($scope.friends[i].username);
+            if ($scope.friends[i].service !== "Locket" && $scope.friends[i].userIsEncrypted) {
+              results.push({
+                username: $scope.friends[i].username,
+                service: $scope.friends[i].service
+              });
             }
           }
           // send back the results
-          window.postMessage({ type: 'encryptedFacebookFriends', text: results}, "*");
+          window.postMessage({ type: 'encryptedFriends', text: results}, "*");
         }
 
 
