@@ -116,11 +116,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         }
 
 
-        // facebook and google hangOut Friends will only be fetched if user has extension
+        // facebook and google hangouts friends will only be fetched if user has extension
         if (event.data.type && (event.data.type === 'extensionExists')) {
           window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
-          // for eventual googleHangout integration
-          // window.postMessage({ type: 'getHangoutFriends', text: ''}, '*');
+          window.postMessage({ type: 'getHangoutsFriends', text: ''}, '*');
           $scope.friendsLoading = true;
         }
 
@@ -490,9 +489,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       function getLocketFriends() {
         socket.emit('getFriends', {});
         // Get friends through facebook
-        window.postMessage({ type: 'getFacebookFriends', text: ''}, '*');
-        //get friends from hangouts
-        window.postMessage({ type: 'getHangoutsFriends', text: ''}, '*');
       };
 
       socket.on('friendsList', function(friends){

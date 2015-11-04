@@ -17,6 +17,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "d.js": "~0.1.2"
   }
 }
