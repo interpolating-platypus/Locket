@@ -183,10 +183,10 @@ img {
 }
 
 .navbar-brand {
-  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Play", "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
   color: #bfd4d9 !important;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   margin-left: 13px !important;
   font-size: 28px;
 }
