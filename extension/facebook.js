@@ -1,6 +1,6 @@
 console.log('facebook');
 var backgroundCheckInterval = 500;
-var rescanDOMInteral = 500;
+var rescanDOMInterval = 500;
 var seenMessageGroup = {};
 var usersWithNewMessages = [];
 var messagesToPost = {};
@@ -232,7 +232,7 @@ $(document).ready(function() {
       } else {
         chrome.runtime.sendMessage({event: 'turnOff' });
       }
-    }, rescanDOMInteral);
+    }, rescanDOMInterval);
   }
 
   function postFacebookMessage(message) {

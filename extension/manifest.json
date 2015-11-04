@@ -29,6 +29,14 @@
       ],
       "js": ["bower_components/jquery/dist/jquery.js","main.js"],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://hangouts.google.com/*"
+      ],
+      "js": ["bower_components/jquery/dist/jquery.js","bower_components/D.js/lib/D.min.js","hangouts.js"],
+      "run_at": "document_end",
+      "all_frames": true
     }
   ],
   "permissions": [
@@ -37,6 +45,8 @@
     "http://www.messenger.com/",
     "https://www.messenger.com/",
     "http://www.facebook.com/",
-    "https://www.facebook.com/"
+    "https://www.facebook.com/",
+    "https://www.hangouts.google.com/",
+    "http://www.hangouts.google.com/"
   ]
 }

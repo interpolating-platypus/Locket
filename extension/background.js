@@ -35,6 +35,13 @@ var facebookTODO = {
   emitDisconnect: []
 };
 
+var hangoutsTODO = {
+  getFriends: false,
+  getMessagesFor: [],
+  postMessages: [],
+  sendPublicKey: []
+}
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   // This event is issued when we are to inject the facebook content script
   if (message.event === 'injectFacebookiFrame') {
@@ -141,7 +148,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
   // The content script is telling us to initiate a public key exchange
   if (message.event === 'sendPublicKey') {
-    facebookTODO.sendPublicKey.push(message.data);
+    console.log("sending " + message.data.service + " public key");
+    if(message.data.service === "Facebook"){
+      facebookTODO.sendPublicKey.push(message.data);
+    }else if (message.data.service === "Hangouts"){
+      hangoutsTODO.sendPublicKey.push(message.data);
+    }
   }
 
   // The facebook script has sent us a PGP key
@@ -151,7 +163,58 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
   // The content script is telling us to read facebook messages for a certain user
   if (message.event === 'readFacebookMessages') {
-    console.log('READ FACEBOOK MESSAGES (bg)');
     facebookTODO.readFacebookMessages.push(message.data.to);
+  }
+
+
+  //BEGIN HANGOUTS LOGIC
+  //received hangouts friends list from hangouts iframe
+  if (message.event === "hangoutsFriendsList") {
+    // Send the friendslist back to the content script (for relay to the app)
+    chrome.tabs.sendMessage(mainTabId, {event: 'hangoutsFriendsList', data: message.data});
+  }
+
+  //hangouts.js has read new messages and would like to send them to the client
+  if (message.event === "receivedNewHangoutsMessage") {
+    // if the client is already on our app, send the new messages
+    if (mainTabId) {
+      chrome.tabs.sendMessage(mainTabId, {event: 'receivedNewHangoutsMessage', data: message.data});
+    }
+
+    // Otherwise, store the new messages for the future
+    else {
+      unreadMessages = unreadMessages.concat(message.data);
+    }
+  }
+
+  // The hangouts content script is requesting instructions
+  if (message.event === "getHangoutsInstructions") {
+    sendResponse({
+      getFriends: hangoutsTODO.getFriends,
+      getMessagesFor: hangoutsTODO.getMessagesFor,
+      postMessages: hangoutsTODO.postMessages,
+      sendPublicKey: hangoutsTODO.sendPublicKey
+    });
+
+    hangoutsTODO.getFriends = false;
+    hangoutsTODO.getMessagesFor = [];
+    hangoutsTODO.postMessages = [];
+    hangoutsTODO.sendPublicKey = [];
+  }
+
+  // The web app is telling us to read hangouts messages for a certain user
+  if (message.event === 'readHangoutsMessages') {
+    console.log("getting hangouts messages");
+    hangoutsTODO.getMessagesFor.push(message.data.to);
+  }
+
+  // The web app is asking for facebook friends
+  if (message.event === "getHangoutsFriends") {
+    hangoutsTODO.getFriends = true;
+  }
+
+  // The web app is giving us a message to send over hangouts
+  if (message.event === "sendHangoutsMessage") {
+    hangoutsTODO.postMessages.push(message.data);
   }
 });
