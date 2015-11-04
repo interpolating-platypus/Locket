@@ -110,7 +110,9 @@
             ng-repeat='message in activeFriend.messages track by $index | orderBy:"timeStamp"'>
             <span ng-if="message.from === currentUser" ng-class="message.isEncrypted ? 'glyphicon glyphicon-lock' : ''" aria-hidden="true"></span>
             <span ng-if="!(message.type === 'image')" ng-class="{ 'messageTextFrom': message.from === currentUser, 'messageTextTo': message.from !==currentUser, 'wrapMessage': message.message.length > 60}"
-              ng-click="revokeMessage(message)" class="messageText">{{message.message}} 
+              ng-click="revokeMessage(message)" class="messageText">
+              <span ng-if="(message.message.slice(0, 4) !== 'http')">{{message.message}}</span>
+              <a ng-if="(message.message.slice(0, 4) === 'http')" ng-href="{{message.message}}">{{message.message}}</a>
             </span>
             <img class="messagePhoto" ng-click="revokeMessage(message)" ng-if="(message.type === 'image')" ng-src="{{message.message}}"/>
             <span ng-if="message.from !== currentUser" ng-class="message.isEncrypted ? 'glyphicon glyphicon-lock' : ''" aria-hidden="true"></span>
