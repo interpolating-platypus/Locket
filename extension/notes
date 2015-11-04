@@ -1,0 +1,41 @@
+id of reply button: #u_0_r
+class of reply button: 5f0v
+
+reply button:
+  id: u_0_r
+  class: 5f0v
+
+text area:
+  name: message_body
+   
+CLICKING THINGS
+document.getElementById('u_0_r).click()
+
+SETTING TEXT
+document.getElementsByName('message_body')[0].value = "message goes here"
+
+-----
+
+1) can we set up a separate script for the main.js and the sub.js? 
+  -> sub is loaded from the iframe
+  -> main is loaded from our webserver
+  DONE-- BUT: change the localhost to be for our actual webapp
+2) We should be able to, from the main.js, tell our sub.js to post a message
+  DONE (proof of concept)
+  NOTE: this will require our main.js to be watching our client / listening for some sort of message send event
+3) We should be able to, from the sub.js, tell our main.js we have received a new message, and pass that message along [NOTE: this requires PARSING]
+4) MAKE SURE WE DONT READ ALL YOUR MESSAGES UNLESS YOU GO TO OUR APP
+
+----------------------------
+
+NEXT STEP: ???
+  - encryption
+
+---
+
+miscellanea:
+
+need to prevent people from chatting with user while the key req is going through (maybe)
+need to disable the encrypted chat button for our own service
+
+

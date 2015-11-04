@@ -1,11 +1,56 @@
-/*
+angular.module('Locket.authFactory', [])
 
-  angular factory
-    API calls:
-      login
+.factory('authFactory', function ($http, $state) {
 
-      logout
+  var signedin = function() {
+    
+    return $http({
+      method: 'GET',
+      url: '/api/users/signedin'
+    }).then(function(resp) {
+      if(resp.data.auth === "UNAUTHORIZED"){
+        $state.go('login');
+      }
+      return resp.data;
+    });
 
-      signup
+  };
 
-*/
+  var login = function(username, password){
+    return $http({
+      method: 'POST',
+      url: '/api/users/login',
+      data: { username: username, password: password }
+    }).then(function(resp){
+      if (resp.status === 200) {
+        $state.go('chat', resp.data);
+      }
+      return resp;
+    });
+  };
+
+  var logout = function(){
+    $state.go('login');
+  };
+
+  var signup = function(username, password){
+    return $http({
+      method: 'POST',
+      url: '/api/users/signup',
+      data: { username: username, password:password }
+    }).then(function(resp){
+      if (resp.status === 200) {
+        login(username, password);
+      }
+      return resp;
+    });
+  };
+
+  return {
+    signedin: signedin,
+    login: login,
+    logout: logout,
+    signup: signup
+  };
+
+});

@@ -1,0 +1,383 @@
+/*navbar css for the chat page*/
+
+.navbar {
+  box-shadow: 0 8px 6px -6px #999;
+}
+.navbar-collapse {
+  background-color: #000026;
+}
+.navbar-inverse {
+  background-color: #000026;
+}
+.navbar.navbar-custom {
+  padding-bottom: 0;
+  margin-bottom: 0 !important;
+  border: none;
+}
+.navbar.navbar-custom .navbar-upper {
+  position: absolute;
+  right: 0;
+}
+.navbar.navbar-custom .navbar-upper .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+.navbar.navbar-custom .navbar-upper .navbar-btn.btn-drop {
+  background: none;
+  border: none;
+  color: #bfd4d9;
+}
+
+html, body {
+  height: 100%;
+  font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+p {
+  margin-left: 10px;
+}
+
+ul {
+  margin: 0;
+}
+
+img {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+
+.messages {
+  padding-bottom: 5px;
+}
+
+.message-right {
+  text-align: right;
+}
+
+.message-left {
+  text-align: left;
+}
+
+.messageText {
+  border-color: transparent;
+  border-radius: 15px;
+  display: inline-block;
+  padding: 6px;
+}
+
+.wrapMessage {
+  width: 300px;
+  word-break: break-word;
+  text-align: left;
+}
+
+.messageTextFrom {
+  background-color: aliceblue;
+}
+
+.messageTextTo {
+  background-color: beige;
+}
+
+.chatWindow {
+  height: 95vh;
+  padding-left: 0;
+}
+
+.friendHeaders {
+  font-size: 18px;
+  padding-top: 10px;
+  margin-left: 10px;
+}
+
+.friendSearch {
+  width: 60%;
+  display: inline;
+  vertical-align: middle;
+  float:right;
+  margin: 8px 13px 5px 5px;
+  max-height: 26px;
+}
+
+.friendRequests {
+  border-bottom: 1px solid lightgray;
+}
+
+.friendRequest {
+  border-top: 1px solid lightgray;
+  padding: 10px;
+}
+
+.friendRequestOptions {
+  display: inline;
+}
+
+.friendListWindow {
+  height: 95vh;
+  border-right: 1px solid lightgray;
+  padding-right: 0;
+}
+
+.friendList {
+  list-style: none;
+  padding-left: 0;
+}
+
+.friendPanel {
+  border-left: 0px;
+  border-right: 0px;
+  border-radius: 0px;
+  padding: 10px 10px 10px 10px;
+  margin-bottom: 0px;
+}
+
+.activeFriendPanel {
+  background-color: #EAEAEA;
+}
+
+.activeFriend {
+  margin-left: 80px;
+}
+
+.friendArrow {
+  float: right;
+  color: #ddd;
+}
+
+.friendReqSent {
+  display: inline-block;
+  float: right;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.friendButton {
+  display: inline;
+  padding: 0 10px 0 10px;
+  float: right;
+}
+
+.blockButton {
+  display: inline;
+  padding: 0 10px 0 10px;
+  float: right;
+}
+
+
+
+.messageList {
+  height: 82.5vh;
+  overflow: auto;
+}
+
+.friendScroll {
+  height: 70vh;
+  overflow: auto;
+}
+
+.dropdown-toggle {
+  margin-right: 34px;
+  color: #b0c4de !important;
+}
+
+.navbar-brand {
+  font-family: "Play", "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  color: #F5F5F5 !important;
+  /*text-transform: uppercase;*/
+  margin-left: 13px !important;
+  font-size: 28px;
+}
+
+.unreadMessage {
+  display: inline-block;
+  background-color: lavender;
+  border-radius: 10px;
+  padding: 5px;
+  color: black;
+}
+
+.loginFailed {
+  float: left;
+  color: white;
+  margin-top: 3px;
+  margin-right: 8px;
+}
+
+.icon {
+  max-width: 20px;
+  margin-bottom: 2px;
+}
+
+.no-padding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.nav-row {
+  margin-bottom: 0px;
+  height: 5vh;
+  background-color: #252839;
+  border-color: #252839;
+  border-radius: 0;
+}
+
+.form-control-inline {
+  min-width: 0;
+  width: auto;
+  display: inline;
+  vertical-align: middle;
+  position: relative;
+}
+
+.input-display {
+  width: 90%;
+  display: inline;
+  vertical-align: middle;
+}
+
+.sendMessageInput {
+  width: 74%;
+  display: inline;
+  vertical-align: middle;
+}
+
+.sendMessageInputFull {
+  width: 90%;
+  display: inline;
+  vertical-align: middle;  
+}
+
+
+
+
+
+.button-display {
+  width: 8%;
+  display: inline;
+  vertical-align: middle;
+  text-align: center;
+  border: none;
+}
+
+.windowTitle {
+  border-bottom: 1px solid lightgray;
+  padding: 5px 0px 5px 0px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 0;
+}
+
+.btn {
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.navbar-right {
+  margin-right: 0;
+}
+
+.dropdown-display {
+  margin-right: 13px;
+}
+
+.vertical-center {
+  vertical-align: middle;
+}
+
+.friendButton {
+  width: 8%;
+  float: right;
+  border: none;
+  margin-left: 10px;
+  padding-bottom: 5px;
+}
+
+.encryptionIndicator {
+  display: inline-block;
+  float: right;
+  padding-right: 10px;
+  font-size: 16px;
+}
+
+.encryptionOn {
+  color: green;
+}
+
+.encryptionOff {
+  color: red;
+}
+
+.messagePhoto {
+  max-height: 100px;
+  width: auto;
+  max-width: 600px;
+}
+
+.bootstrap-filestyle {
+  display: inline-block;
+}
+
+.switch {
+  height: 20px !important;
+  width: 42px !important;
+}
+
+.switch small {
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.switchButton {
+  padding-left: 10px;
+  padding-right: 0;
+}
+
+.spinner {
+  position: absolute;
+  left: 10px;
+  float: left;
+  height: 20px;
+  width: 20px;
+  margin-top: 1px;
+}
+
+.friendSpinner {
+  position: absolute;
+  float: left;
+  height: 20px;
+  width: 20px;
+  margin-top: 6px;
+  margin-left: 5px;
+}
+
+.chatRequest {
+  position: absolute;
+  left: 10px;
+  float: left;
+  margin-top: 1px;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+.loginImage {
+  margin-top: 30px;
+  margin-left: 24px;
+}
+
+.error {
+  color: red;
+  display: block;
+}
+
+.emoji {
+  font-size: 0px;
+  vertical-align: middle;
+  margin-bottom: 3px;
+}
+
+.githubLogo {
+  width: 20px;
+}
