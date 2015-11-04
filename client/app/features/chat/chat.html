@@ -87,6 +87,7 @@
 
         <div class="windowTitle text-center">
           <img ng-show="loading" class="spinner" src="../../spinner.gif"/>
+          <span ng-show="encryptionReqMsg" class="chatRequest">Encrypted chat request sent</span>
           <span class="activeFriend">Chat with {{activeFriend.name}}</span>
           <span class="encryptionIndicator" ng-class="encrypted ? 'encryptionOn' : 'encryptionOff'">
             Encryption {{encrypted ? 'On' : 'Off'}} 

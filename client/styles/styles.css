@@ -353,7 +353,14 @@ img {
   margin-left: 5px;
 }
 
-
+.chatRequest {
+  position: absolute;
+  left: 10px;
+  float: left;
+  margin-top: 1px;
+  font-weight: normal;
+  font-size: 15px;
+}
 
 .loginImage {
   margin-top: 30px;

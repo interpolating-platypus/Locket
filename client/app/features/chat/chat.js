@@ -269,6 +269,12 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             to: $scope.activeFriend.username,
             service: $scope.friends[index].service
           }, '*');
+
+          $scope.encryptionReqMsg = true;
+        
+          $timeout(function() {
+            $scope.encryptionReqMsg = false;
+          }, 2000);
         });
       };
 
