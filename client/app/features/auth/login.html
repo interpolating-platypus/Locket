@@ -38,9 +38,11 @@
     <form ng-submit='signup()' name='signupForm'>
       <input autocomplete='off' class='form-control' type='text' name='username' placeholder='username' ng-model='user.usernameSignup' ng-minlength="2" required/>
       <input autocomplete='off' class='form-control' type='password' name='password' placeholder='password' ng-model='user.passwordSignup' ng-minlength="2" required/>
+      <input autocomplete='off' class='form-control' placeholder='confirm password' name="confirmPassword" ng-model="user.passwordConfirm" type="password" match="user.passwordSignup" required/>
       <button class='btn btn-primary form-control' ng-disabled="!signupForm.$valid" type='submit'>Sign Up</button>
       <span class='error' ng-show='signupForm.username.$error.minlength'>Username is too short</span>
       <span class='error' ng-show='signupForm.password.$error.minlength'>Password is too short</span>
+      <span class='error' ng-show='signupForm.confirmPassword.$error.match'>Passwords must match</span>
       <div ng-show='signupFailed'>signup Failed</div>
     </form>
     <br>

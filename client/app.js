@@ -6,7 +6,8 @@ angular.module('Locket', [
   'ui.router',
   'Locket.encryptionFactory',
   'luegg.directives',
-  'uiSwitch'
+  'uiSwitch',
+  'validation.match'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 
