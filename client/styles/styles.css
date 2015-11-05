@@ -91,7 +91,7 @@ img {
 }
 
 .chatWindow {
-  height: 95vh;
+  height: 92.5vh;
   padding-left: 0;
 }
 
@@ -124,7 +124,7 @@ img {
 }
 
 .friendListWindow {
-  height: 95vh;
+  height: 92.5vh;
   border-right: 1px solid lightgray;
   padding-right: 0;
 }
