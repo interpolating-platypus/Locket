@@ -7,9 +7,10 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
     if (resp.auth === 'OK') {
       socket.connect();
 
+      // Generate the user's public and private keys for this session on login
       var keyring = encryptionFactory.generateKeyPair();
       var publicKey;
-      // send public key to Locket friends on login
+      // Send public key to Locket friends on login
       keyring.then(function (keypair) {
         publicKey = keypair.pubkey;
         socket.emit('sendPGP', keypair.pubkey);
@@ -30,17 +31,19 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.showPhoto = false;
 
 
-      // When the active friend changes, mark whether the user is encrypted based
+      // When the active friend changes, mark whether the user is encrypted, and show photo button if the service is Locket
       $scope.$watch('activeFriend', function() {
         $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : false;
         $scope.showPhoto = ($scope.activeFriend && $scope.activeFriend.service === 'Locket') ? true: false;
         $(".bootstrap-filestyle").toggle($scope.showPhoto);
       });
 
+      // When $scope.encrypted changes, toggle the encryption switch based on whether $scope.encrypted is true or false
       $scope.$watch('encrypted', function (newValue, oldValue) {
         $('#enabled').toggleClass('checked', newValue);
       });
 
+      // On click of the encryption switch, make sure the toggle display aligns with encryption
       $('#enabled').on('click', function (event) {
         setTimeout(function () {
           $('#enabled').toggleClass('checked', $scope.encrypted);
@@ -284,12 +287,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       //represents the user selected in the friends list
       $scope.activeFriend = null;
 
+      // Change active friend on click of a user in friends list by iterating through friends and setting activeFriend to clicked friend
       $scope.startChat = function(friend){
         findFriend(friend.username, function(index){
           $scope.activeFriend = $scope.friends[index];
           if ($scope.friends[index].unreadMessage) {
             $scope.friends[index].unreadMessage = false;
           }
+          // Upon starting a chat, select the input text box
           $timeout(function() { 
             $(".sendMessageInput").focus();
             $(".sendMessageInputFull").focus();
@@ -303,20 +308,22 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       };
 
+      // On submission of a message, send and encrypted verison of what was typed in as the input to the server
       $scope.sendMessage = function(messageText){
-        //start spinner
+        // Start spinner
         $scope.loading = true;
-
-        //reset message text
+        // Reset message text
         $scope.messageText = '';
         if ($scope.activeFriend.service === 'Locket') {
-          // encrypt typed message
+          // Encrypt typed message
           if (messageText) {
             encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
             .then(function (encryptedMessage) {
               if (messageText) {
                 $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: true});
+                // Send the message to the appropriate user using sockets
                 socket.emit('sendMessage', { to: $scope.activeFriend.username, message: encryptedMessage });
+                // Set the spinner back to false
                 $scope.loading = false;
               }
             });
@@ -383,12 +390,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         }
       };
 
+      // On click of a user's own message, delete the message from both recipient and sender clients
       $scope.revokeMessage = function(message) {
         if (message.from === $scope.currentUser) {
           socket.emit('revokeMessage', {to: message.to, from: message.from, message: message.encryptedMessage, timestamp: message.timestamp});
         }
       };
 
+      // Socket listener for when a friend has sent a PGP key--save the PGP key in friend object and send a key back
       socket.on('receivePGP', function (keyObj) {
         findFriend(keyObj.friend, function (index) {
           if (index !== -1) {
@@ -399,6 +408,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       });
 
+      // Socket listener from when a PGP key has been returned
       socket.on('completePGP', function (keyObj) {
         findFriend(keyObj.friend, function (index) {
           if (index !== -1) {
@@ -408,10 +418,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       });
 
+      // Decrypt a message and push it to messages array in sender's friend object so that it renders on the chat page
       socket.on('newMessage', function(message){
         findFriend(message.from, function(index){
           if (index !== -1) {
-            // decrypt message
+            // Decrypt message
             keyring.then(function (keypair) {
               encryptionFactory.decryptMessage(keypair, message.encryptedMessage)
               .then(function (decryptedMessage) {
@@ -451,10 +462,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       });
 
+      // Render a sent message on the user's client chat page
       socket.on('messageSent', function (message) {
         findFriend(message.to, function (index) {
           if (index !== -1) {
-            // iterate through unsent messages to find the message
+            // Iterate through unsent messages to find the message, then splice it out and push it to messages in friend object
             for (var i = 0; i < $scope.friends[index].unsentMessages.length; i++) {
               if ($scope.friends[index].unsentMessages[i].encryptedMessage === message.encryptedMessage) {
                 message.message = $scope.friends[index].unsentMessages[i].message;
@@ -468,6 +480,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         });
       });
 
+      // Socket listener post-revokeMessage to iterate through messages and delete the message that matches the revoked message on both clients
       socket.on('destroyMessage', function (message) {
         var friend;
         if (message.from === $scope.currentUser) {
@@ -478,15 +491,16 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         findFriend(friend, function (index) {
           if (index !== -1) {
             var messageIndex = -1;
-            // iterate through messages to find one that matches message to be destroyed
+            // Iterate through messages to find one that matches message to be destroyed
             for (var i = 0; i < $scope.friends[index].messages.length; i++) {
               var thisMessage = $scope.friends[index].messages[i];
-              // if match found, set messageIndex to index in messages array
+              // If match found, set messageIndex to index in messages array
               if (message.to === thisMessage.to && message.from === thisMessage.from && message.timestamp === thisMessage.timestamp && message.message === thisMessage.encryptedMessage) {
                 messageIndex = i;
                 break;
               }
             }
+            // Delete the message from the messages array
             if (messageIndex !== -1) {
               $scope.friends[index].messages.splice(messageIndex, 1);
             }
@@ -495,7 +509,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       });
 
      
-
       function getLocketFriends() {
         socket.emit('getFriends', {});
         // Get friends through facebook
@@ -589,28 +602,30 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         $scope.acceptedfriendRequests = $stateParams.acceptedfriendRequests;
       };
 
-      //login/logout
+      // Logout socket emit event that will disconnect the current user
       $scope.logout = function() {
         $scope.currentUser = null;
         authFactory.logout();
         socket.emit('logout');
       };
 
+      // Inform the user's client when a friend has logged in
       socket.on('friendLoggedIn', function(friend){
         findFriend(friend, function(index){
-          //if user is in friends list
+          // If user is in friends list, set online property for that friend to true so friends list will update
           if(index >= 0){
             $scope.friends[index].online = true;
           } else {
-            //if user is not in friends list, add them
+            // If user is not in friends list, add them
             $scope.friends.unshift(createFriendObj(friend));
           }
         });
       });
       
+      // Inform user's client when a friend has logged out so that friends list is updated accordingly
       socket.on('friendLoggedOut', function (friend) {
         findFriend(friend, function (index) {
-          //verify user is in friends list
+          // Verify user is in friends list
           if (index >= 0) {
             $scope.friends[index].online = false;
             if ($scope.activeFriend) {
@@ -660,6 +675,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         window.postMessage({ type: 'checkExtension', text: ''}, '*');
       }
 
+      // Function for message decryption
       function decryptMessage(encryptedMessage, index, from, service){
         keyring.then(function(keypair) {
           // If we sent the message, use the local decrypted version
@@ -671,7 +687,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               timestamp: Date.now()
             }
             _.defaults(message, messageDefaults);
-            // Make sure we add the correct message:
+            // Make sure we add the correct message
             var addedMessage = false;
 
             var unsentMessages;
@@ -681,7 +697,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             }else if(service === "Hangouts"){
               unsentMessages = $scope.friends[index].unsentHangoutsMessages;
             }
-            console.log("unsent", unsentMessages);
             for (var j = 0; j < unsentMessages.length; j++) {
               if (unsentMessages[j].encryptedMessage.replace(/[^a-z0-9]/gmi, '') === message.encryptedMessage.replace(/[^a-z0-9]/gmi,'')) {
                 message.message = unsentMessages[j].message;
@@ -725,6 +740,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               $scope.$apply();
             })
             .catch(function() {
+              // If the message cannot be decrypted, it has expired
               var message = {
                 to: $scope.currentUser,
                 from: $scope.friends[index].username,
