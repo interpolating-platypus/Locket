@@ -20,6 +20,7 @@ angular.module('Locket.auth', [])
     });
     $scope.user.usernameSignup = '';
     $scope.user.passwordSignup = '';
+    $scope.user.passwordConfirm = '';
   };
 
 });
