@@ -31,6 +31,7 @@
 html, body {
   height: 100%;
   font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f9f9f9;
 }
 
 p {
@@ -132,6 +133,7 @@ img {
   border-radius: 0px;
   padding: 10px 10px 10px 10px;
   margin-bottom: 0px;
+  background-color: #f9f9f9;
 }
 
 .activeFriendPanel {
@@ -165,8 +167,6 @@ img {
   padding: 0 10px 0 10px;
   float: right;
 }
-
-
 
 .messageList {
   height: 82.5vh;
@@ -251,10 +251,6 @@ img {
   vertical-align: middle;  
 }
 
-
-
-
-
 .button-display {
   width: 8%;
   display: inline;
@@ -273,6 +269,10 @@ img {
 
 .btn {
   font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.btn-default {
+  background-color: #f9f9f9 !important;
 }
 
 .navbar-right {
@@ -380,4 +380,8 @@ img {
 
 .githubLogo {
   width: 20px;
+}
+
+input {
+  background-color: #f9f9f9 !important;
 }
