@@ -4,10 +4,10 @@
   box-shadow: 0 8px 6px -6px #999;
 }
 .navbar-collapse {
-  background-color: #000026;
+  background-color: #263238;
 }
 .navbar-inverse {
-  background-color: #000026;
+  background-color: #263238;
 }
 .navbar.navbar-custom {
   padding-bottom: 0;
@@ -31,7 +31,7 @@
 html, body {
   height: 100%;
   font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #f9f9f9;
+  background-color: #fff;
 }
 
 p {
@@ -133,7 +133,7 @@ img {
   border-radius: 0px;
   padding: 10px 10px 10px 10px;
   margin-bottom: 0px;
-  background-color: #f9f9f9;
+  background-color: #fff;
 }
 
 .activeFriendPanel {
@@ -180,13 +180,14 @@ img {
 
 .dropdown-toggle {
   margin-right: 34px;
-  color: #b0c4de !important;
+  color: #fff !important;
+  font-size: 16px;
 }
 
 .navbar-brand {
-  font-family: "Play", "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
-  color: #F5F5F5 !important;
+  color: #fff !important;
   /*text-transform: uppercase;*/
   margin-left: 13px !important;
   font-size: 28px;
@@ -272,7 +273,7 @@ img {
 }
 
 .btn-default {
-  background-color: #f9f9f9 !important;
+  background-color: #fff !important;
 }
 
 .navbar-right {
@@ -300,14 +301,15 @@ img {
   float: right;
   padding-right: 10px;
   font-size: 16px;
+  font-weight: normal;
 }
 
 .encryptionOn {
-  color: green;
+  color: #4CAF50;
 }
 
 .encryptionOff {
-  color: red;
+  color: #F44336;
 }
 
 .messagePhoto {
@@ -383,5 +385,5 @@ img {
 }
 
 input {
-  background-color: #f9f9f9 !important;
+  background-color: #fff !important;
 }
