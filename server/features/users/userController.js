@@ -18,9 +18,9 @@ exports.login = function(req, res, next) {
         return user.validPassword(password)
           .then(function(foundUser) {
             if (foundUser) {
-              // associate sid to username in socketHandler
+              // Associate sid to username in socketHandler
               socketHandler.sessionMap[sid] = username;
-              //send back username to set as $scope.currentUser and their unread friendRequests
+              // Send back username to set as $scope.currentUser and their unread friendRequests
               res.status(200).send(
                 {username: username, 
                  friendRequests: user.friendRequests, 
@@ -36,7 +36,6 @@ exports.login = function(req, res, next) {
       next(error);
     });
 };
-
 
 exports.signup = function(req, res, next) {
   var username = req.body.username;
@@ -59,7 +58,6 @@ exports.signup = function(req, res, next) {
       }
     })
     .then(function(user) {      
-      console.log('signup successful');
       socketHandler.sessionMap[sid] = username;
       res.status(200).send(
         {username: username, 
@@ -72,7 +70,6 @@ exports.signup = function(req, res, next) {
 };
 
 exports.friendRequestOffline = function(user1, user2, next) {
-  console.log("frOffline", user1, user2);
   var findUser = Q.nbind(User.findOne, User);
 
   findUser({username: user1})
@@ -80,7 +77,6 @@ exports.friendRequestOffline = function(user1, user2, next) {
       if(!user) {
         next(new Error('User does not exist'));
       } else if (user.blockedUsers.indexOf(user2) > -1) {
-        console.log('blocked');
       } else if (user.friendRequests.indexOf(user2) === -1){
         user.friendRequests.push(user2);
         user.save(function (err) {
@@ -104,7 +100,6 @@ exports.removeUnreadFriendRequest = function(user1, user2) {
       if(!user) {
         next(new Error('User does not exist'));
       } else {
-        // console.log(user.friendRequests);
         for (var i = 0; i < user.friendRequests.length; i++) {
           if (user.friendRequests[i] === user2) {
             user.friendRequests.splice(i, 1);
@@ -143,7 +138,6 @@ exports.blockUser = function(user1, user2) {
     }); 
 };
 
-
 exports.notifyFriendRequestAccepted = function(user1, user2) {
   var findUser = Q.nbind(User.findOne, User);
   
@@ -173,7 +167,6 @@ exports.acknowledgeFriendRequest = function(user1, user2) {
       if(!user) {
         next(new Error('User does not exist'));
       } else {
-        // console.log(user.friendRequests);
         for (var i = 0; i < user.acceptedfriendRequests.length; i++) {
           if (user.acceptedfriendRequests[i] === user2) {
             user.acceptedfriendRequests.splice(i, 1);
@@ -215,7 +208,6 @@ exports.addFriend = function(user1, user2) {
       next(error);
     });
 };
-
 
 exports.addFriends = function (acceptFriendObj) {
   var friend1 = acceptFriendObj.from;
