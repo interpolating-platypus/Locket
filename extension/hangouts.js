@@ -96,7 +96,6 @@ function onIntervals ( ) {
       if(response.scanDOM){
         findAndSendUnreadMessages();
       }else{
-        console.log("hangouts turn off");
         chrome.runtime.sendMessage({event: 'turnOff' });
       }
     }

@@ -255,7 +255,6 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             $scope.friends.push(friendObj);
           }
 
-          console.log("scan hangouts dom");
           window.postMessage({ type: 'scanHangoutsDOM', text: ''}, '*');
         }
 
