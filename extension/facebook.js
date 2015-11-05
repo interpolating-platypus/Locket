@@ -1,3 +1,5 @@
+//###Runs in the facebook messenger iFrame
+//###Is repsonsible primarily for reading from and writing to the Facebook Messenger DOM
 var backgroundCheckInterval = 500;
 var rescanDOMInterval = 500;
 var seenMessageGroup = {};

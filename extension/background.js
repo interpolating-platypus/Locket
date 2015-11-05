@@ -1,5 +1,5 @@
-// ## Runs in the bckground page of the extension
-// Is reponsible primarily for passing messages between content scripts
+// ###Runs in the bckground page of the extension
+// ###Is reponsible primarily for passing messages between content scripts
 chrome.webRequest.onHeadersReceived.addListener(
     function(info) {
         var headers = info.responseHeaders;
