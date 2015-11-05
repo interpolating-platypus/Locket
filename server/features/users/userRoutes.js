@@ -1,7 +1,6 @@
 var passport = require('passport');
 require('../auth/passport');
 var userController = require('./userController.js');
-//attaching all our handlers on our userRouter
 
 module.exports = function (app) {
 
