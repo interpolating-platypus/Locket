@@ -30,16 +30,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.showPhoto = false;
 
 
+      // When the active friend changes, mark whether the user is encrypted based
       $scope.$watch('activeFriend', function() {
         $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : false;
         $scope.showPhoto = ($scope.activeFriend && $scope.activeFriend.service === 'Locket') ? true: false;
         $(".bootstrap-filestyle").toggle($scope.showPhoto);
-      });
-
-      // on any change in activeFriend key, set $scope.encrypted based on whether there is a public key for the friend
-      $scope.$watch('activeFriend.userIsEncrypted', function () {
-        $scope.encrypted = $scope.activeFriend.userIsEncrypted;
-        console.log('active friend key is now ',$scope.activeFriend);
       });
 
       $scope.$watch('encrypted', function (newValue, oldValue) {
