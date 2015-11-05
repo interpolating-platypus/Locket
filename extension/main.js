@@ -129,6 +129,14 @@ window.addEventListener('message', function(event) {
     });
   }
 
+  // App telling us to begin the DOM scan
+  if (event.data.type && (event.data.type === 'scanHangoutsDOM')) {
+    chrome.runtime.sendMessage({
+      event: 'scanHangoutsDOM',
+      data: ''
+    });
+  }
+
   // App requesting hangouts friends
   if (event.data.type && (event.data.type === 'readHangoutsMessages')) {
     chrome.runtime.sendMessage({

@@ -37,6 +37,7 @@ var facebookTODO = {
 
 var hangoutsTODO = {
   getFriends: false,
+  scanDOM: false,
   getMessagesFor: [],
   postMessages: [],
   sendPublicKey: [],
@@ -65,6 +66,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         // Add functionality here
         console.log("Disconnected! Sending messages to ", encryptedFriends);
         facebookTODO.scanDOM = false;
+        hangoutsTODO.scanDOM = false;
         facebookTODO.emitDisconnect = encryptedFriends.filter(function(val){
           return val.service === "Facebook";
         }).map(function(val){
@@ -104,6 +106,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   // Turn off the iFrame when all disconnect messages have been sent
   if (message.event === "turnOff" && Date.now() - stillAlive > stillAliveMaximum) {
     document.getElementById('iframe').src = '';
+    document.getElementById('hangoutsIframe').src = '';
   }
   // The facebook content script is requesting any new actions to be taken
   if (message.event === "updateStatus") {
@@ -186,6 +189,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     chrome.tabs.sendMessage(mainTabId, {event: 'hangoutsFriendsList', data: message.data});
   }
 
+  if (message.event === 'scanHangoutsDOM') {
+    hangoutsTODO.scanDOM = true;
+  }
+
   //hangouts.js has read new messages and would like to send them to the client
   if (message.event === "receivedNewHangoutsMessage") {
     // if the client is already on our app, send the new messages
@@ -206,7 +213,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       getMessagesFor: hangoutsTODO.getMessagesFor,
       postMessages: hangoutsTODO.postMessages,
       sendPublicKey: hangoutsTODO.sendPublicKey,
-      emitDisconnect: hangoutsTODO.emitDisconnect
+      emitDisconnect: hangoutsTODO.emitDisconnect,
+      scanDOM: hangoutsTODO.scanDOM
     });
 
     hangoutsTODO.getFriends = false;
@@ -218,7 +226,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
   // The web app is telling us to read hangouts messages for a certain user
   if (message.event === 'readHangoutsMessages') {
-    console.log("getting hangouts messages");
     hangoutsTODO.getMessagesFor.push(message.data.to);
   }
 
