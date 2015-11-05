@@ -1,5 +1,5 @@
-// ###Injected into the web application
-// ###Is responsible primarily for passing messages between the web app and the background of the extension
+//### Injected into the web application
+//**Is responsible primarily for passing messages between the web app and the background of the extension**
 
 // User navigated to our service. Tells our app to start up the facebook background script
 chrome.runtime.sendMessage({ event: 'injectIframes', data: '' });
