@@ -1,5 +1,5 @@
-//###Runs in the facebook messenger iFrame
-//###Is repsonsible primarily for reading from and writing to the Facebook Messenger DOM
+//### Runs in the facebook messenger iFrame
+//**Is repsonsible primarily for reading from and writing to the Facebook Messenger DOM**
 var backgroundCheckInterval = 500;
 var rescanDOMInterval = 500;
 var seenMessageGroup = {};
@@ -11,7 +11,7 @@ var scanDOM = true;
 var maxFacebookFriends = 15;
 
 $(document).ready(function() {
-  // Retrieve the depth of the iFram
+  // Retrieve the depth of the iFrame
   var getFrameDepth = function(winToID) {
     if (winToID === window.top) {
       return 0;
