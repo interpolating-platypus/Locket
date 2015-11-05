@@ -69,7 +69,7 @@
 
       <div class="friendScroll" scroll-glue-top>
         <ul class="friendList">
-          <li ng-if='friend.online' ng-repeat="friend in friends | filter:searchText track by $index" ng-click='startChat(friend)'>
+          <li ng-if='friend.online' ng-repeat='friend in friends | orderBy:"-lastTimestamp" | filter:searchText track by $index' ng-click='startChat(friend)'>
             <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
               <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
               <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='icon' src='../../facebook.png'/></span>

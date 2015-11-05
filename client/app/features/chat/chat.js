@@ -60,7 +60,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           unsentFBMessages: [], // Follows same convention. Will not work for messages from prev session
           unsentHangoutsMessages: [], // Follows same convention. Will not work for messages from prev session
           userIsEncrypted: false,
-          sentKey: false
+          sentKey: false,
+          lastTimestamp: 0
         };
       }
 
@@ -70,8 +71,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
         message: null,
         type: 'text',
         isEncrypted: false,
-        encryptedMessage: null,
-        timestamp: Date.now()
+        encryptedMessage: null
       }
 
       // Listen for events from our extension
@@ -173,10 +173,12 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 var message = {
                   to: (event.data.text.from === 'me') ? event.data.text.with : $scope.currentUser,
                   from: (event.data.text.from === 'me') ? $scope.currentUser : event.data.text.with,
-                  message: newMessage
+                  message: newMessage,
+                  timestamp: Date.now()
                 }
                 _.defaults(message, messageDefaults);
                 $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;
 
                 // Notify the user of any unread messages
                 if (!$scope.activeFriend) {
@@ -337,7 +339,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               var message = {
                 message: data.toString('base64'),
                 encryptedMessage: encryptedPhoto,
-                isEncrypted: true
+                isEncrypted: true,
+                timestamp: Date.now()
               }
               _.defaults(message, messageDefaults);
               $scope.activeFriend.unsentMessages.push(message);
@@ -415,6 +418,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 message.message = decryptedMessage;
                 message.isEncrypted = true;
                 $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;
                 $scope.$apply();
               });
             });
@@ -437,6 +441,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                   isEncrypted: 'true',
                   source: decryptedPhoto
                 });
+                $scope.friends[index].lastTimestamp = Date.now();
               });
             });
             if ($scope.activeFriend === null || $scope.friends[index].username !== $scope.activeFriend.username) {
@@ -456,6 +461,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 message.isEncrypted = $scope.friends[index].unsentMessages[i].isEncrypted;
                 $scope.friends[index].unsentMessages.splice(i, 1);
                 $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;
               }
             }
           }
@@ -661,7 +667,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             // Create a message object
             var message = {
               encryptedMessage: encryptedMessage,
-              from: $scope.currentUser
+              from: $scope.currentUser,
+              timestamp: Date.now()
             }
             _.defaults(message, messageDefaults);
             // Make sure we add the correct message:
@@ -681,6 +688,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 message.isEncrypted = unsentMessages[j].isEncrypted;
                 unsentMessages.splice(j, 1);
                 $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;
                 addedMessage = true;
                 $scope.loading = false;
                 $scope.$apply();
@@ -690,6 +698,7 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
               message.message = '[Message Expired]';
               message.isEncrypted = true;
               $scope.friends[index].messages.push(message);
+              $scope.friends[index].lastTimestamp = message.timestamp;
               $scope.$apply();
             }
           } else {
@@ -701,10 +710,12 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 from: $scope.friends[index].username,
                 encryptedMessage: encryptedMessage,
                 message: decryptedMessage,
-                isEncrypted: true
+                isEncrypted: true,
+                timestamp: Date.now()
               }
               _.defaults(message, messageDefaults);
               $scope.friends[index].messages.push(message);
+              $scope.friends[index].lastTimestamp = message.timestamp;
               if (!$scope.activeFriend) {
                 $scope.activeFriend = $scope.friends[index];
               }
@@ -719,10 +730,12 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
                 from: $scope.friends[index].username,
                 encryptedMessage: encryptedMessage,
                 message: '[Message Expired]',
-                isEncrypted: true
+                isEncrypted: true,
+                timestamp: Date.now()
               }
               _.defaults(message, messageDefaults);
               $scope.friends[index].messages.push(message);
+              $scope.friends[index].lastTimestamp = message.timestamp;
             });
           }
         });
