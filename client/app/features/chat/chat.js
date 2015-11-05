@@ -254,8 +254,8 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             var friendObj = createFriendObj(friend.username, true, friend.name, "Hangouts");
             $scope.friends.push(friendObj);
           }
-          // // After receiving a facebook friends list, begin monitoring the facebook DOM
-          // window.postMessage({ type: 'scanFacebookDOM', text: ''}, '*');
+
+          window.postMessage({ type: 'scanHangoutsDOM', text: ''}, '*');
         }
 
         $scope.$apply();

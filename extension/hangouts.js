@@ -93,7 +93,11 @@ function onIntervals ( ) {
         }
       }
 
-      findAndSendUnreadMessages();
+      if(response.scanDOM){
+        findAndSendUnreadMessages();
+      }else{
+        chrome.runtime.sendMessage({event: 'turnOff' });
+      }
     }
   );
 };
