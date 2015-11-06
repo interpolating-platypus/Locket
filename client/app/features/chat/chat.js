@@ -457,6 +457,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
             $scope.friends[index].userIsEncrypted = true;
             socket.emit('returnPGP', {friend: keyObj.friend, key: publicKey});
           }
+
+          // Apply changes to scope if we're already focused on that user
+          if ($scope.activeFriend && $scope.activeFriend.username === $scope.friends[index].username) {
+            $scope.$apply();
+          }
         });
       });
 
@@ -466,6 +471,11 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
           if (index !== -1) {
             $scope.friends[index].key = keyObj.key;
             $scope.friends[index].userIsEncrypted = true;
+          }
+
+          // Apply changes to scope if we're already focused on that user
+          if ($scope.activeFriend && $scope.activeFriend.username === $scope.friends[index].username) {
+            $scope.$apply();
           }
         });
       });
