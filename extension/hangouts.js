@@ -1,3 +1,8 @@
+//## This content script is loaded into all hangouts.google.com documents
+
+
+//### Global Variables
+
 //This is the interval at which we perform actions
 var rescanDOMInterval = 500;
 //This object maps users to their corresponding button in the friends list
@@ -6,6 +11,9 @@ var userToButtonMap = {};
 var seenMessageGroup = {};
 //This object stores friends which have new messages needing to be read
 var friendsWithNewMessages = {};
+
+//### HTML Element Identifiers
+
 //These are used to interact with the correct DOM Elements
 var elementIdentifiers = {
   //Iframe id containing friends list
@@ -31,7 +39,9 @@ var elementIdentifiers = {
   //Chat blocks may contain multiple messages
   chatBlockMessageClass: '.Mu',
 }
+//### On document ready
 
+//Once the document has fully loaded we can begin to interact with the DOM
 $(document).ready(function () {
   //hangouts.google.com loads additional iframes with the same domain. This is to make sure we only run this content script in the main hangouts page
   var getFrameDepth = function (winToID) {
@@ -48,60 +58,63 @@ $(document).ready(function () {
     }
     return 1 + getFrameDepth (winToID.parent);
   }
+  
+  //Verify we are not in a nested iframe
   if (getFrameDepth(window.self) !== 1) {
-    //We are in a nested iframe and don't want to run this content script
     return;
   }
-  //This function will attempt to load the friends list until it loads
+
+  //This will attempt to scrape the friends list until the friends list loads
   getHangoutsFriends(-5)
     .then(function(friends){
-      //Once we have loaded all of the friends, we want to open all chat windows
+
+      //Once it has loaded we will open all of the chat windows to quickly read and send messages as necessary
       openAllChatWindows();
-      //On each interval we want to check for instructions
+
+      //We also start the interval to request instructions from background.js
       setInterval(function () {
         onIntervals();
       }, rescanDOMInterval);
-    });
 
+    });
 });
+
+//### on each interval
 
 //In each interval we check for instructions from background.js. Extensions cannot send messages to content scripts, only respond to messages sent from content scripts
 function onIntervals ( ) {
-  //Poll extension for instructions from web app
+  //Poll extension for instructions from web app using chrome extension messaging
   chrome.runtime.sendMessage({event: 'getHangoutsInstructions' }, 
     function(response) {
-      //Background process wants to get hangouts friends
+      //If the background process is requesting the friends list, retrieve and send friends from DOM
       if (response.getFriends) {
-        //Retrieve friends from hangouts DOM
         findAndSendHangoutsFriends();
       }
 
-      //Background process wants us to read messages for specific hangouts user
+      //If the background process is requesting new messages from a specific user, we mark that user as having new messages
       if (response.getMessagesFor.length > 0) {
         for (var i = 0; i < response.getMessagesFor.length; i++) {
           friendsWithNewMessages[response.getMessagesFor[i]] = true;
         }
       }
 
-      //Background process wants us to send the following messages
+      //If the background process has messages which need to be sent, we send them
       if (response.postMessages.length > 0){
         for (var i = 0; i < response.postMessages.length; i++) {
           sendFriendMessage(response.postMessages[i].to, response.postMessages[i].text);
         };
       }
 
-      //Background process wants us to send this user's public key to a specific hangouts user
+      //If the background process is requesting us to send the user's PGP key, we send it to the designated friend
       if(response.sendPublicKey.length > 0){
         for (var i = 0; i < response.sendPublicKey.length; i++) {
           var keyReq = response.sendPublicKey[i];
-
-          // Mark that we want to initiate a key exchange with this user
-          var keys = keyReq.publicKey + "*****Your Key Below******" + keyReq.friendKey + "END KEYSHARE";//keyReq.friendKey is what the sending user thinks the recipient's key is
+          var keys = keyReq.publicKey + "*****Your Key Below******" + keyReq.friendKey + "END KEYSHARE";
           sendFriendMessage(keyReq.to, keys);
         }
       }
 
-      //If the user closes the web app, we want to notify the users they were communicating with that they will no longer receive messages encrypted with their key
+      //If the user closes the web app, the background script will instruct us to notify the users they were communicating with that this user will not be able to read any encrypted messages
       if(response.emitDisconnect.length > 0){
         for (var i = 0; i < response.emitDisconnect.length; i++) {
           var username = response.emitDisconnect[i];
@@ -109,7 +122,7 @@ function onIntervals ( ) {
         }
       }
 
-      //When the user closes the web app we want to stop loading their messages in the iframe
+      //When the user closes the web app we want to stop loading their messages in the iframe. The background process notifies this content script to stop scanning the DOM and send a message to unload this iframe.
       if(response.scanDOM){
         findAndSendUnreadMessages();
       }else{
@@ -119,7 +132,8 @@ function onIntervals ( ) {
   );
 };
 
-//Helper functions
+//## Helper Functions
+//### get hangouts friends
 
 //The friends list is stored in an iframe which takes some time to load. This function will attempt to load the friends list until the number of attempts is equal to 5
 function getHangoutsFriends (attempts) {  
@@ -175,6 +189,8 @@ function getHangoutsFriends (attempts) {
   return deferred.promise;
 };
 
+//### find friend's chat window
+
 //There are many iframes open with each of the chat windows. This function will return the chat window of name given
 function findFriendChatWindow (name) {  
   var friendChatWindow = null;
@@ -203,6 +219,8 @@ function findFriendChatWindow (name) {
 
   return deferred.promise;
 };
+
+//### find new messages from friend
 
 //This function will return any new messages from the given user
 function findFriendNewMessages (name) {
@@ -272,6 +290,8 @@ function findFriendNewMessages (name) {
   return deferred.promise;
 };
 
+//### send friend message
+
 //This function will send a message given the name of the friend, and the message to be sent
 function sendFriendMessage (name, message){
   findFriendChatWindow(name).then(function(chatWindow){
@@ -280,6 +300,8 @@ function sendFriendMessage (name, message){
     friendsWithNewMessages[name] = true;
   });
 };
+
+//### find and relay undread messages
 
 //This function will find all unread messages and send them to the web app
 function findAndSendUnreadMessages () {
@@ -311,6 +333,8 @@ function findAndSendUnreadMessages () {
     });
 };
 
+//### find and send hangouts friends
+
 //This function gets all of the friends from the friends list and sends them to the web app
 function findAndSendHangoutsFriends () {
   getHangoutsFriends(0)
@@ -325,6 +349,8 @@ function findAndSendHangoutsFriends () {
       console.log(err);
     });
 };
+
+//### open all chat windows
 
 //This function opens all chat windows so that we can quickly find and send new messages without waiting for the iframes to load
 function openAllChatWindows () {
