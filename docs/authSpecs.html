@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>authSpecs.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Gruntfile.html">
+                  Gruntfile.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="auth.html">
+                  auth.js
+                </a>
+              
+                
+                <a class="source" href="chat.html">
+                  chat.js
+                </a>
+              
+                
+                <a class="source" href="authFactory.html">
+                  authFactory.js
+                </a>
+              
+                
+                <a class="source" href="encryptionFactory.html">
+                  encryptionFactory.js
+                </a>
+              
+                
+                <a class="source" href="socketFactory.html">
+                  socketFactory.js
+                </a>
+              
+                
+                <a class="source" href="background.html">
+                  background.js
+                </a>
+              
+                
+                <a class="source" href="facebook.html">
+                  facebook.js
+                </a>
+              
+                
+                <a class="source" href="hangouts.html">
+                  hangouts.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+                
+                <a class="source" href="karma.conf.html">
+                  karma.conf.js
+                </a>
+              
+                
+                <a class="source" href="passport.html">
+                  passport.js
+                </a>
+              
+                
+                <a class="source" href="userController.html">
+                  userController.js
+                </a>
+              
+                
+                <a class="source" href="userModel.html">
+                  userModel.js
+                </a>
+              
+                
+                <a class="source" href="userRoutes.html">
+                  userRoutes.js
+                </a>
+              
+                
+                <a class="source" href="server.html">
+                  server.js
+                </a>
+              
+                
+                <a class="source" href="socketHandler.html">
+                  socketHandler.js
+                </a>
+              
+                
+                <a class="source" href="authSpecs.html">
+                  authSpecs.js
+                </a>
+              
+                
+                <a class="source" href="chatSpecs.html">
+                  chatSpecs.js
+                </a>
+              
+                
+                <a class="source" href="serverSpec.html">
+                  serverSpec.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>authSpecs.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> testTimeout = <span class="hljs-number">1000</span>;
+<span class="hljs-keyword">var</span> testDuration = <span class="hljs-number">2000</span>;
+describe(<span class="hljs-string">"auth tests"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Before each test, create fresh locket module</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  beforeEach(<span class="hljs-built_in">module</span>(<span class="hljs-string">'Locket'</span>));
+  <span class="hljs-keyword">var</span> $controller, authFactory;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Inject a fresh controller</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_$controller_</span>)</span>{
+    $controller = _$controller_;
+  }));
+  describe(<span class="hljs-string">'features'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> $scope = {};
+    <span class="hljs-keyword">var</span> controller;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Set appropriate controller</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      $scope = {};
+      controller = $controller(<span class="hljs-string">'authController'</span>, { $scope: $scope });
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Inject auth factory which we can spy</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> authFactory = {};
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_authFactory_</span>) </span>{
+      authFactory = _authFactory_;
+    }));
+
+    describe(<span class="hljs-string">'auth'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      it(<span class="hljs-string">'should have a login function which calls the login service with the correct username and password'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        assert.isFunction($scope.login);
+        $scope.user = {};
+        $scope.user.usernameLogin = <span class="hljs-string">'test2'</span>;
+        $scope.user.passwordLogin = <span class="hljs-string">'me'</span>;
+        <span class="hljs-keyword">var</span> stub = sinon.stub(authFactory, <span class="hljs-string">"login"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">username, password</span>) </span>{
+          assert(username === $scope.user.usernameLogin);
+          assert(password === $scope.user.passwordLogin);
+          done();
+        });
+        $scope.login();
+        authFactory.login.restore();
+      });
+      it(<span class="hljs-string">'should have a signup function which calls the signup service'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        assert.isFunction($scope.signup);
+        $scope.user = {};
+        $scope.user.usernameSignup = <span class="hljs-string">'test2'</span>;
+        $scope.user.passwordSignup = <span class="hljs-string">'me'</span>;
+        <span class="hljs-keyword">var</span> stub = sinon.stub(authFactory, <span class="hljs-string">"signup"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">username, password</span>) </span>{
+          assert(username === $scope.user.usernameSignup);
+          assert(password === $scope.user.passwordSignup);
+          done();
+        });
+        $scope.signup();
+        authFactory.signup.restore();
+      });
+    });
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>TODO: test auth services</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  describe(<span class="hljs-string">'services'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> $scope = {};
+    <span class="hljs-keyword">var</span> controller;
+    <span class="hljs-keyword">var</span> $httpBackend;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Set appropriate controller</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      $scope = {};
+      controller = $controller(<span class="hljs-string">'authController'</span>, { $scope: $scope });
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Inject auth factory which we can spy</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> authFactory = {};
+    beforeEach(inject(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_authFactory_, $injector</span>) </span>{
+      $httpBackend = $injector.get(<span class="hljs-string">'$httpBackend'</span>);
+      authFactory = _authFactory_;
+    }));
+
+    describe(<span class="hljs-string">'auth factory'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      it(<span class="hljs-string">'should have a login method which issues a POST request to /api/users/login'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        expect(authFactory.login).to.be.a(<span class="hljs-string">'function'</span>);
+
+        $httpBackend.expectPOST(<span class="hljs-string">'/api/users/login'</span>).respond(<span class="hljs-number">200</span>,<span class="hljs-string">'nate'</span>);
+        $httpBackend.expectGET(<span class="hljs-string">'app/features/auth/login.html'</span>).respond(<span class="hljs-number">200</span>,<span class="hljs-string">''</span>);
+        $httpBackend.expectGET(<span class="hljs-string">'app/features/chat/chat.html'</span>).respond(<span class="hljs-number">200</span>,<span class="hljs-string">''</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Issue login request</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.timeout(testDuration);
+        authFactory.login()
+          .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>) </span>{
+            expect(resp.data).to.equal(<span class="hljs-string">'nate'</span>);
+            done();
+          })
+          .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error with auth factory login request'</span>, err);
+          });
+        $httpBackend.flush();
+      });
+      it(<span class="hljs-string">'should have a getFriends method which issues a GET request to /api/users/username'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        expect(authFactory.getFriends).to.be.a(<span class="hljs-string">'function'</span>);
+
+        <span class="hljs-keyword">var</span> username = <span class="hljs-string">'nate'</span>;
+        <span class="hljs-keyword">var</span> friends = [<span class="hljs-string">'livvie'</span>,<span class="hljs-string">'kyle'</span>];
+        $httpBackend.expectGET(<span class="hljs-string">'/api/users/'</span>+username).respond(<span class="hljs-number">200</span>,friends);
+        $httpBackend.expectGET(<span class="hljs-string">'app/features/auth/login.html'</span>).respond(<span class="hljs-number">200</span>,<span class="hljs-string">''</span>);
+        $httpBackend.expectGET(<span class="hljs-string">'app/features/chat/chat.html'</span>).respond(<span class="hljs-number">200</span>,<span class="hljs-string">''</span>);
+        authFactory.getFriends(username)
+          .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>) </span>{
+            expect(resp).to.deep.equal(friends);
+            done();
+          })
+          .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error with auth factory get friends request'</span>, err);
+          });
+        $httpBackend.flush();
+      });
+      it(<span class="hljs-string">'should have a logout method'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        expect(authFactory.logout).to.be.a(<span class="hljs-string">'function'</span>);
+        done();
+      });
+      it(<span class="hljs-string">'should have a signup method which issues a post request to /api/users/signup'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">done</span>) </span>{
+        expect(authFactory.signup).to.be.a(<span class="hljs-string">'function'</span>);
+        <span class="hljs-keyword">var</span> username = <span class="hljs-string">'nate'</span>;
+        <span class="hljs-keyword">var</span> password = <span class="hljs-string">'abcd'</span>;
+        $httpBackend.expectPOST(<span class="hljs-string">'/api/users/signup'</span>).respond(<span class="hljs-number">200</span>,username);
+        $httpBackend.expectGET(<span class="hljs-string">'app/features/auth/login.html'</span>).respond(<span class="hljs-number">200</span>,<span class="hljs-string">''</span>);
+        $httpBackend.expectGET(<span class="hljs-string">'app/features/chat/chat.html'</span>).respond(<span class="hljs-number">200</span>,<span class="hljs-string">''</span>);
+        authFactory.signup(username, password)
+          .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>) </span>{
+            expect(resp.status).to.equal(<span class="hljs-number">200</span>);
+            expect(resp.data).to.equal(username);
+            done();
+          })
+          .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>) </span>{
+          });
+        $httpBackend.flush();
+      });
+    });
+  });
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

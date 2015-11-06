@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>socketHandler.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Gruntfile.html">
+                  Gruntfile.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="auth.html">
+                  auth.js
+                </a>
+              
+                
+                <a class="source" href="chat.html">
+                  chat.js
+                </a>
+              
+                
+                <a class="source" href="authFactory.html">
+                  authFactory.js
+                </a>
+              
+                
+                <a class="source" href="encryptionFactory.html">
+                  encryptionFactory.js
+                </a>
+              
+                
+                <a class="source" href="socketFactory.html">
+                  socketFactory.js
+                </a>
+              
+                
+                <a class="source" href="background.html">
+                  background.js
+                </a>
+              
+                
+                <a class="source" href="facebook.html">
+                  facebook.js
+                </a>
+              
+                
+                <a class="source" href="hangouts.html">
+                  hangouts.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+                
+                <a class="source" href="karma.conf.html">
+                  karma.conf.js
+                </a>
+              
+                
+                <a class="source" href="passport.html">
+                  passport.js
+                </a>
+              
+                
+                <a class="source" href="userController.html">
+                  userController.js
+                </a>
+              
+                
+                <a class="source" href="userModel.html">
+                  userModel.js
+                </a>
+              
+                
+                <a class="source" href="userRoutes.html">
+                  userRoutes.js
+                </a>
+              
+                
+                <a class="source" href="server.html">
+                  server.js
+                </a>
+              
+                
+                <a class="source" href="socketHandler.html">
+                  socketHandler.js
+                </a>
+              
+                
+                <a class="source" href="authSpecs.html">
+                  authSpecs.js
+                </a>
+              
+                
+                <a class="source" href="chatSpecs.html">
+                  chatSpecs.js
+                </a>
+              
+                
+                <a class="source" href="serverSpec.html">
+                  serverSpec.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>socketHandler.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> app = <span class="hljs-built_in">require</span>(__dirname + <span class="hljs-string">"/server.js"</span>);
+<span class="hljs-keyword">var</span> io = <span class="hljs-built_in">module</span>.exports.io = <span class="hljs-built_in">require</span>(<span class="hljs-string">'socket.io'</span>).listen(app.server);
+
+<span class="hljs-keyword">var</span> UserController = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./features/users/userController.js"</span>);
+<span class="hljs-keyword">var</span> UserModel = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./features/users/userModel.js"</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Socket.io server listening"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Map session ids to usernames</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> sessionMap = exports.sessionMap = {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Map usernames to socket ids</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> userMap = exports.userMap = {};
+
+io.use(app.socketSession(app.session, {
+  autoSave: <span class="hljs-literal">true</span>
+}));
+
+io.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">socket</span>) </span>{
+  
+  <span class="hljs-keyword">var</span> expressCookie = socket.handshake.sessionID;
+
+  <span class="hljs-keyword">var</span> username = sessionMap[expressCookie];
+  userMap[username] = socket.id;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Let friends know user has logged in</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  notifyFriends(<span class="hljs-string">'friendLoggedIn'</span>, username);
+
+  socket.on(<span class="hljs-string">'sendPGP'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">publicKey</span>) </span>{
+    sendPGP(publicKey, username);
+  });
+
+  socket.on(<span class="hljs-string">'returnPGP'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">returnKeyObj</span>) </span>{
+    returnPGP(returnKeyObj, username);
+  });
+
+  socket.on(<span class="hljs-string">'sendMessage'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">msg</span>) </span>{
+    sendMessage(msg, username);
+  });
+
+  socket.on(<span class="hljs-string">'sendPhoto'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">photo</span>) </span>{
+    sendPhoto(photo, username);
+  });
+
+  socket.on(<span class="hljs-string">'revokeMessage'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">msg</span>) </span>{
+    revokeMessage(msg, username);
+  });
+
+  socket.on(<span class="hljs-string">'getFriends'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    getFriends(username);
+  });
+
+  socket.on(<span class="hljs-string">'addFriend'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friendRequestObj</span>) </span>{
+    addFriend(friendRequestObj, username);
+  });
+
+  socket.on(<span class="hljs-string">'friendRequestAccepted'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">acceptedObj</span>) </span>{
+    friendRequestAccepted(acceptedObj, username);
+  });
+
+  socket.on(<span class="hljs-string">'acknowledgeFriendRequest'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">acknowledgeObj</span>) </span>{
+    UserController.acknowledgeFriendRequest(username, acknowledgeObj.to);
+  });
+
+  socket.on(<span class="hljs-string">'ignoreFriendRequest'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ignoreFriendObj</span>) </span>{
+    UserController.removeUnreadFriendRequest(username, ignoreFriendObj.to);
+  });
+
+  socket.on(<span class="hljs-string">'blockUser'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">blockUserObj</span>) </span>{
+    UserController.blockUser(username, blockUserObj.to);
+  });
+
+  socket.on(<span class="hljs-string">'disconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    disconnect(username);
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Echo function, useful for debugging &amp; testing</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  socket.on(<span class="hljs-string">'echo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">obj</span>) </span>{
+    socket.emit(obj.name, obj.data);
+  });
+
+  socket.on(<span class="hljs-string">'logout'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">delete</span> sessionMap[expressCookie];
+    socket.disconnect();
+  });
+
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Find logged in user in the database and send PGP key to all user’s online friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> sendPGP = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">publicKey, username</span>) </span>{
+  <span class="hljs-keyword">if</span> (username) {
+    UserModel.findOne({username: username}, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, user</span>) </span>{
+      <span class="hljs-keyword">if</span> (err) {
+        <span class="hljs-keyword">throw</span> err;
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> friendIndex = <span class="hljs-number">0</span>; friendIndex &lt; user.friends.length; friendIndex++) {
+          <span class="hljs-keyword">var</span> friendSocket = userMap[user.friends[friendIndex]];
+          <span class="hljs-keyword">if</span> (friendSocket) {
+            io.to(friendSocket).emit(<span class="hljs-string">'receivePGP'</span>, {friend: username, key: publicKey});
+          }
+        }
+      }
+    });
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'User does not have socket mapped'</span>);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Return a PGP key to a particular user’s socket</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> returnPGP = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">returnKeyObj, username</span>) </span>{
+  <span class="hljs-keyword">var</span> friendSocket = userMap[returnKeyObj.friend];
+  <span class="hljs-keyword">if</span> (friendSocket) {
+    io.to(friendSocket).emit(<span class="hljs-string">'completePGP'</span>, {friend: username, key: returnKeyObj.key});
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Send a message object with an encrypted message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> sendMessage = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">msg, username</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Find the user in the database</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  UserModel.findOne({username: username}, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, user</span>) </span>{
+    <span class="hljs-keyword">if</span>(err){
+      <span class="hljs-keyword">throw</span> err;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Verify user is friends with the recipient</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>(~user.friends.indexOf(msg.to)){
+
+      <span class="hljs-keyword">var</span> recipientSocket = userMap[msg.to];
+      
+      <span class="hljs-keyword">var</span> message = {
+        to: msg.to,
+        from: username,
+        encryptedMessage: msg.message,
+        timestamp: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(),
+        type: msg.type || <span class="hljs-string">'text'</span>
+      };
+
+      <span class="hljs-keyword">if</span> (recipientSocket) {
+        io.to(recipientSocket).emit(<span class="hljs-string">'newMessage'</span>, message);
+        io.to(userMap[username]).emit(<span class="hljs-string">'messageSent'</span>, message);
+      } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Send error message to the client</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error sending message'</span>);
+      }
+
+    }
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Emit a socket event to revoke a message to both recipient and sender sockets</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> revokeMessage = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">msg, username</span>) </span>{
+  <span class="hljs-keyword">var</span> recipientSocket = userMap[msg.to];
+
+  <span class="hljs-keyword">if</span> (recipientSocket &amp;&amp; msg.from === username) {
+    io.to(recipientSocket).emit(<span class="hljs-string">'destroyMessage'</span>, msg);
+    io.to(userMap[username]).emit(<span class="hljs-string">'destroyMessage'</span>, msg);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Function to get all user’s friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> getFriends = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">username</span>)</span>{
+  UserModel.findOne({username: username}, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, user</span>) </span>{
+    <span class="hljs-keyword">if</span> (err) {
+      <span class="hljs-keyword">throw</span> err;
+    } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Send all friends to client</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      io.to(userMap[username]).emit(<span class="hljs-string">'friendsList'</span>, user.friends);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Let client know which friends are online</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; user.friends.length; i++) {
+        <span class="hljs-keyword">if</span>(userMap[user.friends[i]]){
+          io.to(userMap[username]).emit(<span class="hljs-string">'friendLoggedIn'</span>, user.friends[i]);
+        }
+      };
+    }
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Find the recipient user’s socket and send a friend request if the friend is online, otherwise save unsent friend request in the database</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> addFriend = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friendRequestObj, username</span>) </span>{
+  <span class="hljs-keyword">var</span> recipientSocket = userMap[friendRequestObj.to];
+  
+  <span class="hljs-keyword">if</span> (recipientSocket) {
+    io.to(recipientSocket).emit(<span class="hljs-string">'friendRequest'</span>, {
+      to: friendRequestObj.to,
+      from: username,
+      timestamp: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()
+    });
+  } <span class="hljs-keyword">else</span> {
+    UserController.friendRequestOffline(friendRequestObj.to, username);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Remove friend request and add friend to database when friend request is accepted, and notify sender that request was accepted</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> friendRequestAccepted = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">acceptFriendObj, username</span>) </span>{
+  <span class="hljs-keyword">if</span>(acceptFriendObj.from === username){
+    <span class="hljs-keyword">var</span> recipientSocket = userMap[acceptFriendObj.to];
+    UserController.removeUnreadFriendRequest(username, acceptFriendObj.to);
+    UserController.addFriends(acceptFriendObj);
+    <span class="hljs-keyword">if</span> (recipientSocket) {
+      io.to(recipientSocket).emit(<span class="hljs-string">'friendRequestAccepted'</span>, acceptFriendObj);
+    } <span class="hljs-keyword">else</span> {
+      UserController.notifyFriendRequestAccepted(acceptFriendObj.to, username);
+    }
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Function called on disconnect to remove user from map and notify friends the user has logged out</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> disconnect = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">username</span>) </span>{
+  notifyFriends(<span class="hljs-string">'friendLoggedOut'</span>, username);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Remove user from userMap</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">delete</span> userMap[username];
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Function to notify friends of a particular event, such as friendLoggedIn and friendLoggedOut</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> notifyFriends = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event, username</span>)</span>{
+  <span class="hljs-keyword">if</span> (username) {
+    UserModel.findOne({username: username}, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, user</span>) </span>{
+      <span class="hljs-keyword">if</span> (err) {
+        <span class="hljs-keyword">throw</span> err;
+      } <span class="hljs-keyword">else</span> {
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> friendIndex = <span class="hljs-number">0</span>; friendIndex &lt; user.friends.length; friendIndex++) {
+          <span class="hljs-keyword">var</span> friendSocket = userMap[user.friends[friendIndex]];
+          <span class="hljs-keyword">if</span> (friendSocket) {
+            io.to(friendSocket).emit(event, username);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Emit event to current user to update current user’s friend list with correct online property</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            io.to(userMap[username]).emit(event, user.friends[friendIndex]);
+          } <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>If friend not logged in, emit event to tell current user friend is offline</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            io.to(userMap[username]).emit(<span class="hljs-string">'friendLoggedOut'</span>, user.friends[friendIndex]);
+          }
+        }
+
+      }
+    });
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'User does not have socket mapped'</span>);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

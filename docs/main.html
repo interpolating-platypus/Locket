@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>main.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Gruntfile.html">
+                  Gruntfile.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="auth.html">
+                  auth.js
+                </a>
+              
+                
+                <a class="source" href="chat.html">
+                  chat.js
+                </a>
+              
+                
+                <a class="source" href="authFactory.html">
+                  authFactory.js
+                </a>
+              
+                
+                <a class="source" href="encryptionFactory.html">
+                  encryptionFactory.js
+                </a>
+              
+                
+                <a class="source" href="socketFactory.html">
+                  socketFactory.js
+                </a>
+              
+                
+                <a class="source" href="background.html">
+                  background.js
+                </a>
+              
+                
+                <a class="source" href="facebook.html">
+                  facebook.js
+                </a>
+              
+                
+                <a class="source" href="hangouts.html">
+                  hangouts.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+                
+                <a class="source" href="karma.conf.html">
+                  karma.conf.js
+                </a>
+              
+                
+                <a class="source" href="passport.html">
+                  passport.js
+                </a>
+              
+                
+                <a class="source" href="userController.html">
+                  userController.js
+                </a>
+              
+                
+                <a class="source" href="userModel.html">
+                  userModel.js
+                </a>
+              
+                
+                <a class="source" href="userRoutes.html">
+                  userRoutes.js
+                </a>
+              
+                
+                <a class="source" href="server.html">
+                  server.js
+                </a>
+              
+                
+                <a class="source" href="socketHandler.html">
+                  socketHandler.js
+                </a>
+              
+                
+                <a class="source" href="authSpecs.html">
+                  authSpecs.js
+                </a>
+              
+                
+                <a class="source" href="chatSpecs.html">
+                  chatSpecs.js
+                </a>
+              
+                
+                <a class="source" href="serverSpec.html">
+                  serverSpec.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>main.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h3 id="injected-into-the-web-application">Injected into the web application</h3>
+<p><strong>Is responsible primarily for passing messages between the web app and the background of the extension</strong></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>User navigated to our service. Tells our app to start up the facebook background script</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>chrome.runtime.sendMessage({ event: <span class="hljs-string">'injectIframes'</span>, data: <span class="hljs-string">''</span> });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Receives update from background processes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>chrome.runtime.onMessage.addListener(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">message</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Informs background process user has not disconnected from service</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (message.event === <span class="hljs-string">'stillAlive'</span>) {
+    chrome.runtime.sendMessage({ event: <span class="hljs-string">'stillAlive'</span>, data: <span class="hljs-string">''</span> });
+    <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'getEncryptedFriends'</span>}, <span class="hljs-string">"*"</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Received a new facebook message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (message.event === <span class="hljs-string">"receivedNewFacebookMessage"</span>) {
+    <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'receivedNewFacebookMessage'</span>, text: message.data}, <span class="hljs-string">"*"</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Received facebook friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (message.event === <span class="hljs-string">"facebookFriendsList"</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Emits the facebook friends list to the extension</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'facebookFriendsList'</span>, text: message.data}, <span class="hljs-string">"*"</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Received facebook/hangouts PGP key</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (message.event === <span class="hljs-string">'receivedPGPKey'</span>) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Received FB PGP Key (main)'</span>);
+    <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'receivedPGPKey'</span>, text: message.data}, <span class="hljs-string">"*"</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>###BEGIN HANGOUTS LOGIC
+Received hangouts friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (message.event === <span class="hljs-string">"hangoutsFriendsList"</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Emits the hangouts friends list to the extension</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'hangoutsFriendsList'</span>, text: message.data}, <span class="hljs-string">"*"</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Received a new hangouts message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (message.event === <span class="hljs-string">"receivedNewHangoutsMessage"</span>) {
+    <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'receivedNewHangoutsMessage'</span>, text: message.data}, <span class="hljs-string">"*"</span>);
+  }
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Registers the tabid with the background process</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>chrome.runtime.sendMessage({
+  event: <span class="hljs-string">'registerTabId'</span>,
+  data: <span class="hljs-string">'webapp'</span>
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Listens to requests from web app</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+  <span class="hljs-keyword">if</span> (event.source != <span class="hljs-built_in">window</span>)
+    <span class="hljs-keyword">return</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Listens for a list of active encrypted Facebook sessions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'encryptedFriends'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'encryptedFriends'</span>,
+      data: event.data.text
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Checks if user has extension</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'checkExtension'</span>)) {
+    <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'extensionExists'</span>, text: <span class="hljs-string">''</span>}, <span class="hljs-string">"*"</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>App is requesting facebook friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'getFacebookFriends'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'getFacebookFriends'</span>,
+      data: <span class="hljs-string">''</span>
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>App is telling us to begin the DOM scan</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'scanFacebookDOM'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'scanFacebookDOM'</span>,
+      data: <span class="hljs-string">''</span>
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>App is sending facebook message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'sendFacebookMessage'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'sendFacebookMessage'</span>,
+      data: {
+        to: event.data.to,
+        text: event.data.text
+      }
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>App is requesting a key exchange</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'sendPublicKey'</span>)) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'main: requesting public key'</span>);
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'sendPublicKey'</span>,
+      data: {
+        to: event.data.to,
+        publicKey: event.data.publicKey,
+        friendKey: event.data.friendKey,
+        service: event.data.service
+      }
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>App is requesting us to read facebook messages for clicked-on user</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'readFacebookMessages'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'readFacebookMessages'</span>,
+      data: {
+        to: event.data.to,
+      }
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>###BEGIN HANGOUTS LOGIC
+App is requesting hangouts friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'getHangoutsFriends'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'getHangoutsFriends'</span>,
+      data: <span class="hljs-string">''</span>
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>App telling us to begin the DOM scan</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'scanHangoutsDOM'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'scanHangoutsDOM'</span>,
+      data: <span class="hljs-string">''</span>
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>App is requesting hangouts friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'readHangoutsMessages'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'readHangoutsMessages'</span>,
+      data: {
+        to: event.data.to,
+      }
+    });
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>App is sending hangouts message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'sendHangoutsMessage'</span>)) {
+    chrome.runtime.sendMessage({
+      event: <span class="hljs-string">'sendHangoutsMessage'</span>,
+      data: {
+        to: event.data.to,
+        text: event.data.text
+      }
+    });
+  }
+    
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

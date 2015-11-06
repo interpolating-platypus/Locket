@@ -1,0 +1,2385 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>chat.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Gruntfile.html">
+                  Gruntfile.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="auth.html">
+                  auth.js
+                </a>
+              
+                
+                <a class="source" href="chat.html">
+                  chat.js
+                </a>
+              
+                
+                <a class="source" href="authFactory.html">
+                  authFactory.js
+                </a>
+              
+                
+                <a class="source" href="encryptionFactory.html">
+                  encryptionFactory.js
+                </a>
+              
+                
+                <a class="source" href="socketFactory.html">
+                  socketFactory.js
+                </a>
+              
+                
+                <a class="source" href="background.html">
+                  background.js
+                </a>
+              
+                
+                <a class="source" href="facebook.html">
+                  facebook.js
+                </a>
+              
+                
+                <a class="source" href="hangouts.html">
+                  hangouts.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+                
+                <a class="source" href="karma.conf.html">
+                  karma.conf.js
+                </a>
+              
+                
+                <a class="source" href="passport.html">
+                  passport.js
+                </a>
+              
+                
+                <a class="source" href="userController.html">
+                  userController.js
+                </a>
+              
+                
+                <a class="source" href="userModel.html">
+                  userModel.js
+                </a>
+              
+                
+                <a class="source" href="userRoutes.html">
+                  userRoutes.js
+                </a>
+              
+                
+                <a class="source" href="server.html">
+                  server.js
+                </a>
+              
+                
+                <a class="source" href="socketHandler.html">
+                  socketHandler.js
+                </a>
+              
+                
+                <a class="source" href="authSpecs.html">
+                  authSpecs.js
+                </a>
+              
+                
+                <a class="source" href="chatSpecs.html">
+                  chatSpecs.js
+                </a>
+              
+                
+                <a class="source" href="serverSpec.html">
+                  serverSpec.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>chat.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h3 id="angular-js-controller">Angular JS controller</h3>
+<p><strong>Handles all chat functionality</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>angular.module(<span class="hljs-string">'Locket.chat'</span>, [<span class="hljs-string">'luegg.directives'</span>, <span class="hljs-string">'ngAnimate'</span>])
+.controller(<span class="hljs-string">'chatController'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$scope, authFactory, $stateParams, socket, encryptionFactory, $timeout</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Configures the styles of the photo upload button</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(<span class="hljs-string">"#photoUpload"</span>).filestyle({input:<span class="hljs-literal">false</span>, buttonText: <span class="hljs-string">"Upload Photo"</span>});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Makes sure the user is signed in before loading content</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  authFactory.signedin().then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resp</span>)</span>{
+    <span class="hljs-keyword">if</span> (resp.auth === <span class="hljs-string">'OK'</span>) {
+      socket.connect();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Generates the user’s public and private keys for this session on login</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> keyring = encryptionFactory.generateKeyPair();
+      <span class="hljs-keyword">var</span> publicKey;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Sends public key to Locket friends on login</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      keyring.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">keypair</span>) </span>{
+        publicKey = keypair.pubkey;
+        socket.emit(<span class="hljs-string">'sendPGP'</span>, keypair.pubkey);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p><strong>Program variables</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.currentUser = $stateParams.username || resp.username;
+      $scope.friends = [];
+      <span class="hljs-keyword">var</span> blockedUsers = $stateParams.blockedUsers;
+      $scope.sentRequest = <span class="hljs-literal">false</span>;
+      $scope.encrypted = <span class="hljs-literal">false</span>;
+      $scope.loading = <span class="hljs-literal">false</span>;
+      $scope.showPhoto = <span class="hljs-literal">false</span>;
+      $scope.friendRequests = [];
+      $scope.acceptedfriendRequests = [];
+      $scope.activeFriend = <span class="hljs-literal">null</span>;
+      <span class="hljs-keyword">var</span> friendRequestsSentTo = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>When the userIsEncrypted property changes for Locket friend, toggle encryption switch</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.$watch(<span class="hljs-string">'activeFriend.userIsEncrypted'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">if</span> ($scope.activeFriend &amp;&amp; $scope.activeFriend.service === <span class="hljs-string">'Locket'</span>) {
+          $scope.encrypted = $scope.activeFriend.userIsEncrypted;
+        }
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>When the active friend changes, mark whether the user is encrypted</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.$watch(<span class="hljs-string">'activeFriend'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $scope.encrypted = $scope.activeFriend ? $scope.activeFriend.userIsEncrypted : <span class="hljs-literal">false</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Show photo button if the service is Locket</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $scope.showPhoto = ($scope.activeFriend &amp;&amp; $scope.activeFriend.service === <span class="hljs-string">'Locket'</span>) ? <span class="hljs-literal">true</span>: <span class="hljs-literal">false</span>;
+        $(<span class="hljs-string">".bootstrap-filestyle"</span>).toggle($scope.showPhoto);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>When $scope.encrypted changes, toggle the encryption switch based on whether $scope.encrypted is true or false</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.$watch(<span class="hljs-string">'encrypted'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">newValue, oldValue</span>) </span>{
+        $(<span class="hljs-string">'#enabled'</span>).toggleClass(<span class="hljs-string">'checked'</span>, newValue);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>On click of the encryption switch, make sure the toggle display aligns with encryption</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $(<span class="hljs-string">'#enabled'</span>).on(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event</span>) </span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          $(<span class="hljs-string">'#enabled'</span>).toggleClass(<span class="hljs-string">'checked'</span>, $scope.encrypted);
+        }, <span class="hljs-number">10</span>);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Creates friend object for storage in friends array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createFriendObj</span>(<span class="hljs-params">username, online, name, service</span>) </span>{
+        <span class="hljs-keyword">return</span> {
+          service: service || <span class="hljs-string">'Locket'</span>,
+          username: username,
+          name: name || username,
+          unreadMessage: <span class="hljs-literal">false</span>,
+          online: online || <span class="hljs-literal">false</span>,
+          key: <span class="hljs-string">''</span>,
+          messages: [],
+          unsentMessages: [], 
+          unsentFBMessages: [],
+          unsentHangoutsMessages: [],
+          userIsEncrypted: <span class="hljs-literal">false</span>,
+          sentKey: <span class="hljs-literal">false</span>,
+          lastTimestamp: <span class="hljs-number">0</span>
+        };
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Default properties for message objects</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> messageDefaults = {
+        to: <span class="hljs-literal">null</span>,
+        from: <span class="hljs-literal">null</span>,
+        message: <span class="hljs-literal">null</span>,
+        type: <span class="hljs-string">'text'</span>,
+        isEncrypted: <span class="hljs-literal">false</span>,
+        encryptedMessage: <span class="hljs-literal">null</span>
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Listens for events from our extension</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        <span class="hljs-keyword">if</span> (event.source != <span class="hljs-built_in">window</span>)
+          <span class="hljs-keyword">return</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Handles receipt of a facebook friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'facebookFriendsList'</span>)) {
+          <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; event.data.text.length; i++) {
+            <span class="hljs-keyword">var</span> friend = event.data.text[i];
+            <span class="hljs-keyword">var</span> friendObj = createFriendObj(friend.username, <span class="hljs-literal">true</span>, friend.name, <span class="hljs-string">"Facebook"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Doesn’t add a user if it’s already present (can occur due to active user + in friends list)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">var</span> dontAdd = <span class="hljs-literal">false</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; $scope.friends.length; j++) {
+              <span class="hljs-keyword">if</span> ($scope.friends[j].service !== <span class="hljs-string">"Locket"</span> &amp;&amp; $scope.friends[j].username === friend.username) {
+                dontAdd = <span class="hljs-literal">true</span>;
+              }
+            }
+            <span class="hljs-keyword">if</span> (!dontAdd) { $scope.friends.push(friendObj); }
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>After receiving a facebook friends list, begin monitoring the facebook DOM</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'scanFacebookDOM'</span>, text: <span class="hljs-string">''</span>}, <span class="hljs-string">'*'</span>);
+          $scope.friendsLoading = <span class="hljs-literal">false</span>;
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Receives a request for the active encrypted facebook sessions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'getEncryptedFriends'</span>)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Gets list of encrypted facebook friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">var</span> results = [];
+          <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; $scope.friends.length; i++) {
+            <span class="hljs-keyword">if</span> ($scope.friends[i].service !== <span class="hljs-string">"Locket"</span> &amp;&amp; $scope.friends[i].userIsEncrypted) {
+              results.push({
+                username: $scope.friends[i].username,
+                service: $scope.friends[i].service
+              });
+            }
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Sends back the results</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'encryptedFriends'</span>, text: results}, <span class="hljs-string">"*"</span>);
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Facebook and google hangouts friends will only be fetched if user has extension</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'extensionExists'</span>)) {
+          <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'getFacebookFriends'</span>, text: <span class="hljs-string">''</span>}, <span class="hljs-string">'*'</span>);
+          <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'getHangoutsFriends'</span>, text: <span class="hljs-string">''</span>}, <span class="hljs-string">'*'</span>);
+          $scope.friendsLoading = <span class="hljs-literal">true</span>;
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Receives new facebook message(s)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> partialPGPMessage = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'receivedNewFacebookMessage'</span> || event.data.type === <span class="hljs-string">'receivedNewHangoutsMessage'</span>)) {
+          <span class="hljs-keyword">var</span> username = event.data.text.with;
+          <span class="hljs-keyword">var</span> fullname = event.data.text.name;
+          <span class="hljs-keyword">var</span> newMessages = event.data.text.text;
+          <span class="hljs-keyword">var</span> service;
+          <span class="hljs-keyword">if</span>(event.data.type === <span class="hljs-string">'receivedNewFacebookMessage'</span>){
+            service = <span class="hljs-string">'Facebook'</span>;
+          }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(event.data.type === <span class="hljs-string">'receivedNewHangoutsMessage'</span>){
+            service = <span class="hljs-string">'Hangouts'</span>;
+          }
+
+          findFriend(username, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Message is from person not on friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (index === -<span class="hljs-number">1</span> &amp;&amp; username !== <span class="hljs-string">'me'</span>) {
+              <span class="hljs-keyword">var</span> newFriend = createFriendObj(username, <span class="hljs-literal">true</span>, fullname, service);
+              $scope.friends.push(newFriend);
+              index = $scope.friends.length-<span class="hljs-number">1</span>;
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Handles new messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; newMessages.length; i++) {
+              <span class="hljs-keyword">var</span> newMessage = <span class="hljs-string">''</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>PGP messages are in at least two parts, combine into one</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span> (partialPGPMessage) {
+                partialPGPMessage+=<span class="hljs-string">'\n\n'</span>+newMessages[i];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>PGP message is ending</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (newMessages[i].slice(-<span class="hljs-number">25</span>) === <span class="hljs-string">'-----END PGP MESSAGE-----'</span>) {
+                  <span class="hljs-keyword">var</span> encryptedMessage = partialPGPMessage;
+                  partialPGPMessage = <span class="hljs-string">''</span>;
+                  decryptMessage(encryptedMessage, index, event.data.text.from, service);
+                }
+              }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>PGP message is beginning</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (newMessages[i].substr(<span class="hljs-number">0</span>,<span class="hljs-number">27</span>) === <span class="hljs-string">'-----BEGIN PGP MESSAGE-----'</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>PGP message is contained in a single post</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (newMessages[i].slice(-<span class="hljs-number">26</span>).trim() === <span class="hljs-string">'-----END PGP MESSAGE-----'</span>){
+                  decryptMessage(newMessages[i], index, event.data.text.from, service);
+                }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>PGP message will continue in a subsequent message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">else</span>{
+                  partialPGPMessage = newMessages[i];
+                }
+              }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Friend has disconnected from the chat</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (newMessages[i] === <span class="hljs-string">'*****USER DISCONNECT*****'</span>) {
+                $scope.friends[index].userIsEncrypted = <span class="hljs-literal">false</span>;
+              }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Message contains no special characters</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Non-PGP message: doesn’t need decryption</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                newMessage = newMessages[i];
+                $scope.loading = <span class="hljs-literal">false</span>;
+              }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Injects the message if it exists (dont display encrypted ones from prev session)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span> (newMessage) {
+                <span class="hljs-keyword">var</span> message = {
+                  to: (event.data.text.from === <span class="hljs-string">'me'</span>) ? event.data.text.with : $scope.currentUser,
+                  from: (event.data.text.from === <span class="hljs-string">'me'</span>) ? $scope.currentUser : event.data.text.with,
+                  message: newMessage,
+                  timestamp: <span class="hljs-built_in">Date</span>.now()
+                }
+                _.defaults(message, messageDefaults);
+                $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Notify the user of any unread messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (!$scope.activeFriend) {
+                  $scope.activeFriend = $scope.friends[index];
+                }
+                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!$scope.activeFriend || $scope.friends[index].username !== $scope.activeFriend.username) {
+                  $scope.friends[index].unreadMessage = <span class="hljs-literal">true</span>;
+                }
+              }
+            }
+          });
+        };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Receives PGP Key (over facebook or hangouts)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'receivedPGPKey'</span>)) {
+          <span class="hljs-keyword">var</span> username = event.data.text.from;
+          <span class="hljs-keyword">var</span> fullname = event.data.text.name;
+          <span class="hljs-keyword">var</span> friendKey = event.data.text.publicKey;
+          <span class="hljs-keyword">var</span> myKey = event.data.text.friendKey;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Verifies the pgpkey is still valid for this session</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          keyring.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">keypair</span>)</span>{
+            publicKey = keypair.pubkey;
+
+            findFriend(username, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>If this is from a facebook friend not on the list, add as new</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span> (index === -<span class="hljs-number">1</span> &amp;&amp; username !== <span class="hljs-string">'me'</span>) {
+                <span class="hljs-keyword">var</span> newFriend = createFriendObj(username, <span class="hljs-literal">true</span>, fullname, <span class="hljs-string">"Facebook"</span>);
+                $scope.friends.push(newFriend);
+                index = $scope.friends.length-<span class="hljs-number">1</span>;
+              }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>Compares keys sent by friend to stored keys</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span> (friendKey.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>, <span class="hljs-string">''</span>) === $scope.friends[index].key.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>, <span class="hljs-string">''</span>) &amp;&amp; myKey.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>, <span class="hljs-string">''</span>) === publicKey.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>, <span class="hljs-string">''</span>)){
+                $scope.friends[index].userIsEncrypted = <span class="hljs-literal">true</span>;
+              } 
+              <span class="hljs-keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>Responds with myKey, mySession, friendSession</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Updating pgpKey for'</span>, $scope.friends[index].username);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>Stores that friend’s public key</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                $scope.friends[index].key = friendKey;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>If they sent us a key for them, AND the key for us is correct, set them to encrypted</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (friendKey &amp;&amp; myKey.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>, <span class="hljs-string">''</span>) === publicKey.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>, <span class="hljs-string">''</span>)) { $scope.friends[index].userIsEncrypted = <span class="hljs-literal">true</span>; }
+                <span class="hljs-keyword">else</span> { $scope.friends[index].userIsEncrypted = <span class="hljs-literal">false</span>; }
+                
+                <span class="hljs-built_in">window</span>.postMessage({
+                  type: <span class="hljs-string">'sendPublicKey'</span>,
+                  publicKey: publicKey,
+                  friendKey: friendKey,
+                  to: $scope.friends[index].username,
+                  service: $scope.friends[index].service
+                }, <span class="hljs-string">'*'</span>);
+                $scope.friends[index].sentKey = <span class="hljs-built_in">Date</span>.now();
+              }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <p>Changes encryption toggle</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span> ($scope.activeFriend &amp;&amp; $scope.friends[index].username === $scope.activeFriend.username) {
+                $scope.encrypted = $scope.friends[index].userIsEncrypted;
+              }
+
+              $scope.$apply();
+            });
+          });
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <p>Recieves a hangouts friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (event.data.type &amp;&amp; (event.data.type === <span class="hljs-string">'hangoutsFriendsList'</span>)) {
+          <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; event.data.text.length; i++) {
+            <span class="hljs-keyword">var</span> friend = event.data.text[i];
+            <span class="hljs-keyword">var</span> friendObj = createFriendObj(friend.username, <span class="hljs-literal">true</span>, friend.name, <span class="hljs-string">"Hangouts"</span>);
+            $scope.friends.push(friendObj);
+          }
+
+          <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'scanHangoutsDOM'</span>, text: <span class="hljs-string">''</span>}, <span class="hljs-string">'*'</span>);
+        }
+
+        $scope.$apply();
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <p>We are requesting an encrypted chat 
+Sends the recipient our public key and request their public key in return</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.requestEncryptedChat = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        findFriend($scope.activeFriend.username, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+          $scope.friends[index].sentKey = <span class="hljs-literal">true</span>;
+          <span class="hljs-built_in">window</span>.postMessage({
+            type: <span class="hljs-string">'sendPublicKey'</span>,
+            publicKey: publicKey,
+            friendKey: $scope.friends[index].key,
+            to: $scope.activeFriend.username,
+            service: $scope.friends[index].service
+          }, <span class="hljs-string">'*'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p>Displays sending-encryption message to user, with timeout</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          $scope.encryptionReqMsg = <span class="hljs-literal">true</span>;
+          $timeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            $scope.encryptionReqMsg = <span class="hljs-literal">false</span>;
+          }, <span class="hljs-number">2000</span>);
+        });
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>Changes active friend on click of a user in friends list by iterating through friends and setting activeFriend to clicked friend</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.startChat = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">friend</span>)</span>{
+        findFriend(friend.username, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>)</span>{
+          $scope.activeFriend = $scope.friends[index];
+          <span class="hljs-keyword">if</span> ($scope.friends[index].unreadMessage) {
+            $scope.friends[index].unreadMessage = <span class="hljs-literal">false</span>;
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <p>Upon starting a chat, select the input text box</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          $timeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ 
+            $(<span class="hljs-string">".sendMessageInput"</span>).focus();
+            $(<span class="hljs-string">".sendMessageInputFull"</span>).focus();
+          }, <span class="hljs-number">100</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>Loads messages for that friend from appropriate service</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> ($scope.activeFriend.service === <span class="hljs-string">"Facebook"</span>) {
+            <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'readFacebookMessages'</span>, to: $scope.activeFriend.username}, <span class="hljs-string">'*'</span>);
+          }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>($scope.activeFriend.service === <span class="hljs-string">"Hangouts"</span>){
+            <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'readHangoutsMessages'</span>, to: $scope.activeFriend.username}, <span class="hljs-string">'*'</span>);
+          }
+        });
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <p>On submission of a message, send an encrypted verison of what was typed in as the input to the server</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.sendMessage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">messageText</span>)</span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <p>Starts spinner</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $scope.loading = <span class="hljs-literal">true</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>Resets message text</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $scope.messageText = <span class="hljs-string">''</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <p><strong>Locket-specific message handling</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> ($scope.activeFriend.service === <span class="hljs-string">'Locket'</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <p>Encrypts message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> (messageText) {
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">encryptedMessage</span>) </span>{
+              <span class="hljs-keyword">if</span> (messageText) {
+                $scope.activeFriend.unsentMessages.push({message: messageText, encryptedMessage: encryptedMessage, isEncrypted: <span class="hljs-literal">true</span>});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <p>Sends the message to the appropriate user using sockets</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                socket.emit(<span class="hljs-string">'sendMessage'</span>, { to: $scope.activeFriend.username, message: encryptedMessage });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              <p>Sets the spinner back to false</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                $scope.loading = <span class="hljs-literal">false</span>;
+              }
+            });
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-56">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <p>Encrypts and sends the photo stream (if it exists)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">var</span> f = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'photoUpload'</span>).files[<span class="hljs-number">0</span>];
+          <span class="hljs-keyword">var</span> r = <span class="hljs-keyword">new</span> FileReader();
+          r.onloadend = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">e</span>) </span>{
+            <span class="hljs-keyword">var</span> data = e.target.result;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
+              </div>
+              <p>Encrypts the photo</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, data.toString(<span class="hljs-string">'base64'</span>))
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">encryptedPhoto</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-58">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-58">&#182;</a>
+              </div>
+              <p>Sends the photo</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              socket.emit(<span class="hljs-string">'sendMessage'</span>, {
+                to: $scope.activeFriend.username, 
+                message: encryptedPhoto,
+                type: <span class="hljs-string">'image'</span>
+              });
+              <span class="hljs-keyword">var</span> message = {
+                message: data.toString(<span class="hljs-string">'base64'</span>),
+                encryptedMessage: encryptedPhoto,
+                isEncrypted: <span class="hljs-literal">true</span>,
+                timestamp: <span class="hljs-built_in">Date</span>.now()
+              }
+              _.defaults(message, messageDefaults);
+              $scope.activeFriend.unsentMessages.push(message);
+              $(<span class="hljs-string">"#photoUpload"</span>).filestyle(<span class="hljs-string">'clear'</span>);
+              $scope.loading = <span class="hljs-literal">false</span>;
+            });
+          };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-59">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-59">&#182;</a>
+              </div>
+              <p>Reads the file</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> (f) { r.readAsDataURL(f); }
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-60">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-60">&#182;</a>
+              </div>
+              <p><strong>Facebook-specific message handling</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($scope.activeFriend.service === <span class="hljs-string">'Facebook'</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-61">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-61">&#182;</a>
+              </div>
+              <p>Sends encrypted message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> ($scope.activeFriend.userIsEncrypted) {
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">encryptedMessage</span>) </span>{
+              <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'sendFacebookMessage'</span>, to: $scope.activeFriend.username, text: encryptedMessage}, <span class="hljs-string">'*'</span>);
+              $scope.activeFriend.unsentFBMessages.push({
+                message: messageText,
+                encryptedMessage: encryptedMessage,
+                isEncrypted: <span class="hljs-literal">true</span>
+              });
+            });
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-62">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-62">&#182;</a>
+              </div>
+              <p>Sends unencrypted message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">else</span> { 
+            <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'sendFacebookMessage'</span>, to: $scope.activeFriend.username, text: messageText}, <span class="hljs-string">'*'</span>);
+          }
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-63">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-63">&#182;</a>
+              </div>
+              <p><strong>Hangouts-specific message handling</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($scope.activeFriend.service === <span class="hljs-string">'Hangouts'</span>){</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-64">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-64">&#182;</a>
+              </div>
+              <p>Sends encrypted message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> ($scope.activeFriend.key) {
+            encryptionFactory.encryptMessage({pubkey: $scope.activeFriend.key}, messageText)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">encryptedMessage</span>) </span>{
+              <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'sendHangoutsMessage'</span>, to: $scope.activeFriend.username, text: encryptedMessage}, <span class="hljs-string">'*'</span>);
+              $scope.activeFriend.unsentHangoutsMessages.push({
+                message: messageText,
+                encryptedMessage: encryptedMessage,
+                isEncrypted: <span class="hljs-literal">true</span>
+              });
+            });
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-65">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-65">&#182;</a>
+              </div>
+              <p>Sends unencrypted message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">else</span> { 
+            <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'sendHangoutsMessage'</span>, to: $scope.activeFriend.username, text: messageText}, <span class="hljs-string">'*'</span>);
+          }
+
+        }
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-66">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-66">&#182;</a>
+              </div>
+              <p>On click of a user’s own message, delete the message from both recipient and sender clients</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.revokeMessage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">message</span>) </span>{
+        <span class="hljs-keyword">if</span> (message.from === $scope.currentUser) {
+          socket.emit(<span class="hljs-string">'revokeMessage'</span>, {to: message.to, from: message.from, message: message.encryptedMessage, timestamp: message.timestamp});
+        }
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-67">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-67">&#182;</a>
+              </div>
+              <p>Socket listener for when a friend has sent a PGP key–save the PGP key in friend object and send a key back</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'receivePGP'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">keyObj</span>) </span>{
+        findFriend(keyObj.friend, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">index</span>) </span>{
+          <span class="hljs-keyword">if</span> (index !== -<span class="hljs-number">1</span>) {
+            $scope.friends[index].key = keyObj.key;
+            $scope.friends[index].userIsEncrypted = <span class="hljs-literal">true</span>;
+            socket.emit(<span class="hljs-string">'returnPGP'</span>, {friend: keyObj.friend, key: publicKey});
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-68">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-68">&#182;</a>
+              </div>
+              <p>Socket listener from when a PGP key has been returned</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'completePGP'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">keyObj</span>) </span>{
+        findFriend(keyObj.friend, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">index</span>) </span>{
+          <span class="hljs-keyword">if</span> (index !== -<span class="hljs-number">1</span>) {
+            $scope.friends[index].key = keyObj.key;
+            $scope.friends[index].userIsEncrypted = <span class="hljs-literal">true</span>;
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-69">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-69">&#182;</a>
+              </div>
+              <p>Decrypts a message and push it to messages array in sender’s friend object so that it renders on the chat page</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'newMessage'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">message</span>)</span>{
+        findFriend(message.from, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>)</span>{
+          <span class="hljs-keyword">if</span> (index !== -<span class="hljs-number">1</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-70">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-70">&#182;</a>
+              </div>
+              <p>Decrypts message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            keyring.then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">keypair</span>) </span>{
+              encryptionFactory.decryptMessage(keypair, message.encryptedMessage)
+              .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">decryptedMessage</span>) </span>{
+                message.message = decryptedMessage;
+                message.isEncrypted = <span class="hljs-literal">true</span>;
+                $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;
+                $scope.$apply();
+              });
+            });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-71">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-71">&#182;</a>
+              </div>
+              <p>Alerts user to unread messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> ($scope.activeFriend === <span class="hljs-literal">null</span> || $scope.friends[index].username !== $scope.activeFriend.username) {
+              $scope.friends[index].unreadMessage = <span class="hljs-literal">true</span>;
+            }
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-72">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-72">&#182;</a>
+              </div>
+              <p>Handles receipt of a new photo</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'newPhoto'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">photo</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-73">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-73">&#182;</a>
+              </div>
+              <p>Decrypts photo</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        findFriend(photo.from, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>) </span>{
+          <span class="hljs-keyword">if</span> (index !== -<span class="hljs-number">1</span>) {
+            keyring.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">keypair</span>) </span>{
+              encryptionFactory.decryptMessage(keypair, photo.encryptedMessage)
+              .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">decryptedPhoto</span>) </span>{
+                $scope.friends[index].messages.push({
+                  type: <span class="hljs-string">'image'</span>,
+                  timestamp: <span class="hljs-built_in">Date</span>.now(),
+                  isEncrypted: <span class="hljs-string">'true'</span>,
+                  source: decryptedPhoto
+                });
+                $scope.friends[index].lastTimestamp = <span class="hljs-built_in">Date</span>.now();
+              });
+            });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-74">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-74">&#182;</a>
+              </div>
+              <p>Alerts user to unread message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> ($scope.activeFriend === <span class="hljs-literal">null</span> || $scope.friends[index].username !== $scope.activeFriend.username) {
+              $scope.friends[index].unreadMessage = <span class="hljs-literal">true</span>;
+            }
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-75">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-75">&#182;</a>
+              </div>
+              <p>Renders a sent message on the user’s client chat page</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'messageSent'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message</span>) </span>{
+        findFriend(message.to, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">index</span>) </span>{
+          <span class="hljs-keyword">if</span> (index !== -<span class="hljs-number">1</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-76">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-76">&#182;</a>
+              </div>
+              <p>Iterates through unsent messages to find the message, then splices it out and pushes it to messages in friend object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; $scope.friends[index].unsentMessages.length; i++) {
+              <span class="hljs-keyword">if</span> ($scope.friends[index].unsentMessages[i].encryptedMessage === message.encryptedMessage) {
+                message.message = $scope.friends[index].unsentMessages[i].message;
+                message.isEncrypted = $scope.friends[index].unsentMessages[i].isEncrypted;
+                $scope.friends[index].unsentMessages.splice(i, <span class="hljs-number">1</span>);
+                $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;
+              }
+            }
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-77">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-77">&#182;</a>
+              </div>
+              <p>After server has received command to revoke a message, clear it from display</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'destroyMessage'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message</span>) </span>{
+        <span class="hljs-keyword">var</span> friend;
+        <span class="hljs-keyword">if</span> (message.from === $scope.currentUser) {
+          friend = message.to;
+        } <span class="hljs-keyword">else</span> {
+          friend = message.from;
+        }
+        findFriend(friend, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">index</span>) </span>{
+          <span class="hljs-keyword">if</span> (index !== -<span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">var</span> messageIndex = -<span class="hljs-number">1</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-78">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-78">&#182;</a>
+              </div>
+              <p>Iterates through messages to find one that matches message to be destroyed</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; $scope.friends[index].messages.length; i++) {
+              <span class="hljs-keyword">var</span> thisMessage = $scope.friends[index].messages[i];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-79">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-79">&#182;</a>
+              </div>
+              <p>If match found, sets messageIndex to index in messages array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span> (message.to === thisMessage.to &amp;&amp; message.from === thisMessage.from &amp;&amp; message.timestamp === thisMessage.timestamp &amp;&amp; message.message === thisMessage.encryptedMessage) {
+                messageIndex = i;
+                <span class="hljs-keyword">break</span>;
+              }
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-80">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-80">&#182;</a>
+              </div>
+              <p>Deletes the message from the messages array</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (messageIndex !== -<span class="hljs-number">1</span>) {
+              $scope.friends[index].messages.splice(messageIndex, <span class="hljs-number">1</span>);
+            }
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-81">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-81">&#182;</a>
+              </div>
+              <p>Retrieves Locket friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLocketFriends</span>(<span class="hljs-params"></span>) </span>{
+        socket.emit(<span class="hljs-string">'getFriends'</span>, {});
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-82">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-82">&#182;</a>
+              </div>
+              <p>Received Locket friends</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'friendsList'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">friends</span>)</span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; friends.length; i++) {
+          <span class="hljs-keyword">var</span> friend = friends[i];
+          $scope.friends.unshift(createFriendObj(friend));
+        }
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-83">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-83">&#182;</a>
+              </div>
+              <p>Adds a Locket friend</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.addFriend = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newFriendUsername</span>)</span>{
+        $scope.newFriendUsername = <span class="hljs-string">''</span>;
+
+        <span class="hljs-keyword">var</span> friendUsernames = $scope.friends.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">friend</span>) </span>{
+          <span class="hljs-keyword">return</span> friend.username;
+        });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-84">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-84">&#182;</a>
+              </div>
+              <p>User tried to issue invalid friend request</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (newFriendUsername === $scope.currentUser) {
+          $scope.friendReqMsg = <span class="hljs-string">"Feeling lonely?"</span>;
+        } 
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (friendUsernames.indexOf(newFriendUsername) &gt; -<span class="hljs-number">1</span>) {
+          $scope.friendReqMsg = <span class="hljs-string">"You are already friends with "</span> + newFriendUsername;
+        } 
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (friendRequestsSentTo.indexOf(newFriendUsername) &gt; -<span class="hljs-number">1</span>) {
+          $scope.friendReqMsg = <span class="hljs-string">"Friend request already sent!"</span>;
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-85">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-85">&#182;</a>
+              </div>
+              <p>Emit friend request to server</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">else</span> {
+          socket.emit(<span class="hljs-string">'addFriend'</span>, { to: newFriendUsername });
+          $scope.friendReqMsg = <span class="hljs-string">"Friend request sent"</span>;
+          friendRequestsSentTo.push(newFriendUsername);
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-86">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-86">&#182;</a>
+              </div>
+              <p>Displays friend request message to user</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $scope.sentRequest = <span class="hljs-literal">true</span>;
+        $timeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+          $scope.sentRequest = <span class="hljs-literal">false</span>;
+        }, <span class="hljs-number">2000</span>);
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-87">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-87">&#182;</a>
+              </div>
+              <p>Accepts a user’s friend request</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.acceptFriendRequest = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friend</span>) </span>{
+        socket.emit(<span class="hljs-string">'friendRequestAccepted'</span>, {from: $scope.currentUser, to: friend});
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; $scope.friendRequests.length; i++) {
+          <span class="hljs-keyword">if</span> (friend === $scope.friendRequests[i]) {
+            $scope.friendRequests.splice(i, <span class="hljs-number">1</span>);
+            <span class="hljs-keyword">var</span> newFriend = createFriendObj(friend);
+            $scope.friends.unshift(newFriend);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-88">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-88">&#182;</a>
+              </div>
+              <p>Updates the online property for the new friend</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            findFriend(friend, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>)</span>{
+              <span class="hljs-keyword">if</span>(index &gt;= <span class="hljs-number">0</span>){
+                $scope.friends[index].online = <span class="hljs-literal">true</span>;
+              } <span class="hljs-keyword">else</span> {
+                $scope.friends.unshift(createFriendObj(friend));
+              }
+            });
+          }
+        }
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-89">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-89">&#182;</a>
+              </div>
+              <p>Ignores a user’s friend request</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.ignoreFriendRequest = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friend</span>) </span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; $scope.friendRequests.length; i++) {
+          <span class="hljs-keyword">if</span> (friend === $scope.friendRequests[i]) {
+            $scope.friendRequests.splice(i, <span class="hljs-number">1</span>);
+          }
+        }
+        socket.emit(<span class="hljs-string">'ignoreFriendRequest'</span>, {from: $scope.currentUser, to: friend});
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-90">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-90">&#182;</a>
+              </div>
+              <p>Acknowledges a user’s acceptance of friend request</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.acknowledgeFriendRequest = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friend</span>) </span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; $scope.acceptedfriendRequests.length; i++) {
+          <span class="hljs-keyword">if</span> (friend === $scope.acceptedfriendRequests[i]) {
+            $scope.acceptedfriendRequests.splice(i, <span class="hljs-number">1</span>);
+          }
+        }
+        socket.emit(<span class="hljs-string">'acknowledgeFriendRequest'</span>, {from: $scope.currentUser, to: friend});
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-91">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-91">&#182;</a>
+              </div>
+              <p>Blocks a user from sending future friend requests</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.blockUser = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">user</span>) </span>{
+        socket.emit(<span class="hljs-string">'blockUser'</span>, {from: $scope.currentUser, to: user});
+        blockedUsers.push(user);        
+        $scope.ignoreFriendRequest(user);
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-92">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-92">&#182;</a>
+              </div>
+              <p>Fetches any pending friend requests for the user</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.fetchUnreadFriendRequests = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        $scope.friendRequests = $stateParams.friendRequests;
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-93">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-93">&#182;</a>
+              </div>
+              <p>Fetches any unread new friend acknowledgements</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.fetchUnreadAcknowledgements = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        $scope.acceptedfriendRequests = $stateParams.acceptedfriendRequests;
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-94">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-94">&#182;</a>
+              </div>
+              <p>Logout socket emits event that will disconnect the current user</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $scope.logout = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        $scope.currentUser = <span class="hljs-literal">null</span>;
+        authFactory.logout();
+        socket.emit(<span class="hljs-string">'logout'</span>);
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-95">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-95">&#182;</a>
+              </div>
+              <p>Informs the user’s client when a friend has logged in</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'friendLoggedIn'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">friend</span>)</span>{
+        findFriend(friend, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>)</span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-96">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-96">&#182;</a>
+              </div>
+              <p>If user is in friends list, sets online property for that friend to true so friends list will update</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span>(index &gt;= <span class="hljs-number">0</span>){
+            $scope.friends[index].online = <span class="hljs-literal">true</span>;
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-97">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-97">&#182;</a>
+              </div>
+              <p>If user is not in friends list, adds them</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">else</span> {
+            $scope.friends.unshift(createFriendObj(friend));
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-98">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-98">&#182;</a>
+              </div>
+              <p>Informs user’s client when a friend has logged out so that friends list is updated accordingly</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'friendLoggedOut'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friend</span>) </span>{
+        findFriend(friend, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">index</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-99">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-99">&#182;</a>
+              </div>
+              <p>Verifies user is in friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> (index &gt;= <span class="hljs-number">0</span>) {
+            $scope.friends[index].online = <span class="hljs-literal">false</span>;
+            <span class="hljs-keyword">if</span> ($scope.activeFriend) {
+              <span class="hljs-keyword">if</span> (friend === $scope.activeFriend.username) {
+                $scope.activeFriend = <span class="hljs-literal">null</span>;
+              }
+            }
+          }
+        });
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-100">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-100">&#182;</a>
+              </div>
+              <p>Displays incoming friend request</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'friendRequest'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friendRequest</span>) </span>{
+        <span class="hljs-keyword">if</span> (blockedUsers.indexOf(friendRequest.from) === -<span class="hljs-number">1</span>) {
+          $scope.friendRequests.push(friendRequest.from);
+        } 
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-101">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-101">&#182;</a>
+              </div>
+              <p>Displays accepted friend request</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      socket.on(<span class="hljs-string">'friendRequestAccepted'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">acceptFriendObj</span>) </span>{
+        $scope.acceptedfriendRequests.push(acceptFriendObj.from);
+        <span class="hljs-keyword">var</span> newFriend = createFriendObj(acceptFriendObj.from);
+        $scope.friends.unshift(newFriend);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-102">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-102">&#182;</a>
+              </div>
+              <p>Checks if the new friend is online</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        findFriend(newFriend.username, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index</span>)</span>{
+          <span class="hljs-keyword">if</span>(index &gt;= <span class="hljs-number">0</span>){
+            $scope.friends[index].online = <span class="hljs-literal">true</span>;
+          } <span class="hljs-keyword">else</span> {
+            $scope.friends.unshift(createFriendObj(friend));
+          }
+        });
+
+        socket.emit(<span class="hljs-string">'sendPGP'</span>, publicKey);
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-103">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-103">&#182;</a>
+              </div>
+              <p>Hoists helper functions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findFriend</span>(<span class="hljs-params">friend, cb</span>)</span>{ 
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; $scope.friends.length; i++) { 
+          <span class="hljs-keyword">if</span>($scope.friends[i].username === friend){
+            cb(i);
+            <span class="hljs-keyword">return</span>;
+          }
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-104">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-104">&#182;</a>
+              </div>
+              <p>Returns -1 if the friend does not exist</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        cb(-<span class="hljs-number">1</span>);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-105">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-105">&#182;</a>
+              </div>
+              <p>Checks to see if the user has the extension installed</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkUserHasExtension</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">window</span>.postMessage({ type: <span class="hljs-string">'checkExtension'</span>, text: <span class="hljs-string">''</span>}, <span class="hljs-string">'*'</span>);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-106">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-106">&#182;</a>
+              </div>
+              <p>Handles decryption of messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">decryptMessage</span>(<span class="hljs-params">encryptedMessage, index, from, service</span>)</span>{
+        keyring.then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">keypair</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-107">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-107">&#182;</a>
+              </div>
+              <p>If we sent the message, use the local decrypted version</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> (from === <span class="hljs-string">'me'</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-108">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-108">&#182;</a>
+              </div>
+              <p>Creates a message object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">var</span> message = {
+              encryptedMessage: encryptedMessage,
+              from: $scope.currentUser,
+              timestamp: <span class="hljs-built_in">Date</span>.now()
+            }
+            _.defaults(message, messageDefaults);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-109">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-109">&#182;</a>
+              </div>
+              <p>Keeps track of whether we were able to succesfully decrypt the message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">var</span> addedMessage = <span class="hljs-literal">false</span>;
+
+            <span class="hljs-keyword">var</span> unsentMessages;
+
+            <span class="hljs-keyword">if</span>(service === <span class="hljs-string">"Facebook"</span>){
+              unsentMessages = $scope.friends[index].unsentFBMessages;
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(service === <span class="hljs-string">"Hangouts"</span>){
+              unsentMessages = $scope.friends[index].unsentHangoutsMessages;
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-110">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-110">&#182;</a>
+              </div>
+              <p>Iterates over unsent messages to display the message which corresponds to the pgp message posted to the DOM</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; unsentMessages.length; j++) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-111">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-111">&#182;</a>
+              </div>
+              <p>Displays a stored decrypted message if it corresponds to the correct encrypted message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span> (unsentMessages[j].encryptedMessage.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>, <span class="hljs-string">''</span>) === message.encryptedMessage.replace(<span class="hljs-regexp">/[^a-z0-9]/gmi</span>,<span class="hljs-string">''</span>)) {
+                message.message = unsentMessages[j].message;
+                message.isEncrypted = unsentMessages[j].isEncrypted;
+                unsentMessages.splice(j, <span class="hljs-number">1</span>);
+                $scope.friends[index].messages.push(message);
+                $scope.friends[index].lastTimestamp = message.timestamp;
+                addedMessage = <span class="hljs-literal">true</span>;
+                $scope.loading = <span class="hljs-literal">false</span>;
+                $scope.$apply();
+              }
+            }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-112">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-112">&#182;</a>
+              </div>
+              <p>If the message was unable to be decrypted, displays that the message has expired</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> (!addedMessage) {
+              message.message = <span class="hljs-string">'[Message Expired]'</span>;
+              message.isEncrypted = <span class="hljs-literal">true</span>;
+              $scope.friends[index].messages.push(message);
+              $scope.friends[index].lastTimestamp = message.timestamp;
+              $scope.$apply();
+            }
+          }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-113">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-113">&#182;</a>
+              </div>
+              <p>Decrypts messages sent from other users using our private key</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">else</span> {
+            encryptionFactory.decryptMessage(keypair, encryptedMessage)
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">decryptedMessage</span>) </span>{
+              <span class="hljs-keyword">var</span> message = {
+                to: $scope.currentUser,
+                from: $scope.friends[index].username,
+                encryptedMessage: encryptedMessage,
+                message: decryptedMessage,
+                isEncrypted: <span class="hljs-literal">true</span>,
+                timestamp: <span class="hljs-built_in">Date</span>.now()
+              }
+              _.defaults(message, messageDefaults);
+              $scope.friends[index].messages.push(message);
+              $scope.friends[index].lastTimestamp = message.timestamp;
+              <span class="hljs-keyword">if</span> (!$scope.activeFriend) {
+                $scope.activeFriend = $scope.friends[index];
+              }
+              <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ($scope.friends[index].username !== $scope.activeFriend.username) {
+                $scope.friends[index].unreadMessage = <span class="hljs-literal">true</span>;
+              }
+              $scope.$apply();
+            })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-114">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-114">&#182;</a>
+              </div>
+              <p>If the message cannot be decrypted, it has expired</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+              <span class="hljs-keyword">var</span> message = {
+                to: $scope.currentUser,
+                from: $scope.friends[index].username,
+                encryptedMessage: encryptedMessage,
+                message: <span class="hljs-string">'[Message Expired]'</span>,
+                isEncrypted: <span class="hljs-literal">true</span>,
+                timestamp: <span class="hljs-built_in">Date</span>.now()
+              }
+              _.defaults(message, messageDefaults);
+              $scope.friends[index].messages.push(message);
+              $scope.friends[index].lastTimestamp = message.timestamp;
+            });
+          }
+        });
+      }
+
+      checkUserHasExtension();
+      getLocketFriends();
+      $scope.fetchUnreadFriendRequests();
+      $scope.fetchUnreadAcknowledgements();
+    }
+  });
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
