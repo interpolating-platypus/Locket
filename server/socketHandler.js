@@ -210,8 +210,6 @@ var disconnect = function (username) {
   
   // Remove user from userMap
   delete userMap[username];
-
-  notifyFriends('friendLoggedOut', username);
 };
 
 // Function to notify friends of a particular event, such as friendLoggedIn and friendLoggedOut
