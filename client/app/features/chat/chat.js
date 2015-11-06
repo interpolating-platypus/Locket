@@ -31,7 +31,14 @@ angular.module('Locket.chat', ['luegg.directives', 'ngAnimate'])
       $scope.friendRequests = [];
       $scope.acceptedfriendRequests = [];
       $scope.activeFriend = null;
-      var friendRequestsSentTo = []; 
+      var friendRequestsSentTo = [];
+
+      // When the userIsEncrypted property changes for Locket friend, toggle encryption switch
+      $scope.$watch('activeFriend.userIsEncrypted', function() {
+        if ($scope.activeFriend && $scope.activeFriend.service === 'Locket') {
+          $scope.encrypted = $scope.activeFriend.userIsEncrypted;
+        }
+      });
 
       // When the active friend changes, mark whether the user is encrypted
       $scope.$watch('activeFriend', function() {
