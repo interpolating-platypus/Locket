@@ -38,6 +38,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(__dirname + '/../client'));
+app.use(express.static(__dirname + '/../docs'));
 app.use('/api/users', userRouter);
 
 
