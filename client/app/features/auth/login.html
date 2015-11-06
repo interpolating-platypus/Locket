@@ -35,6 +35,7 @@
       <!-- <h1 class="aboutBanner">Chat securely away from prying eyes</h1> -->
     </div>
   </div>
+
   <div class="row aboutRow row-odd">
     <div class="col-xs-offset-2 col-xs-4">
       <img class="loginImage" src="../assets/encryption.jpg">
@@ -46,6 +47,7 @@
       </p>
     </div>
   </div>
+
   <div class="row aboutRow row-even">
     <div class="col-xs-offset-2 col-xs-4">
       <h1 class="aboutHeader">The Solution</h1>
@@ -57,9 +59,64 @@
       <img class="loginImage" src="../assets/encryption.jpg">
     </div>
   </div>
+
   <div class="row aboutRow row-odd">
     <div class="col-xs-offset-2 col-xs-4">
       <img class="loginImage" src="../assets/encryption.jpg">
+    </div>
+    <div class="col-xs-4">
+      <h1 class="aboutHeader">Chat with Facebook and Hangouts Friends</h1>
+      <p class="about">
+        Terms of Service
+      </p>
+    </div>
+  </div>
+
+  <div class="row aboutRow row-even">
+    <div class="col-xs-offset-2 col-xs-4">
+      <h1 class="aboutHeader">Send Photos over Locket</h1>
+      <p class="about">
+        Terms of Service
+      </p>
+    </div>
+    <div class="col-xs-4">
+      <img class="loginImage" src="../assets/encryption.jpg">
+    </div>
+  </div>
+
+  <div class="row aboutRow row-odd">
+    <div class="col-xs-offset-2 col-xs-4">
+      <img class="loginImage" src="../assets/encryption.jpg">
+    </div>
+    <div class="col-xs-4">
+      <h1 class="aboutHeader">Revoke Messages After They're Sent</h1>
+      <p class="about">
+        Based on the Terms of Service from Facebook Messenger and Google Hangouts, users agree to allow these companies to read their messages.
+      </p>
+    </div>
+  </div>
+
+  <div class="row aboutRow row-even">
+    <div class="col-xs-offset-2 col-xs-4">
+      <h1 class="aboutHeader">Send Fun Emojis</h1>
+      <p class="about">
+        Unlike other end-to-end encryption chat services, Locket allows users to chat with existing friends on other messaging platforms while protecting user privacy.
+      </p>
+    </div>
+    <div class="col-xs-4">
+      <img class="loginImage" src="../assets/encryption.jpg">
+    </div>
+  </div>
+
+  <div class="row aboutRow row-odd">
+    <div class="col-xs-offset-2 col-xs-4">
+      <img class="loginImage" src="../assets/encryption.jpg">
+      <div>
+        <br>
+        <img src="../../assets/GitHub-Mark.png" alt="GitHub Logo" class="githubLogo">
+        View this project on GitHub:
+        <a target="_blank" href="https://github.com/interpolating-platypus/Locket"> Locket</a>
+      </div>
     </div>
     <div class="col-xs-4">
       <h1 class="aboutHeader">Signup</h1>
@@ -74,35 +131,8 @@
         <span class='error' ng-show='signupForm.confirmPassword.$error.match'>Passwords must match</span>
         <div ng-show='signupFailed'>Signup Failed</div>
       </form>
+      <br>
+      <div>To have encrypted chats with your friends on Facebook and Google Hangouts, download the <a target="_blank" href="https://chrome.google.com/webstore/detail/locket/kmclnkpagjmledigbephoecmpihidbla">Locket Chrome extension</a>!</div>
     </div>
   </div>
-  <!-- <div class="col-xs-6">
-    <img class="loginImage" src="../assets/encryption.jpg">
-    <h3>About</h3>
-    <p class="about">
-      Facebook Messenger, Google Hangouts, and other messaging applications do not respect our privacy as much as we'd like.  Based on their Terms of Service, users agree to allow these companies to read their messages.  While end-to-end encryption chat services exist, they don't take advantage of the convenience provided by popular messaging platforms.  Locket allows users to chat with existing friends on other messaging platforms while protecting user privacy.
-    </p>
-  </div>
-  <div class="col-xs-4 col-xs-offset-2">
-    <h1>SIGNUP</h1>
-    <h4>Chat securely away from prying eyes</h4>
-    <form ng-submit='signup()' name='signupForm'>
-      <input autocomplete='off' class='form-control' type='text' name='username' placeholder='username' ng-model='user.usernameSignup' ng-minlength="2" required/>
-      <input autocomplete='off' class='form-control' type='password' name='password' placeholder='password' ng-model='user.passwordSignup' ng-minlength="2" required/>
-      <input autocomplete='off' class='form-control' placeholder='confirm password' name="confirmPassword" ng-model="user.passwordConfirm" type="password" match="user.passwordSignup" required/>
-      <button class='btn btn-primary form-control' ng-disabled="!signupForm.$valid" type='submit'>Sign Up</button>
-      <span class='error' ng-show='signupForm.username.$error.minlength'>Username is too short</span>
-      <span class='error' ng-show='signupForm.password.$error.minlength'>Password is too short</span>
-      <span class='error' ng-show='signupForm.confirmPassword.$error.match'>Passwords must match</span>
-      <div ng-show='signupFailed'>Signup Failed</div>
-    </form>
-    <br>
-    <div>To have encrypted chats with your friends on Facebook and Google Hangouts, download the <a target="_blank" href="https://chrome.google.com/webstore/detail/locket/kmclnkpagjmledigbephoecmpihidbla">Locket Chrome extension</a>!</div>
-    <br>
-    <div>
-      <img src="../../assets/GitHub-Mark.png" alt="GitHub Logo" class="githubLogo">
-      View this project on GitHub:
-      <a target="_blank" href="https://github.com/interpolating-platypus/Locket"> Locket</a>
-    </div>
-  </div> -->
 </div>
