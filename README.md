@@ -20,7 +20,9 @@
 
 ## Usage
 
-> Some usage instructions
+1. Download our Chrome Extension: https://chrome.google.com/webstore/detail/locket/kmclnkpagjmledigbephoecmpihidbla
+2. Signup on our website: www.locketchat.com
+3. Chat away securely with your friends!
 
 ## Requirements
 
