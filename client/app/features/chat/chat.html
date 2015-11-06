@@ -29,7 +29,7 @@
   <div class="row special-row">
 
     <div class="col-xs-4 friendListWindow">
-      <img ng-show="friendsLoading" class="friendSpinner" src="../../spinner.gif"/>
+      <img ng-show="friendsLoading" class="friendSpinner" src="../../assets/spinner.gif"/>
       <p class="windowTitle text-center">Friends List</p>
       <form class='form-control-inline' ng-submit='addFriend(newFriendUsername)' name='addFriendForm'>
         <div class='form-group'>
@@ -72,8 +72,8 @@
           <li ng-if='friend.online' ng-repeat='friend in friends | orderBy:"-lastTimestamp" | filter:searchText track by $index' ng-click='startChat(friend)'>
             <div ng-class='(friend.username === activeFriend.username) ? "activeFriendPanel" : ""' class='panel panel-default friendPanel'>
               <span ng-if="friend.service === 'Locket'" class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-              <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='icon' src='../../facebook.png'/></span>
-              <span ng-if="friend.service === 'Hangouts'" aria-hidden="true"><img class='icon' src='../../hangouts.png'/></span>
+              <span ng-if="friend.service === 'Facebook'" aria-hidden="true"><img class='icon' src='../../assets/facebook.png'/></span>
+              <span ng-if="friend.service === 'Hangouts'" aria-hidden="true"><img class='icon' src='../../assets/hangouts.png'/></span>
               <span ng-if="friend.service !== 'Locket' && friend.service !== 'Facebook' && friend.service !== 'Hangouts'" class='friendService'>{{friend.service}}</span>
               <span class='friendName'>{{friend.name}}</span>
               <span class='friendArrow'><span class="glyphicon glyphicon-chevron-right vertical-center" aria-hidden="true"></span></span>
@@ -92,7 +92,7 @@
 
 
         <div class="windowTitle text-center">
-          <img ng-show="loading" class="spinner" src="../../spinner.gif"/>
+          <img ng-show="loading" class="spinner" src="../../assets/spinner.gif"/>
           <span ng-show="encryptionReqMsg" class="chatRequest">Encrypted chat request sent</span>
           <span class="activeFriend">Chat with {{activeFriend.name}}</span>
           <span class="encryptionIndicator" ng-class="encrypted ? 'encryptionOn' : 'encryptionOff'">
