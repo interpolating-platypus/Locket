@@ -8,8 +8,29 @@
 .about {
   margin: 0;
 }
+.bannerImage {
+  position: relative;
+  height: 60vh;
+}
+.aboutBanner {
+  position: absolute;
+  text-align: center;
+  color: #fff;
+  margin-top: 0px;
+  /*background-image: url("../../assets/banner.jpg");*/
+}
 .aboutHeader {
   font-weight: normal;
+}
+.aboutRow {
+  margin-bottom: 10px;
+  padding-bottom: 25px;
+}
+.row-even{
+  background-color: #F5F5F5;
+}
+.row-odd{
+  background-color: #ffff;
 }
 .navbar {
   box-shadow: 0 8px 6px -6px #999;
@@ -87,11 +108,11 @@ img {
 }
 
 .messageTextFrom {
-  background-color: aliceblue;
+  background-color: #E3F2FD;
 }
 
 .messageTextTo {
-  background-color: beige;
+  background-color: #E8F5E9;
 }
 
 .chatWindow {
