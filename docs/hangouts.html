@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>hangouts.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Gruntfile.html">
+                  Gruntfile.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="auth.html">
+                  auth.js
+                </a>
+              
+                
+                <a class="source" href="chat.html">
+                  chat.js
+                </a>
+              
+                
+                <a class="source" href="authFactory.html">
+                  authFactory.js
+                </a>
+              
+                
+                <a class="source" href="encryptionFactory.html">
+                  encryptionFactory.js
+                </a>
+              
+                
+                <a class="source" href="socketFactory.html">
+                  socketFactory.js
+                </a>
+              
+                
+                <a class="source" href="background.html">
+                  background.js
+                </a>
+              
+                
+                <a class="source" href="facebook.html">
+                  facebook.js
+                </a>
+              
+                
+                <a class="source" href="hangouts.html">
+                  hangouts.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+                
+                <a class="source" href="karma.conf.html">
+                  karma.conf.js
+                </a>
+              
+                
+                <a class="source" href="passport.html">
+                  passport.js
+                </a>
+              
+                
+                <a class="source" href="userController.html">
+                  userController.js
+                </a>
+              
+                
+                <a class="source" href="userModel.html">
+                  userModel.js
+                </a>
+              
+                
+                <a class="source" href="userRoutes.html">
+                  userRoutes.js
+                </a>
+              
+                
+                <a class="source" href="server.html">
+                  server.js
+                </a>
+              
+                
+                <a class="source" href="socketHandler.html">
+                  socketHandler.js
+                </a>
+              
+                
+                <a class="source" href="authSpecs.html">
+                  authSpecs.js
+                </a>
+              
+                
+                <a class="source" href="chatSpecs.html">
+                  chatSpecs.js
+                </a>
+              
+                
+                <a class="source" href="serverSpec.html">
+                  serverSpec.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>hangouts.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h2 id="this-content-script-is-loaded-into-all-hangouts-google-com-documents">This content script is loaded into all hangouts.google.com documents</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h3 id="global-variables">Global Variables</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>This is the interval at which we perform actions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> rescanDOMInterval = <span class="hljs-number">500</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>This object maps users to their corresponding button in the friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> userToButtonMap = {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>This object stores the message block id’s of seen messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> seenMessageGroup = {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>This object stores friends which have new messages needing to be read</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> friendsWithNewMessages = {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h3 id="html-element-identifiers">HTML Element Identifiers</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>These are used to interact with the correct DOM Elements</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> elementIdentifiers = {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Iframe id containing friends list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  friendsListIframeId: <span class="hljs-string">'#gtn-roster-iframe-id-b'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Class for button in friends list. Clicking invokes chat window</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  friendsListIframeButton: <span class="hljs-string">'.Bb'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Friends names are listed in the friends list at the element with this class</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  friendsListNameClass: <span class="hljs-string">'.mG'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Class signifying there are unread messages from this user. This is intentionally without the “.” because the function calling it uses JQuery’s ‘hasClass’ method</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  friendsListUnreadMessagesClass: <span class="hljs-string">'ee'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Username that appears at top of chat</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chatWindowRecipient: <span class="hljs-string">'.Ob2Lud'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Class of iframe containing chat window</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chatWindowIframeClass: <span class="hljs-string">'.talk_chat_widget'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Messages are grouped into to/from blocks</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chatWindowChatBlockClass: <span class="hljs-string">'.tk'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Chat windows have an area to type in text</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chatWindowTextarea: <span class="hljs-string">'.vE'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>There is no visible submit button, but the one that appears when you upload a photo works for text as well</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chatWindowSubmitButton: <span class="hljs-string">'.NQ0ZIe'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Chat blocks are tagged with who sent the messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chatBlockFromClass: <span class="hljs-string">'.UR'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Chat blocks may contain multiple messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chatBlockMessageClass: <span class="hljs-string">'.Mu'</span>,
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <h3 id="on-document-ready">On document ready</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Once the document has fully loaded we can begin to interact with the DOM</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>$(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>hangouts.google.com loads additional iframes with the same domain. This is to make sure we only run this content script in the main hangouts page</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> getFrameDepth = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">winToID</span>) </span>{
+    <span class="hljs-keyword">try</span>{
+      <span class="hljs-built_in">console</span>.log(winToID.parent.src);
+    }<span class="hljs-keyword">catch</span> (e) {
+      <span class="hljs-built_in">console</span>.log(e);
+    }
+
+    <span class="hljs-keyword">if</span> (winToID === <span class="hljs-built_in">window</span>.top) {
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (winToID.parent === <span class="hljs-built_in">window</span>.top) {
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> + getFrameDepth (winToID.parent);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Verify we are not in a nested iframe</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> (getFrameDepth(<span class="hljs-built_in">window</span>.self) !== <span class="hljs-number">1</span>) {
+    <span class="hljs-keyword">return</span>;
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>This will attempt to scrape the friends list until the friends list loads</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  getHangoutsFriends(-<span class="hljs-number">5</span>)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">friends</span>)</span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Once it has loaded we will open all of the chat windows to quickly read and send messages as necessary</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      openAllChatWindows();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>We also start the interval to request instructions from background.js</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        onIntervals();
+      }, rescanDOMInterval);
+
+    });
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <h3 id="on-each-interval">on each interval</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>In each interval we check for instructions from background.js. Extensions cannot send messages to content scripts, only respond to messages sent from content scripts</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onIntervals</span> (<span class="hljs-params"> </span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Poll extension for instructions from web app using chrome extension messaging</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  chrome.runtime.sendMessage({event: <span class="hljs-string">'getHangoutsInstructions'</span> }, 
+    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>If the background process is requesting the friends list, retrieve and send friends from DOM</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (response.getFriends) {
+        findAndSendHangoutsFriends();
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>If the background process is requesting new messages from a specific user, we mark that user as having new messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (response.getMessagesFor.length &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; response.getMessagesFor.length; i++) {
+          friendsWithNewMessages[response.getMessagesFor[i]] = <span class="hljs-literal">true</span>;
+        }
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>If the background process has messages which need to be sent, we send them</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (response.postMessages.length &gt; <span class="hljs-number">0</span>){
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; response.postMessages.length; i++) {
+          sendFriendMessage(response.postMessages[i].to, response.postMessages[i].text);
+        };
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>If the background process is requesting us to send the user’s PGP key, we send it to the designated friend</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>(response.sendPublicKey.length &gt; <span class="hljs-number">0</span>){
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; response.sendPublicKey.length; i++) {
+          <span class="hljs-keyword">var</span> keyReq = response.sendPublicKey[i];
+          <span class="hljs-keyword">var</span> keys = keyReq.publicKey + <span class="hljs-string">"*****Your Key Below******"</span> + keyReq.friendKey + <span class="hljs-string">"END KEYSHARE"</span>;
+          sendFriendMessage(keyReq.to, keys);
+        }
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>If the user closes the web app, the background script will instruct us to notify the users they were communicating with that this user will not be able to read any encrypted messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>(response.emitDisconnect.length &gt; <span class="hljs-number">0</span>){
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; response.emitDisconnect.length; i++) {
+          <span class="hljs-keyword">var</span> username = response.emitDisconnect[i];
+          sendFriendMessage(username,<span class="hljs-string">"*****USER DISCONNECT*****"</span>);
+        }
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>When the user closes the web app we want to stop loading their messages in the iframe. The background process notifies this content script to stop scanning the DOM and send a message to unload this iframe.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>(response.scanDOM){
+        findAndSendUnreadMessages();
+      }<span class="hljs-keyword">else</span>{
+        chrome.runtime.sendMessage({event: <span class="hljs-string">'turnOff'</span> });
+      }
+    }
+  );
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <h2 id="helper-functions">Helper Functions</h2>
+<h3 id="get-hangouts-friends">get hangouts friends</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>The friends list is stored in an iframe which takes some time to load. This function will attempt to load the friends list until the number of attempts is equal to 5</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getHangoutsFriends</span> (<span class="hljs-params">attempts</span>) </span>{  
+  <span class="hljs-keyword">var</span> maxAttempts = <span class="hljs-number">5</span>;
+
+  <span class="hljs-keyword">var</span> deferred = D();
+
+  <span class="hljs-keyword">var</span> friendObjs = $(elementIdentifiers.friendsListIframeId).contents().find(elementIdentifiers.friendsListIframeButton);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>If the content script is unable to load the friends list we can assume the iframe has not loaded yet</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span>(friendObjs.length === <span class="hljs-number">0</span>){
+
+    <span class="hljs-keyword">if</span>(attempts === maxAttempts){
+      deferred.reject(<span class="hljs-string">"failed to load friends list"</span>)
+    }<span class="hljs-keyword">else</span>{
+      setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        deferred.resolve(getHangoutsFriends(attempts+<span class="hljs-number">1</span>));
+      },<span class="hljs-number">1500</span>);
+    }
+
+  }<span class="hljs-keyword">else</span>{
+
+    <span class="hljs-keyword">var</span> friends = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>For each friend in the friends list we want to get their name</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    friendObjs.each(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>Each button in friends list has the friend’s name listed</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> name = $(<span class="hljs-keyword">this</span>).find(elementIdentifiers.friendsListNameClass).text();
+
+      friends.push({
+        username: name,
+        name: name
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>We need to track the button for this user so that we can invoke the corresponding chat window</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      userToButtonMap[name] = {
+        button: $(<span class="hljs-keyword">this</span>),
+        uri: $(<span class="hljs-keyword">this</span>)[<span class="hljs-number">0</span>].baseURI
+      };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <p>While we scan the friends list we can see if there are new messages from anyone</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span>($(<span class="hljs-keyword">this</span>).hasClass(elementIdentifiers.friendsListUnreadMessagesClass)){
+        friendsWithNewMessages[name] = <span class="hljs-literal">true</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <p>Opening the user’s window will mark the message as read so it will not be marked to be read repeatedly</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        userToButtonMap[name].button.click();
+      }
+    });
+
+    deferred.resolve(friends);
+  
+  }
+
+  <span class="hljs-keyword">return</span> deferred.promise;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <h3 id="find-friend-s-chat-window">find friend’s chat window</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p>There are many iframes open with each of the chat windows. This function will return the chat window of name given</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findFriendChatWindow</span> (<span class="hljs-params">name</span>) </span>{  
+  <span class="hljs-keyword">var</span> friendChatWindow = <span class="hljs-literal">null</span>;
+  <span class="hljs-keyword">var</span> deferred = D();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <p>Iterate through all of the chat windows</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  $(elementIdentifiers.chatWindowIframeClass).each(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> chatWindow = $(<span class="hljs-keyword">this</span>).find(<span class="hljs-string">'iframe'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <p>The person we are chatting with has their name at the top of the chat window</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> recipient = chatWindow.contents().find(elementIdentifiers.chatWindowRecipient).text();
+
+    <span class="hljs-keyword">if</span> (recipient === name) {
+      friendChatWindow = chatWindow;
+      deferred.resolve(chatWindow);
+    }
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>If the friend’s chat window cannot be found we need to open it</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span>(friendChatWindow === <span class="hljs-literal">null</span>){
+    userToButtonMap[name].button.click();
+
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      deferred.resolve(findFriendChatWindow(name));
+    }, <span class="hljs-number">200</span>);
+  }
+
+  <span class="hljs-keyword">return</span> deferred.promise;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <h3 id="find-new-messages-from-friend">find new messages from friend</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <p>This function will return any new messages from the given user</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findFriendNewMessages</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-keyword">var</span> deferred = D();
+  findFriendChatWindow(name)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">chatWindow</span>)</span>{
+
+      <span class="hljs-keyword">var</span> newMessages = [];
+
+      chatWindow.contents().find(elementIdentifiers.chatWindowChatBlockClass).each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+        <span class="hljs-keyword">var</span> id = $(<span class="hljs-keyword">this</span>).attr(<span class="hljs-string">'id'</span>);
+        <span class="hljs-keyword">var</span> from = $(<span class="hljs-keyword">this</span>).find(elementIdentifiers.chatBlockFromClass).text();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>From is empty when you sent the message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>(!from){
+          from = <span class="hljs-string">"me"</span>;
+        }
+        
+        <span class="hljs-keyword">var</span> chatBlockMessages = $(<span class="hljs-keyword">this</span>).find(elementIdentifiers.chatBlockMessageClass);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <p>If we havent seen this chat block id, or the length of messages within this block has increased we know we have new messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (!seenMessageGroup[id] || seenMessageGroup[id] !== chatBlockMessages.length) {
+          <span class="hljs-keyword">var</span> newMessagesContent = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <p>We can slice from the previous length to only get new messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          chatBlockMessages.slice(seenMessageGroup[id]).each(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-keyword">var</span> message = $(<span class="hljs-keyword">this</span>).text();
+
+            <span class="hljs-keyword">if</span>(message.substring().substr(<span class="hljs-number">0</span>,<span class="hljs-number">36</span>) === <span class="hljs-string">'-----BEGIN PGP PUBLIC KEY BLOCK-----'</span>){
+              <span class="hljs-keyword">var</span> pgpKeys = message.split(<span class="hljs-string">'*****Your Key Below******'</span>);
+              <span class="hljs-keyword">var</span> friendKey = pgpKeys[<span class="hljs-number">1</span>].substring(<span class="hljs-number">0</span>, pgpKeys[<span class="hljs-number">1</span>].length-<span class="hljs-number">12</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <p>If the PGP key wasn’t sent by this user we want to send it to the web app</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>              <span class="hljs-keyword">if</span>(from !== <span class="hljs-string">'me'</span>){
+                chrome.runtime.sendMessage({
+                  event: <span class="hljs-string">'receivedPGPKey'</span>,
+                  data: {
+                    publicKey: pgpKeys[<span class="hljs-number">0</span>],</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              <p>friendkey is what the friend thinks this user’s current key is</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                    friendKey: friendKey,
+                    from: name,
+                    name: name 
+                  }
+                });
+              }
+
+            }<span class="hljs-keyword">else</span>{
+              newMessagesContent.push(message);
+            }
+
+          });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-56">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <p>Push new messages to the array this function returns</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          newMessages.push({
+            from: from,
+            messages: newMessagesContent
+          });
+
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
+              </div>
+              <p>Update the number of messages we have seen in this block</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        seenMessageGroup[id] = chatBlockMessages.length;
+
+      });
+
+      deferred.resolve(newMessages);
+    });
+
+  <span class="hljs-keyword">return</span> deferred.promise;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-58">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-58">&#182;</a>
+              </div>
+              <h3 id="send-friend-message">send friend message</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-59">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-59">&#182;</a>
+              </div>
+              <p>This function will send a message given the name of the friend, and the message to be sent</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sendFriendMessage</span> (<span class="hljs-params">name, message</span>)</span>{
+  findFriendChatWindow(name).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">chatWindow</span>)</span>{
+    chatWindow.contents().find(elementIdentifiers.chatWindowTextarea).text(message);
+    chatWindow.contents().find(elementIdentifiers.chatWindowSubmitButton).click();
+    friendsWithNewMessages[name] = <span class="hljs-literal">true</span>;
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-60">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-60">&#182;</a>
+              </div>
+              <h3 id="find-and-relay-undread-messages">find and relay undread messages</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-61">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-61">&#182;</a>
+              </div>
+              <p>This function will find all unread messages and send them to the web app</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findAndSendUnreadMessages</span> (<span class="hljs-params"></span>) </span>{
+  getHangoutsFriends(<span class="hljs-number">0</span>)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-62">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-62">&#182;</a>
+              </div>
+              <p>At this point we have updated the friendsWithNewMessages object and need to send them to the web app</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> friend <span class="hljs-keyword">in</span> friendsWithNewMessages){
+        findFriendNewMessages(friend)
+          .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">newMessages</span>) </span>{
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; newMessages.length; i++){
+              chrome.runtime.sendMessage({
+                event: <span class="hljs-string">'receivedNewHangoutsMessage'</span>, 
+                data: {
+                  <span class="hljs-keyword">with</span>: friend, 
+                  name: friend, 
+                  from: newMessages[i].from, 
+                  text: newMessages[i].messages
+                }
+              });
+              
+            }
+          });
+        <span class="hljs-keyword">delete</span> friendsWithNewMessages[friend];
+      }
+
+    },<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(err);
+    });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-63">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-63">&#182;</a>
+              </div>
+              <h3 id="find-and-send-hangouts-friends">find and send hangouts friends</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-64">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-64">&#182;</a>
+              </div>
+              <p>This function gets all of the friends from the friends list and sends them to the web app</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findAndSendHangoutsFriends</span> (<span class="hljs-params"></span>) </span>{
+  getHangoutsFriends(<span class="hljs-number">0</span>)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">friends</span>) </span>{
+
+      chrome.runtime.sendMessage({
+        event: <span class="hljs-string">'hangoutsFriendsList'</span>,
+        data: friends
+      });
+
+    },<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(err);
+    });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-65">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-65">&#182;</a>
+              </div>
+              <h3 id="open-all-chat-windows">open all chat windows</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-66">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-66">&#182;</a>
+              </div>
+              <p>This function opens all chat windows so that we can quickly find and send new messages without waiting for the iframes to load</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">openAllChatWindows</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> friend <span class="hljs-keyword">in</span> userToButtonMap){
+    userToButtonMap[friend].button.click();
+  }
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

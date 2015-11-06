@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>encryptionFactory.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Gruntfile.html">
+                  Gruntfile.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  app.js
+                </a>
+              
+                
+                <a class="source" href="auth.html">
+                  auth.js
+                </a>
+              
+                
+                <a class="source" href="chat.html">
+                  chat.js
+                </a>
+              
+                
+                <a class="source" href="authFactory.html">
+                  authFactory.js
+                </a>
+              
+                
+                <a class="source" href="encryptionFactory.html">
+                  encryptionFactory.js
+                </a>
+              
+                
+                <a class="source" href="socketFactory.html">
+                  socketFactory.js
+                </a>
+              
+                
+                <a class="source" href="background.html">
+                  background.js
+                </a>
+              
+                
+                <a class="source" href="facebook.html">
+                  facebook.js
+                </a>
+              
+                
+                <a class="source" href="hangouts.html">
+                  hangouts.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  main.js
+                </a>
+              
+                
+                <a class="source" href="karma.conf.html">
+                  karma.conf.js
+                </a>
+              
+                
+                <a class="source" href="passport.html">
+                  passport.js
+                </a>
+              
+                
+                <a class="source" href="userController.html">
+                  userController.js
+                </a>
+              
+                
+                <a class="source" href="userModel.html">
+                  userModel.js
+                </a>
+              
+                
+                <a class="source" href="userRoutes.html">
+                  userRoutes.js
+                </a>
+              
+                
+                <a class="source" href="server.html">
+                  server.js
+                </a>
+              
+                
+                <a class="source" href="socketHandler.html">
+                  socketHandler.js
+                </a>
+              
+                
+                <a class="source" href="authSpecs.html">
+                  authSpecs.js
+                </a>
+              
+                
+                <a class="source" href="chatSpecs.html">
+                  chatSpecs.js
+                </a>
+              
+                
+                <a class="source" href="serverSpec.html">
+                  serverSpec.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>encryptionFactory.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Factory for client-side encryption of messages, using OpenPGP.js</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>angular.module(<span class="hljs-string">'Locket.encryptionFactory'</span>, [])
+
+.factory(<span class="hljs-string">'encryptionFactory'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$window</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Generate a random id and random passphrase for a user by populating an array with randomized integers and joining the elements</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> generateOptions = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">n</span>) </span>{
+    <span class="hljs-keyword">var</span> randomIdArray = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint32Array</span>(n);
+    <span class="hljs-keyword">var</span> randomIdValues = <span class="hljs-built_in">window</span>.crypto.getRandomValues(randomIdArray);
+    <span class="hljs-keyword">var</span> randomId = <span class="hljs-string">''</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Manual join function, since Safari doesn’t provide any of the normal array methods on Uint32Arrays</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; randomIdValues.length; i++){
+      randomId += randomIdValues[i];
+    }
+
+    <span class="hljs-keyword">var</span> randomPassphraseArray = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint32Array</span>(n);
+    <span class="hljs-keyword">var</span> randomPassphraseValues = <span class="hljs-built_in">window</span>.crypto.getRandomValues(randomPassphraseArray);
+    <span class="hljs-keyword">var</span> randomPassphrase = <span class="hljs-string">''</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Manual join function, since Safari doesn’t provide any of the normal array methods on Uint32Arrays</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; randomPassphraseValues.length; i++){
+      randomPassphrase += randomPassphraseValues[i];
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Return an options object so that id and passphrase can be referenced in other functions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> options = {
+      numBits: <span class="hljs-number">2048</span>,
+      userId: randomId,
+      passphrase: randomPassphrase
+    };
+
+    <span class="hljs-keyword">return</span> options;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Call generateOptions so that other functions can reference the options object with a consistent id and passphrase during a user session</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> options = generateOptions(<span class="hljs-number">10</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Generate the public and private keypair and return a promise that returns an object with the public and private keys</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> generateKeyPair = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> keyring = {};
+    
+    <span class="hljs-keyword">return</span> openpgp.generateKeyPair(options)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">keypair</span>) </span>{
+      keyring.privkey = keypair.privateKeyArmored;
+      keyring.pubkey = keypair.publicKeyArmored;
+    }).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> keyring;
+    }).catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
+      <span class="hljs-built_in">console</span>.error(error);
+    });
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Encrypt a message using a given public key and return a promise that returns the encrypted message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> encryptMessage = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">keyring, message</span>) </span>{
+    <span class="hljs-keyword">var</span> pubKey = keyring.pubkey;
+    <span class="hljs-keyword">return</span> openpgp.encryptMessage(openpgp.key.readArmored(pubKey).keys, message)
+    .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pgpMessage</span>) </span>{
+      <span class="hljs-keyword">return</span> pgpMessage;
+    });
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Decrypt a message using a user’s private key and passphrase, returning a promise that returns a plaintext message</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> decryptMessage = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">keyring, pgpMessage</span>) </span>{
+    <span class="hljs-keyword">var</span> privKey = keyring.privkey;
+    <span class="hljs-keyword">var</span> privateKey = openpgp.key.readArmored(privKey).keys[<span class="hljs-number">0</span>];
+    privateKey.decrypt(options.passphrase);
+    pgpMessage = openpgp.message.readArmored(pgpMessage);
+
+    <span class="hljs-keyword">return</span> openpgp.decryptMessage(privateKey, pgpMessage).then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">plaintext</span>) </span>{
+      <span class="hljs-keyword">return</span> plaintext;
+    });
+  };
+
+  <span class="hljs-keyword">return</span> {
+    generateKeyPair: generateKeyPair,
+    encryptMessage: encryptMessage,
+    decryptMessage: decryptMessage
+  };
+
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
