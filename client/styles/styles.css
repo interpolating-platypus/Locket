@@ -21,6 +21,10 @@
 }
 .aboutHeader {
   font-weight: normal;
+  padding-top: 60px;
+}
+.signupHeader {
+  padding-top: 0px;
 }
 .aboutRow {
   margin-bottom: 10px;
@@ -31,6 +35,11 @@
 }
 .row-odd{
   background-color: #ffff;
+}
+.loginFacebookLogo {
+  height: 50px;
+  width: 50px;
+  display: inline;
 }
 .navbar {
   box-shadow: 0 8px 6px -6px #999;
