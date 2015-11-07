@@ -1,6 +1,6 @@
 # Locket
 
-## File Heirarchy
+## File Hierarchy
  ``` |
   |-- client/
   |       |-- app.js
