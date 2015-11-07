@@ -8,6 +8,51 @@
 .about {
   margin: 0;
 }
+.bannerImage {
+  position: relative;
+  height: 60vh;
+}
+.aboutBanner {
+  position: absolute;
+  text-align: center;
+  color: #fff;
+  margin-top: 0px;
+  /*background-image: url("../../assets/banner.jpg");*/
+}
+.aboutHeader {
+  font-weight: normal;
+  padding-top: 15%;
+}
+.signupHeader {
+  padding-top: 5%;
+}
+.aboutRow {
+  margin-bottom: 10px;
+  padding-bottom: 25px;
+}
+.row-even{
+  background-color: #F5F5F5;
+}
+.row-odd{
+  background-color: #ffff;
+}
+.loginFacebookLogo {
+  height: 50px;
+  width: 50px;
+  display: inline;
+}
+.friendsListImage {
+  height: 50vh;
+  width: 20vw;
+  float: right;
+  margin-right: 10px;
+}
+.githubLogo {
+  width: 20px;
+}
+.githubLogoHidden {
+  visibility: hidden;
+}
 .navbar {
   box-shadow: 0 8px 6px -6px #999;
 }
@@ -84,11 +129,11 @@ img {
 }
 
 .messageTextFrom {
-  background-color: aliceblue;
+  background-color: #E3F2FD;
 }
 
 .messageTextTo {
-  background-color: beige;
+  background-color: #E8F5E9;
 }
 
 .chatWindow {
@@ -385,10 +430,6 @@ img {
   font-size: 0px;
   vertical-align: middle;
   margin-bottom: 3px;
-}
-
-.githubLogo {
-  width: 20px;
 }
 
 input {
