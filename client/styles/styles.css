@@ -16,7 +16,12 @@
   position: absolute;
   text-align: center;
   color: #fff;
-  margin-top: 0px;
+  z-index: 100;
+  display: block;
+  width: 100%;
+  top: 30%;
+  left: 0;
+  font-size: 70px;
 }
 .aboutHeader {
   font-weight: normal;
